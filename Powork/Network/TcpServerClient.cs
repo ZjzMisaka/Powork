@@ -12,7 +12,6 @@ namespace Powork.Network
     public class TcpServerClient
     {
         private TcpListener tcpListener;
-        private TcpClient tcpClient;
         private PowerPool powerPool;
 
         public TcpServerClient(int port, PowerPool powerPool)
@@ -21,7 +20,7 @@ namespace Powork.Network
             this.powerPool = powerPool;
         }
 
-        public void StartListening(Action<NetworkStream> onReceive)
+        public void StartListening(Action<NetworkStream, string> onReceive)
         {
             tcpListener.Start();
             powerPool.QueueWorkItem(() =>
@@ -33,28 +32,41 @@ namespace Powork.Network
                         Thread.Sleep(100);
                         powerPool.StopIfRequested();
                     }
-                    var client = tcpListener.AcceptTcpClient();
-                    onReceive(client.GetStream());
+                    TcpClient client = tcpListener.AcceptTcpClient();
+                    onReceive(client.GetStream(), ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
+                    client.Dispose();
 
-                    powerPool.StopIfRequested();
+                    if (powerPool.CheckIfRequestedStop())
+                    {
+                        tcpListener.Dispose();
+                        return;
+                    }
                 }
             });
         }
 
         public void SendMessage(string message, string ipAddress, int port)
         {
-            tcpClient = new TcpClient(ipAddress, port);
-            var stream = tcpClient.GetStream();
-            var bytes = Encoding.UTF8.GetBytes(message);
-            stream.Write(bytes, 0, bytes.Length);
+            TcpClient tcpClient = new TcpClient(ipAddress, port);
+            NetworkStream stream = tcpClient.GetStream();
+            byte[] head = Encoding.UTF8.GetBytes("TEXT");
+            byte[] bytes = Encoding.UTF8.GetBytes(message);
+            byte[] combined = head.Concat(bytes).ToArray();
+            stream.Write(combined, 0, combined.Length);
+            stream.Dispose();
+            tcpClient.Dispose();
         }
 
         public void SendFile(string filePath, string ipAddress, int port)
         {
-            tcpClient = new TcpClient(ipAddress, port);
-            var stream = tcpClient.GetStream();
-            var fileBytes = File.ReadAllBytes(filePath);
-            stream.Write(fileBytes, 0, fileBytes.Length);
+            TcpClient tcpClient = new TcpClient(ipAddress, port);
+            NetworkStream stream = tcpClient.GetStream();
+            byte[] head = Encoding.UTF8.GetBytes("FILE");
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            byte[] combined = head.Concat(fileBytes).ToArray();
+            stream.Write(combined, 0, combined.Length);
+            stream.Dispose();
+            tcpClient.Dispose();
         }
     }
 }

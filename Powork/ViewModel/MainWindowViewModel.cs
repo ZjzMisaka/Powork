@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PowerThreadPool;
+using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
 using System;
@@ -30,6 +31,9 @@ namespace Powork.ViewModel
         {
             powerPool = new PowerPool();
 
+            SqliteHelper.CreateDatabase();
+            SqliteHelper.CreateTable();
+
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
@@ -52,7 +56,7 @@ namespace Powork.ViewModel
             udpBroadcaster.StartBroadcasting();
             udpBroadcaster.ListenForBroadcasts((udpBroadcastMessage) =>
             {
-                if (udpBroadcastMessage.IPEndPoint.Address == GlobalVariables.LocalIP)
+                if (udpBroadcastMessage.IPEndPoint.Address.Equals(GlobalVariables.LocalIP))
                 {
                     return;
                 }
@@ -70,7 +74,7 @@ namespace Powork.ViewModel
                     ++GlobalVariables.TcpPort;
                 }
             }
-            tcpServerClient.StartListening(stream =>
+            tcpServerClient.StartListening((stream, ip) =>
             {
                 using var reader = new StreamReader(stream);
                 var message = reader.ReadToEnd();

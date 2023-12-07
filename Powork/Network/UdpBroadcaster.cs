@@ -13,7 +13,6 @@ namespace Powork.Network
         private UdpClient udpClient;
         private IPEndPoint endPoint;
         private PowerPool powerPool;
-        private Guid uniqueID;
 
         public UdpBroadcaster(int port, PowerPool powerPool)
         {
