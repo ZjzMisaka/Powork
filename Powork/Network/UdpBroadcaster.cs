@@ -29,7 +29,7 @@ namespace Powork.Network
             {
                 while (true)
                 {
-                    var bytes = Encoding.UTF8.GetBytes(GlobalVariables.UniqueID.ToString());
+                    var bytes = Encoding.UTF8.GetBytes("Powork");
                     udpClient.Send(bytes, bytes.Length, endPoint);
                     Thread.Sleep(1000);
 
@@ -49,7 +49,7 @@ namespace Powork.Network
                         udpClient.Client.ReceiveTimeout = 100;
                         byte[] receivedBytes = udpClient.Receive(ref endPoint);
                         string message = Encoding.UTF8.GetString(receivedBytes);
-                        onReceive(new UdpBroadcastMessage() { IPEndPoint = endPoint, UniqueID = Guid.Parse(message) });
+                        onReceive(new UdpBroadcastMessage() { IPEndPoint = endPoint });
                     }
                     catch
                     {

@@ -52,7 +52,7 @@ namespace Powork.ViewModel
             udpBroadcaster.StartBroadcasting();
             udpBroadcaster.ListenForBroadcasts((udpBroadcastMessage) =>
             {
-                if (udpBroadcastMessage.UniqueID == GlobalVariables.UniqueID)
+                if (udpBroadcastMessage.IPEndPoint.Address == GlobalVariables.LocalIP)
                 {
                     return;
                 }

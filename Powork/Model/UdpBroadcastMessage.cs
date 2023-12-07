@@ -10,6 +10,5 @@ namespace Powork.Model
     public class UdpBroadcastMessage
     {
         public IPEndPoint IPEndPoint { get; set; }
-        public Guid UniqueID { get; set; }
     }
 }
