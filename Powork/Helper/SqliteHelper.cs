@@ -1,4 +1,5 @@
-﻿using Powork.Model;
+﻿using Newtonsoft.Json;
+using Powork.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -34,7 +35,7 @@ namespace Powork.Helper
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (ip VARCHAR(15), name VARCHAR(20), id VARCHAR(36), content VARCHAR(5000), type VARCHAR(4), time TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+                string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (ip VARCHAR(15), name VARCHAR(20), id VARCHAR(36), body VARCHAR(5000), type INT, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
                 using (var command = new SQLiteCommand(sqlTMessage, connection))
                 {
                     command.ExecuteNonQuery();
@@ -42,13 +43,13 @@ namespace Powork.Helper
             }
         }
 
-        static public void InsertUser(string ip, string name, string groupName)
+        static public void InsertUser(User user)
         {
             using (var connection = new SQLiteConnection($"Data Source={dbName};Version=3;"))
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO Users (ip, name, groupName) VALUES ('{ip}', '{name}', '{groupName}')";
+                string sql = $"INSERT INTO Users (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
@@ -85,13 +86,14 @@ namespace Powork.Helper
             return userList;
         }
 
-        static public void InsertMessage(string ip, string name, string id, string content, string type)
+        static public void InsertMessage(UserMessage userMessage)
         {
+            string body = JsonConvert.SerializeObject(userMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={dbName};Version=3;"))
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO Message (ip, name, id, content, type) VALUES ('{ip}', '{name}', '{id}', '{content}', '{type}'";
+                string sql = $"INSERT INTO Message (ip, name, body, type) VALUES ('{userMessage.IP}', '{userMessage.Name}', '{body}', '{userMessage.Type}'";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
@@ -117,9 +119,8 @@ namespace Powork.Helper
                         {
                             IP = reader["ip"].ToString(),
                             Name = reader["name"].ToString(),
-                            ID = reader["id"].ToString(),
-                            Content = reader["content"].ToString(),
-                            Type = reader["type"].ToString() == "TEXT" ? MessageType.Text : MessageType.File,
+                            MessageBody = JsonConvert.DeserializeObject<List<UserMessageBody>>(reader["body"].ToString()),
+                            Type = (MessageType)(int.Parse(reader["type"].ToString())),
                             Time = reader["time"].ToString(),
                         });
                     }

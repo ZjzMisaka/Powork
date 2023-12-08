@@ -8,18 +8,27 @@ using System.Xml.Linq;
 
 namespace Powork.Model
 {
-    public enum MessageType
+    internal enum MessageType
     {
         Text,
-        File
+        File,
+        Picture
     }
     internal class UserMessage
     {
+        public UserMessage() 
+        {
+            MessageBody = new List<UserMessageBody>();
+        }
         public string IP { get; set; }
         public string Name { get; set; }
-        public string ID { get; set; }
-        public string Content { get; set; }
+        public List<UserMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }
         public string Time { get; set; }
+    }
+    internal class UserMessageBody
+    {
+        public string Content { get; set; }
+        public MessageType Type { get; set; }
     }
 }
