@@ -23,7 +23,7 @@
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Cursor="">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -53,28 +53,23 @@
         <ui:TitleBar
             Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
             Grid.Row="0"
-            Icon="pack://application:,,,/Assets/applicationIcon-256.png" />
+            Icon="Icon.png" />
 
-        <ui:NavigationView x:Name="RootNavigation" Grid.Row="1">
-            <!--<ui:NavigationView.AutoSuggestBox>
-                <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search">
-                    <ui:AutoSuggestBox.Icon>
-                        <ui:IconSourceElement>
-                            <ui:SymbolIconSource Symbol="Search24" />
-                        </ui:IconSourceElement>
-                    </ui:AutoSuggestBox.Icon>
-                </ui:AutoSuggestBox>
-            </ui:NavigationView.AutoSuggestBox>-->
-            <ui:NavigationView.Header>
-                <ui:BreadcrumbBar
-                  Margin="42,32,0,0"
-                  FontSize="28"
-                  FontWeight="DemiBold" />
-            </ui:NavigationView.Header>
+        <ui:NavigationView x:Name="RootNavigation" Grid.Row="1" PaneDisplayMode="LeftFluent">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Message" TargetPageType="{x:Type view:MessagePage}">
+                <ui:NavigationViewItem Content="Msg" TargetPageType="{x:Type view:MessagePage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Mail24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="Task" TargetPageType="{x:Type view:TaskPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="TaskListAdd24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="Testing" TargetPageType="{x:Type view:TestingPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Book24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>

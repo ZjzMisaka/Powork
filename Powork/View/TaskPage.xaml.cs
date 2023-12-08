@@ -17,14 +17,14 @@ using System.Windows.Shapes;
 namespace Powork.View
 {
     /// <summary>
-    /// MessagePage.xaml 的交互逻辑
+    /// SettingsPage.xaml 的交互逻辑
     /// </summary>
-    public partial class MessagePage : Page
+    public partial class TaskPage : Page
     {
-        public MessagePage()
+        public TaskPage()
         {
             InitializeComponent();
-            this.DataContext = new MessagePageViewModel();
+            this.DataContext = new TaskPageViewModel();
         }
     }
 }

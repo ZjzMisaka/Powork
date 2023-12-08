@@ -19,4 +19,13 @@
     <PackageReference Include="WPF-UI" Version="3.0.0-preview.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="View\TaskPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\TestingPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>
