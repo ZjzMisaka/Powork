@@ -18,8 +18,30 @@ namespace Powork.ViewModel
 {
     class MessagePageViewModel : ObservableObject
     {
-        public ObservableCollection<User> UserList { get; set; }
-        public string MessageText { get; set; }
+        private ObservableCollection<User> userList;
+        public ObservableCollection<User> UserList
+        {
+            get
+            {
+                return userList;
+            }
+            set
+            {
+                SetProperty<ObservableCollection<User>>(ref userList, value);
+            }
+        }
+        private string messageText;
+        public string MessageText
+        {
+            get
+            {
+                return messageText;
+            }
+            set
+            {
+                SetProperty<string>(ref messageText, value);
+            }
+        }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
@@ -29,59 +51,6 @@ namespace Powork.ViewModel
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
-
-            UserList =
-            [
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-                new User() { Name = "11", IP = "192.170.12.15", GroupName = "osaka" },
-            ];
-            MessageText = "wfafefgrewgre";
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)

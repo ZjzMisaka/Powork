@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Powork.View"
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:viewmodel="clr-namespace:Powork.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:SettingsPageViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingsPage">
@@ -21,7 +21,27 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
-        
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="IP" Foreground="White" VerticalAlignment="Center"></TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Width="200" Text="{Binding IP}"></TextBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Foreground="White" VerticalAlignment="Center"></TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Name}"></TextBox>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Group" Foreground="White" VerticalAlignment="Center"></TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Group}"></TextBox>
+
+        <Button Grid.Row="3" Grid.Column="1" Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}"></Button>
     </Grid>
 </Page>

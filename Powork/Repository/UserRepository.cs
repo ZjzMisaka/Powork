@@ -17,7 +17,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO Users (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
+                string sql = $"INSERT INTO TUser (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
@@ -33,7 +33,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = "SELECT * FROM Users";
+                string sql = "SELECT * FROM TUser";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
@@ -96,6 +96,21 @@ namespace Powork.Repository
                 }
 
                 return userList;
+            }
+        }
+
+        static public void RemoveUserByIp(string ip)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"DELETE FROM TUser WHERE ip = '{ip}'";
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
