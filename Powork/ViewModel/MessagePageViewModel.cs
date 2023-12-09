@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PowerThreadPool;
-using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
 using System;

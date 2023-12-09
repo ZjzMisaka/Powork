@@ -15,13 +15,13 @@ using System.Windows.Input;
 
 namespace Powork.ViewModel
 {
-    class SettingsPageViewModel : ObservableObject
+    class MemoPageViewModel : ObservableObject
     {
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
 
-        public SettingsPageViewModel()
+        public MemoPageViewModel()
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);

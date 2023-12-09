@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PowerThreadPool;
-using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
+using Powork.Repository;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,8 +31,8 @@ namespace Powork.ViewModel
         {
             powerPool = new PowerPool();
 
-            SqliteHelper.CreateDatabase();
-            SqliteHelper.CreateTable();
+            CommonRepository.CreateDatabase();
+            CommonRepository.CreateTable();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);

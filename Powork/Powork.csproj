@@ -20,12 +20,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\MemoPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\TaskPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\TestingPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helper\" />
   </ItemGroup>
 
 </Project>
