@@ -4,6 +4,7 @@ using PowerThreadPool;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
+using Powork.Repository;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -66,6 +67,12 @@ namespace Powork.ViewModel
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
+
+            UserList = GlobalVariables.UserList;
+            GlobalVariables.UserListChanged += (s, e) => 
+            {
+                UserList = (ObservableCollection<User>)s;
+            };
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)

@@ -6,6 +6,7 @@ using Powork.Network;
 using Powork.Repository;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -52,15 +53,31 @@ namespace Powork.ViewModel
                     ++GlobalVariables.UdpPort;
                 }
             }
-            
+
+            GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
+
             udpBroadcaster.StartBroadcasting();
-            udpBroadcaster.ListenForBroadcasts((udpBroadcastMessage) =>
+            udpBroadcaster.ListenForBroadcasts((user) =>
             {
-                if (udpBroadcastMessage.IPEndPoint.Address.Equals(GlobalVariables.LocalIP))
+                if (user.IP == GlobalVariables.LocalIP.ToString())
                 {
                     return;
                 }
-                MessageBox.Show($"Received broadcast from {udpBroadcastMessage.IPEndPoint.Address}");
+
+                if (UserRepository.SelectUserByIpName(user.IP, user.Name).Count == 0)
+                {
+                    User insertUser = new User()
+                    {
+                        Name = user.Name,
+                        IP = user.IP,
+                        GroupName = user.GroupName
+                    };
+                    UserRepository.InsertUser(insertUser);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        GlobalVariables.UserList.Add(insertUser);
+                    });
+                }
             });
 
             while (tcpServerClient == null)
@@ -78,8 +95,6 @@ namespace Powork.ViewModel
             {
                 using var reader = new StreamReader(stream);
                 var message = reader.ReadToEnd();
-
-                MessageBox.Show($"Received message: {message}");
             });
         }
 

@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Powork.Model;
 using Powork.Repository;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using PowerThreadPool.EventArguments;
 
 namespace Powork
 {
@@ -18,6 +21,21 @@ namespace Powork
         static internal int UdpPort { get; set; } = 1096;
         static internal int TcpPort { get; set; } = 614;
         static internal string DbName { get; } = "PoworkDB";
+        private static ObservableCollection<User> userList;
+        internal static ObservableCollection<User> UserList 
+        { 
+            get => userList;
+            set
+            {
+                userList = value;
+                if (UserListChanged != null)
+                {
+                    UserListChanged.Invoke(userList, new EventArgs());
+                }
+            }
+        }
+        public delegate void UserListChangedEventHandler(object sender, EventArgs e);
+        static public event UserListChangedEventHandler UserListChanged;
         static internal List<User> SelfInfo 
         { 
             get

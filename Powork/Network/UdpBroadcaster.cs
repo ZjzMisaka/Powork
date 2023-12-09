@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using PowerThreadPool;
 using Powork.Model;
+using Newtonsoft.Json;
 
 namespace Powork.Network
 {
@@ -28,8 +29,14 @@ namespace Powork.Network
             {
                 while (true)
                 {
-                    var bytes = Encoding.UTF8.GetBytes("Powork");
-                    udpClient.Send(bytes, bytes.Length, endPoint);
+                    List<User> userList = GlobalVariables.SelfInfo;
+                    if (userList.Count == 1)
+                    {
+                        udpClient.Client.ReceiveTimeout = 100;
+                        var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(userList[0]));
+                        udpClient.Send(bytes, bytes.Length, endPoint);
+                    }
+                   
                     Thread.Sleep(1000);
 
                     powerPool.StopIfRequested();
@@ -37,7 +44,7 @@ namespace Powork.Network
             });
         }
 
-        public void ListenForBroadcasts(Action<UdpBroadcastMessage> onReceive)
+        internal void ListenForBroadcasts(Action<User> onReceive)
         {
             powerPool.QueueWorkItem(() =>
             {
@@ -48,7 +55,8 @@ namespace Powork.Network
                         udpClient.Client.ReceiveTimeout = 100;
                         byte[] receivedBytes = udpClient.Receive(ref endPoint);
                         string message = Encoding.UTF8.GetString(receivedBytes);
-                        onReceive(new UdpBroadcastMessage() { IPEndPoint = endPoint });
+                        User user = JsonConvert.DeserializeObject<User>(message);
+                        onReceive(user);
                     }
                     catch
                     {

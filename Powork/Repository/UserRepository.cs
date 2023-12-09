@@ -99,6 +99,36 @@ namespace Powork.Repository
             }
         }
 
+        static public List<User> SelectUserByIpName(string ip, string name)
+        {
+            List<User> userList = new List<User>();
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}' AND name = '{name}'";
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            User user = new User()
+                            {
+                                IP = reader["ip"].ToString(),
+                                Name = reader["name"].ToString(),
+                                GroupName = reader["groupName"].ToString()
+                            };
+                            userList.Add(user);
+                        }
+                    }
+                }
+
+                return userList;
+            }
+        }
+
         static public void RemoveUserByIp(string ip)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
