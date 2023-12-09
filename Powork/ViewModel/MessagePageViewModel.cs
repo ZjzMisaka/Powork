@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PowerThreadPool;
+using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
 using System;
@@ -30,6 +31,18 @@ namespace Powork.ViewModel
                 SetProperty<ObservableCollection<User>>(ref userList, value);
             }
         }
+        private bool pageEnabled;
+        public bool PageEnabled
+        {
+            get
+            {
+                return pageEnabled;
+            }
+            set
+            {
+                SetProperty<bool>(ref pageEnabled, value);
+            }
+        }
         private string messageText;
         public string MessageText
         {
@@ -48,6 +61,8 @@ namespace Powork.ViewModel
 
         public MessagePageViewModel()
         {
+            PageEnabled = true;
+
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
@@ -55,7 +70,10 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            
+            if (!UserHelper.IsUserLogon())
+            {
+                PageEnabled = false;
+            }
         }
 
         private void WindowClosing(CancelEventArgs eventArgs)
