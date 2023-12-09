@@ -38,6 +38,15 @@ namespace Powork
         }
         public delegate void UserListChangedEventHandler(object sender, EventArgs e);
         static public event UserListChangedEventHandler UserListChanged;
+        public delegate void GetMessageEventHandler(object sender, EventArgs e);
+        static public event GetMessageEventHandler GetMessage;
+        public static void InvokeGetMessageEvent(UserMessage userMessage)
+        {
+            if (GetMessage != null)
+            {
+                GetMessage.Invoke(userMessage, new EventArgs());
+            }
+        }
         static public List<User> SelfInfo 
         { 
             get

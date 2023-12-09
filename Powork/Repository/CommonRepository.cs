@@ -34,7 +34,7 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (ip VARCHAR(15), name VARCHAR(20), id VARCHAR(36), body VARCHAR(5000), type INT, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+                string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (body VARCHAR(5000), type INT, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fromIP VARCHAR(36), fromName VARCHAR(20), toIP VARCHAR(36), toName VARCHAR(20))";
                 using (var command = new SQLiteCommand(sqlTMessage, connection))
                 {
                     command.ExecuteNonQuery();

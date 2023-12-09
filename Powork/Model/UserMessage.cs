@@ -10,13 +10,13 @@ namespace Powork.Model
 {
     public enum ContentType
     {
-        Text,
-        File,
-        Picture
+        Text = 0,
+        File = 1,
+        Picture = 2
     }
     public enum MessageType
     {
-        Message
+        Message = 0
     }
     public class UserMessage
     {

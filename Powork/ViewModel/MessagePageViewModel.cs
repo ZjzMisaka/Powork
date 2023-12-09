@@ -1,31 +1,36 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
-using PowerThreadPool;
 using Powork.Helper;
 using Powork.Model;
-using Powork.Network;
 using Powork.Repository;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Net.Mime.MediaTypeNames;
+using Wpf.Ui.Controls;
 
 namespace Powork.ViewModel
 {
     class MessagePageViewModel : ObservableObject
     {
-        private User nowUser;
+        private User nowUser = new User() { GroupName = "1", IP = "1", Name = "1" };
+
+        public ObservableCollection<TextBlock> messageList;
+        public ObservableCollection<TextBlock> MessageList
+        {
+            get
+            {
+                return messageList;
+            }
+            set
+            {
+                SetProperty<ObservableCollection<TextBlock>>(ref messageList, value);
+            }
+        }
 
         private ObservableCollection<User> userList;
         public ObservableCollection<User> UserList
@@ -70,7 +75,9 @@ namespace Powork.ViewModel
         {
             PageEnabled = true;
             RichTextBoxDocument = new FlowDocument();
-            
+
+            MessageList = new ObservableCollection<TextBlock>();
+
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
@@ -81,6 +88,26 @@ namespace Powork.ViewModel
             GlobalVariables.UserListChanged += (s, e) => 
             {
                 UserList = (ObservableCollection<User>)s;
+            };
+
+            GlobalVariables.GetMessage += (s, e) =>
+            {
+                if (nowUser == null)
+                {
+                    return;
+                }
+
+                UserMessage userMessage = (UserMessage)s;
+                UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
+
+                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+                TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    
+                    MessageList.Add(timeTextBlock);
+                    MessageList.Add(textBlock);
+                });
             };
         }
 
@@ -119,10 +146,28 @@ namespace Powork.ViewModel
         private void UserClick(User user)
         {
             nowUser = user;
+
+            List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
+            foreach (UserMessage message in messageList) 
+            {
+                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
+                TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+
+                    MessageList.Add(timeTextBlock);
+                    MessageList.Add(textBlock);
+                });
+                MessageList.Add(textBlock);
+            }
         }
 
         private void SendMessage()
         {
+            if (nowUser == null)
+            {
+                return;
+            }
             List<UserMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
             UserMessage userMessage = new UserMessage
             {
@@ -132,9 +177,20 @@ namespace Powork.ViewModel
                 Type = MessageType.Message,
                 Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
-            UserMessageRepository.InsertMessage(userMessage);
+            UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
             string message = JsonConvert.SerializeObject(userMessage);
             GlobalVariables.TcpServerClient.SendMessage(message, "", GlobalVariables.TcpPort);
+
+            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+            TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+
+                MessageList.Add(timeTextBlock);
+                MessageList.Add(textBlock);
+            });
+
+            RichTextBoxDocument = new FlowDocument();
         }
     }
 }

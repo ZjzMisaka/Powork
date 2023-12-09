@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
 using PowerThreadPool;
 using Powork.Model;
 using Powork.Network;
@@ -71,8 +72,15 @@ namespace Powork.ViewModel
             GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort, powerPool);
             GlobalVariables.TcpServerClient.StartListening((stream, ip) =>
             {
+                if (ip == GlobalVariables.SelfInfo[0].IP)
+                {
+                    return;
+                }
+
                 using var reader = new StreamReader(stream);
-                var message = reader.ReadToEnd();
+                string message = reader.ReadToEnd();
+                UserMessage userMessage = JsonConvert.DeserializeObject<UserMessage>(message);
+                GlobalVariables.InvokeGetMessageEvent(userMessage);
             });
         }
 

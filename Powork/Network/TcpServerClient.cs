@@ -49,10 +49,8 @@ namespace Powork.Network
         {
             TcpClient tcpClient = new TcpClient(ipAddress, port);
             NetworkStream stream = tcpClient.GetStream();
-            byte[] head = Encoding.UTF8.GetBytes("TEXT");
             byte[] bytes = Encoding.UTF8.GetBytes(message);
-            byte[] combined = head.Concat(bytes).ToArray();
-            stream.Write(combined, 0, combined.Length);
+            stream.Write(bytes, 0, bytes.Length);
             stream.Dispose();
             tcpClient.Dispose();
         }
@@ -61,10 +59,8 @@ namespace Powork.Network
         {
             TcpClient tcpClient = new TcpClient(ipAddress, port);
             NetworkStream stream = tcpClient.GetStream();
-            byte[] head = Encoding.UTF8.GetBytes("FILE");
             byte[] fileBytes = File.ReadAllBytes(filePath);
-            byte[] combined = head.Concat(fileBytes).ToArray();
-            stream.Write(combined, 0, combined.Length);
+            stream.Write(fileBytes, 0, fileBytes.Length);
             stream.Dispose();
             tcpClient.Dispose();
         }

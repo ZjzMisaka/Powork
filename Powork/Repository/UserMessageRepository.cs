@@ -12,17 +12,23 @@ namespace Powork.Repository
 {
     public class UserMessageRepository
     {
-        static public void InsertMessage(UserMessage userMessage)
+        static public void InsertMessage(UserMessage userMessage, string toIP, string toName)
         {
             string body = JsonConvert.SerializeObject(userMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO Message (ip, name, body, type) VALUES ('{userMessage.IP}', '{userMessage.Name}', '{body}', '{userMessage.Type}'";
+                string sql = $"INSERT INTO TMessage (body, type, fromIP, fromName, toIP, toName) VALUES (@body, @type, @fromIP, @fromName, @toIP, @toName)";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
+                    command.Parameters.Add(new SQLiteParameter("@body", body));
+                    command.Parameters.Add(new SQLiteParameter("@type", userMessage.Type));
+                    command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.IP));
+                    command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.Name));
+                    command.Parameters.Add(new SQLiteParameter("@toIP", toIP));
+                    command.Parameters.Add(new SQLiteParameter("@toName", toName));
                     command.ExecuteNonQuery();
                 }
             }
@@ -35,7 +41,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"SELECT * FROM Message WHERE ip='{ip}' AND name='{name}' ORDER BY time DESC LIMIT 10";
+                string sql = $"SELECT * FROM TMessage WHERE (fromIP='{ip}' AND fromName='{name}') OR (toIP='{ip}' AND toName='{name}') ORDER BY time DESC LIMIT 10";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
