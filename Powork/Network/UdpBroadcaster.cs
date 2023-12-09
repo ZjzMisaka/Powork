@@ -44,7 +44,7 @@ namespace Powork.Network
             });
         }
 
-        internal void ListenForBroadcasts(Action<User> onReceive)
+        public void ListenForBroadcasts(Action<User> onReceive)
         {
             powerPool.QueueWorkItem(() =>
             {

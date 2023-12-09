@@ -9,9 +9,9 @@ using System.Xml.Linq;
 
 namespace Powork.Helper
 {
-    static internal class UserHelper
+    static public class UserHelper
     {
-        static internal bool IsUserLogon()
+        static public bool IsUserLogon()
         {
             string ip = GlobalVariables.LocalIP.ToString();
 

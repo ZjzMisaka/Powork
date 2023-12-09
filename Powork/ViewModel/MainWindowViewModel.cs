@@ -22,7 +22,6 @@ namespace Powork.ViewModel
         private PowerPool powerPool = null;
 
         private UdpBroadcaster udpBroadcaster;
-        private TcpServerClient tcpServerClient;
 
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -42,18 +41,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            while (udpBroadcaster == null)
-            {
-                try
-                {
-                    udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort, powerPool);
-                }
-                catch
-                {
-                    ++GlobalVariables.UdpPort;
-                }
-            }
-
+            udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort, powerPool);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
 
             udpBroadcaster.StartBroadcasting();
@@ -80,18 +68,8 @@ namespace Powork.ViewModel
                 }
             });
 
-            while (tcpServerClient == null)
-            {
-                try
-                {
-                    tcpServerClient = new TcpServerClient(GlobalVariables.TcpPort, powerPool);
-                }
-                catch
-                {
-                    ++GlobalVariables.TcpPort;
-                }
-            }
-            tcpServerClient.StartListening((stream, ip) =>
+            GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort, powerPool);
+            GlobalVariables.TcpServerClient.StartListening((stream, ip) =>
             {
                 using var reader = new StreamReader(stream);
                 var message = reader.ReadToEnd();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Powork.Model
 {
-    internal class User
+    public class User
     {
         public string IP { get; set; }
         public string Name { get; set; }

@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Powork.Repository
 {
-    static internal class UserRepository
+    static public class UserRepository
     {
         static public void InsertUser(User user)
         {

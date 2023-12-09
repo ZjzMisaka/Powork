@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Powork.Repository
 {
-    static internal class CommonRepository
+    static public class CommonRepository
     {
         static public void CreateDatabase()
         {

@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Powork.Repository
 {
-    internal class UserMessageRepository
+    public class UserMessageRepository
     {
         static public void InsertMessage(UserMessage userMessage)
         {

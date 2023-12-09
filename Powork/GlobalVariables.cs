@@ -11,18 +11,20 @@ using Powork.Repository;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using PowerThreadPool.EventArguments;
+using Powork.Network;
 
 namespace Powork
 {
     static public class GlobalVariables
     {
         static private IPAddress localIP = GetLocalIPAddress();
-        static internal IPAddress LocalIP { get => localIP; }
-        static internal int UdpPort { get; set; } = 1096;
-        static internal int TcpPort { get; set; } = 614;
-        static internal string DbName { get; } = "PoworkDB";
+        static public IPAddress LocalIP { get => localIP; }
+        static public int UdpPort { get; } = 1096;
+        static public int TcpPort { get; } = 614;
+        static public string DbName { get; } = "PoworkDB";
+        static public TcpServerClient TcpServerClient { get; set; }
         private static ObservableCollection<User> userList;
-        internal static ObservableCollection<User> UserList 
+        public static ObservableCollection<User> UserList 
         { 
             get => userList;
             set
@@ -36,7 +38,7 @@ namespace Powork
         }
         public delegate void UserListChangedEventHandler(object sender, EventArgs e);
         static public event UserListChangedEventHandler UserListChanged;
-        static internal List<User> SelfInfo 
+        static public List<User> SelfInfo 
         { 
             get
             { 
