@@ -6,6 +6,7 @@ using Powork.Model;
 using Powork.Repository;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -179,8 +180,10 @@ namespace Powork.ViewModel
             };
             UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
             string message = JsonConvert.SerializeObject(userMessage);
-            GlobalVariables.TcpServerClient.SendMessage(message, "", GlobalVariables.TcpPort);
+            GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
 
+            UserMessageHelper.ConvertImageInMessage(userMessage);
+            
             TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
             TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
             Application.Current.Dispatcher.Invoke(() =>
