@@ -88,7 +88,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBlock>
-                <Button Content="Send" Command="{Binding SendMessageCommand}" Grid.Column="1"/>
+                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" Grid.Column="1"/>
             </Grid>
         </Grid>
     </Grid>
