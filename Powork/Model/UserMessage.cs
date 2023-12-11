@@ -17,7 +17,8 @@ namespace Powork.Model
     public enum MessageType
     {
         Message = 0,
-        Error,
+        Error = 1,
+        FileRequest = 2,
     }
     public class UserMessage
     {
@@ -25,7 +26,13 @@ namespace Powork.Model
         {
             MessageBody = new List<UserMessageBody>();
         }
+        /// <summary>
+        /// Sender IP
+        /// </summary>
         public string IP { get; set; }
+        /// <summary>
+        /// Sender name
+        /// </summary>
         public string Name { get; set; }
         public List<UserMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }

@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.IO;
 using PowerThreadPool;
 using System.Windows;
+using Powork.Model;
+using Newtonsoft.Json;
 
 namespace Powork.Network
 {
@@ -74,14 +76,75 @@ namespace Powork.Network
             }
         }
 
-        public void SendFile(string filePath, string ipAddress, int port)
+        public void SendFile(string filePath, string ipAddress, int port, string relativePath = "")
         {
-            TcpClient tcpClient = new TcpClient(ipAddress, port);
-            NetworkStream stream = tcpClient.GetStream();
-            byte[] fileBytes = File.ReadAllBytes(filePath);
-            stream.Write(fileBytes, 0, fileBytes.Length);
-            stream.Dispose();
-            tcpClient.Dispose();
+            try
+            {
+                TcpClient tcpClient = new TcpClient();
+                tcpClient.Connect(ipAddress, port);
+
+                using (NetworkStream stream = tcpClient.GetStream())
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+
+                    FilePack filePack = new FilePack()
+                    {
+                        Name = new DirectoryInfo(filePath).Name,
+                        RelativePath = relativePath,
+                    };
+
+                    while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        filePack.Buffer = buffer;
+                        byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(filePack));
+                        stream.Write(bytes, 0, bytes.Length);
+                    }
+                }
+
+                tcpClient.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void RequestFile(string guid, string ipAddress, int port)
+        {
+            TcpClient tcpClient = null;
+            NetworkStream stream = null;
+            try
+            {
+                tcpClient = new TcpClient(ipAddress, port);
+                stream = tcpClient.GetStream();
+
+                List<UserMessageBody> messageBody = [new UserMessageBody() { Content = guid }];
+                UserMessage getFileMessage = new UserMessage()
+                {
+                    Type = MessageType.FileRequest,
+                    IP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
+
+                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+                if (tcpClient != null)
+                {
+                    tcpClient.Dispose();
+                }
+            }
         }
     }
 }

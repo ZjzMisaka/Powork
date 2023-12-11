@@ -76,7 +76,7 @@ namespace Powork.Helper
                         {
                             InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) => 
                             {
-                                e.Handled  = true;
+                                GlobalVariables.TcpServerClient.RequestFile(body.Content.Split(" | ")[1], userMessage.IP, GlobalVariables.TcpPort);
                             })));
                             textBlock.Inlines.Add(container);
 

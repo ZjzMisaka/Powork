@@ -82,10 +82,16 @@ namespace Powork.ViewModel
                 using var reader = new StreamReader(stream);
                 string message = reader.ReadToEnd();
                 UserMessage userMessage = JsonConvert.DeserializeObject<UserMessage>(message);
-
-                UserMessageHelper.ConvertImageInMessage(userMessage);
-
-                GlobalVariables.InvokeGetMessageEvent(userMessage);
+                if (userMessage.Type == MessageType.Message)
+                {
+                    UserMessageHelper.ConvertImageInMessage(userMessage);
+                    GlobalVariables.InvokeGetMessageEvent(userMessage);
+                }
+                else if (userMessage.Type == MessageType.FileRequest)
+                {
+                    string path = FileRepository.SelectFile(userMessage.MessageBody[0].Content);
+                    GlobalVariables.TcpServerClient.SendFile(path, userMessage.IP, GlobalVariables.TcpPort);
+                }
             });
         }
 
