@@ -1,5 +1,7 @@
 ﻿using Powork.Control;
 using Powork.Model;
+using System.Diagnostics;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -59,80 +61,23 @@ namespace Powork.Helper
                         }
                         else if (body.Type == ContentType.Picture)
                         {
-                            Image image = new Image();
-                            try
+                            InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(body.Content, new RoutedEventHandler((s, e) =>
                             {
-                                BitmapImage bitmap = new BitmapImage();
-                                bitmap.BeginInit();
-                                bitmap.UriSource = new Uri(body.Content);
-                                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                                bitmap.EndInit();
-
-                                image.Source = bitmap;
-
-                                // 设置Stretch模式为Uniform，以保持图片的纵横比
-                                image.Stretch = Stretch.Uniform;
-
-                                // 检查图片的宽度和高度并相应地设置Image控件的MaxHeight和MaxWidth
-                                if (bitmap.PixelWidth > 128 || bitmap.PixelHeight > 128)
+                                Process p = new Process();
+                                p.StartInfo = new ProcessStartInfo(body.Content)
                                 {
-                                    // 计算缩放比例
-                                    double scale = Math.Min(128.0 / bitmap.PixelWidth, 128.0 / bitmap.PixelHeight);
-                                    image.MaxHeight = bitmap.PixelHeight * scale;
-                                    image.MaxWidth = bitmap.PixelWidth * scale;
-                                }
-                                else
-                                {
-                                    image.MaxHeight = bitmap.PixelHeight;
-                                    image.MaxWidth = bitmap.PixelWidth;
-                                }
-                            }
-                            catch
-                            {
-                            }
-                            image.MouseLeftButtonUp += (s, e) =>
-                            {
-
-                            };
-                            InlineUIContainer container = new InlineUIContainer(image);
+                                    UseShellExecute = true
+                                };
+                                p.Start();
+                            })));
                             textBlock.Inlines.Add(container);
                         }
                         else if (body.Type == ContentType.File)
                         {
-                            Image image = new Image();
-                            try
+                            InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) => 
                             {
-                                BitmapImage bitmap = new BitmapImage();
-                                bitmap.BeginInit();
-                                bitmap.UriSource = new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"));
-                                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                                bitmap.EndInit();
-
-                                image.Source = bitmap;
-
-                                image.Stretch = Stretch.Uniform;
-
-                                if (bitmap.PixelWidth > 128 || bitmap.PixelHeight > 128)
-                                {
-                                    double scale = Math.Min(128.0 / bitmap.PixelWidth, 128.0 / bitmap.PixelHeight);
-                                    image.MaxHeight = bitmap.PixelHeight * scale;
-                                    image.MaxWidth = bitmap.PixelWidth * scale;
-                                }
-                                else
-                                {
-                                    image.MaxHeight = bitmap.PixelHeight;
-                                    image.MaxWidth = bitmap.PixelWidth;
-                                }
-                            }
-                            catch
-                            {
-                            }
-                            image.Cursor = Cursors.Hand;
-                            image.PreviewMouseUp += (s, e) =>
-                            {
-                                e.Handled = true;
-                            };
-                            InlineUIContainer container = new InlineUIContainer(image);
+                                e.Handled  = true;
+                            })));
                             textBlock.Inlines.Add(container);
 
                             textBlock.Inlines.Add(new LineBreak());

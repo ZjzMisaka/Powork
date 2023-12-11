@@ -252,7 +252,7 @@ namespace Powork.ViewModel
 
             string message = JsonConvert.SerializeObject(userMessage);
 
-            bool sendSucceed = GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
+            //bool sendSucceed = GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
 
             UserMessageHelper.ConvertImageInMessage(userMessage);
 
@@ -263,7 +263,7 @@ namespace Powork.ViewModel
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
-            if (!sendSucceed)
+            if (!true)
             {
                 List<UserMessageBody> errorContent = [new UserMessageBody() { Content = "Send failed: User not online" }];
                 UserMessage errorMessage = new UserMessage()
