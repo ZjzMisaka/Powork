@@ -7,6 +7,7 @@ using Powork.Repository;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -86,6 +87,7 @@ namespace Powork.ViewModel
         public ICommand SendMessageCommand { get; set; }
         public ICommand UserClickCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
+        public ICommand DropCommand { get; set; }
 
         public MessagePageViewModel()
         {
@@ -101,6 +103,7 @@ namespace Powork.ViewModel
             SendMessageCommand = new RelayCommand(SendMessage);
             UserClickCommand = new RelayCommand<User>(UserClick);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
+            DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
             UserList = GlobalVariables.UserList;
             GlobalVariables.UserListChanged += (s, e) =>
@@ -136,6 +139,36 @@ namespace Powork.ViewModel
             image.Width = image.Height = 64;
             var container = new BlockUIContainer(image);
             RichTextBoxDocument.Blocks.Add(container);
+        }
+
+
+        public void InsertFile(string displayText, string url)
+        {
+            Hyperlink link = new Hyperlink()
+            {
+                NavigateUri = new Uri(url),
+                Foreground = Brushes.AliceBlue,
+                TextDecorations = TextDecorations.Underline
+            };
+
+            link.RequestNavigate += (sender, e) =>
+            {
+                string uri = e.Uri.LocalPath;
+                Process p = new Process();
+                p.StartInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true
+                };
+                p.Start();
+                e.Handled = true;
+            };
+
+            link.Inlines.Add(displayText);
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(link);
+
+            RichTextBoxDocument.Blocks.Add(paragraph);
         }
 
         public void InsertText(string text)
@@ -283,6 +316,32 @@ namespace Powork.ViewModel
                     {
                         MessageList.Insert(index++, textBlock);
                     });
+                }
+            }
+        }
+
+        private void Drop(DragEventArgs args)
+        {
+            string[] pathList = (string[])args.Data.GetData(DataFormats.FileDrop, false);
+            foreach (string path in pathList) 
+            {
+                FileAttributes attr = File.GetAttributes(path);
+
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    InsertFile("Send directory: " + new DirectoryInfo(path).Name, path);
+                }
+                else
+                {
+                    string extension = Path.GetExtension(path).ToLower();
+                    if (extension == ".png" || extension == ".jpg" || extension == ".bmp")
+                    {
+                        InsertImage(path);
+                    }
+                    else
+                    {
+                        InsertFile("Send file: " + Path.GetFileName(path), path);
+                    }
                 }
             }
         }

@@ -75,8 +75,21 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ui:RichTextBox helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
-            <ui:Button Grid.Row="2" HorizontalAlignment="Right" Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}"></ui:Button>
+            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock AllowDrop="True" Grid.Column="0" Text="DROP HERE" Foreground="White" Block.TextAlignment="Center" VerticalAlignment="Center">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
+                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" Grid.Column="1"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>
