@@ -1,4 +1,6 @@
-﻿using Powork.Model;
+﻿using Powork.Control;
+using Powork.Model;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -36,7 +38,7 @@ namespace Powork.Helper
             Application.Current.Dispatcher.Invoke(() =>
             {
                 List<UserMessageBody> userMessageBodyList = userMessage.MessageBody;
-                textBlock = new TextBlock();
+                textBlock = new SelectableTextBlock();
 
                 textBlock.Foreground = Brushes.White;
 
