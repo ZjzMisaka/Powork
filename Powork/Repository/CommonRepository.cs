@@ -28,7 +28,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sqlTUser = @"CREATE TABLE IF NOT EXISTS TUser (ip VARCHAR(15), name VARCHAR(20), groupName VARCHAR(20))";
+                string sqlTUser = @"CREATE TABLE IF NOT EXISTS TUser (ip VARCHAR(15), name VARCHAR(20), groupName VARCHAR(20), primary key (ip, name))";
                 using (var command = new SQLiteCommand(sqlTUser, connection))
                 {
                     command.ExecuteNonQuery();
@@ -36,6 +36,12 @@ namespace Powork.Repository
 
                 string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (body VARCHAR(5000), type INTEGER, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fromIP VARCHAR(36), fromName VARCHAR(20), toIP VARCHAR(36), toName VARCHAR(20), id INTEGER PRIMARY KEY AUTOINCREMENT)";
                 using (var command = new SQLiteCommand(sqlTMessage, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string sqlTFile = @"CREATE TABLE IF NOT EXISTS TFile (id VARCHAR(36) PRIMARY KEY, path VARCHAR(256))";
+                using (var command = new SQLiteCommand(sqlTFile, connection))
                 {
                     command.ExecuteNonQuery();
                 }

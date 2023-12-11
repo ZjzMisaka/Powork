@@ -9,6 +9,8 @@ using Wpf.Ui.Controls;
 using Powork.Model;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Powork.Repository;
 
 namespace Powork.Helper
 {
@@ -64,11 +66,14 @@ namespace Powork.Helper
                         else if (inline is Hyperlink)
                         {
                             Hyperlink hyperlink = inline as Hyperlink;
+                            string guid = Guid.NewGuid().ToString();
+                            string name = new DirectoryInfo(hyperlink.NavigateUri.LocalPath).Name;
                             messages.Add(new UserMessageBody
                             {
-                                Content = hyperlink.NavigateUri.LocalPath,
+                                Content = name + " | " + guid,
                                 Type = ContentType.File
                             });
+                            FileRepository.InsertFile(guid, name);
                         }
                         else if (inline is InlineUIContainer)
                         {

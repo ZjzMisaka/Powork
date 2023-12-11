@@ -82,9 +82,7 @@ namespace Powork.Helper
 
                             textBlock.Inlines.Add(new LineBreak());
 
-                            FileAttributes attr = File.GetAttributes(body.Content);
-                            string path = body.Content;
-                            string name = new DirectoryInfo(path).Name;
+                            string name = body.Content.Split(" | ")[0];
                             Run run = new Run(name);
                             textBlock.Inlines.Add(run);
                         }
