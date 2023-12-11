@@ -44,6 +44,11 @@ namespace Powork.Helper
 
                 foreach (UserMessageBody body in userMessageBodyList)
                 {
+                    if (textBlock.Inlines.Count > 0)
+                    {
+                        textBlock.Inlines.Add(new LineBreak());
+                    }
+                    
                     if (body.Type == ContentType.Text)
                     {
                         Run run = new Run(body.Content);
