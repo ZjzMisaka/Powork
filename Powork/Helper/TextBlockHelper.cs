@@ -37,85 +37,108 @@ namespace Powork.Helper
             TextBlock textBlock = null;
             Application.Current.Dispatcher.Invoke(() =>
             {
-                List<UserMessageBody> userMessageBodyList = userMessage.MessageBody;
-                textBlock = new SelectableTextBlock();
-
-                textBlock.Foreground = Brushes.White;
-
-                foreach (UserMessageBody body in userMessageBodyList)
+                if (userMessage.Type == MessageType.Message)
                 {
-                    if (textBlock.Inlines.Count > 0)
+                    List<UserMessageBody> userMessageBodyList = userMessage.MessageBody;
+                    textBlock = new SelectableTextBlock();
+
+                    textBlock.Foreground = Brushes.White;
+
+                    foreach (UserMessageBody body in userMessageBodyList)
                     {
-                        textBlock.Inlines.Add(new LineBreak());
+                        if (textBlock.Inlines.Count > 0)
+                        {
+                            textBlock.Inlines.Add(new LineBreak());
+                        }
+
+                        if (body.Type == ContentType.Text)
+                        {
+                            Run run = new Run(body.Content);
+                            textBlock.Inlines.Add(run);
+                        }
+                        else if (body.Type == ContentType.Picture)
+                        {
+                            Image image = new Image();
+                            try
+                            {
+                                BitmapImage bitmap = new BitmapImage();
+                                bitmap.BeginInit();
+                                bitmap.UriSource = new Uri(body.Content);
+                                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                bitmap.EndInit();
+
+                                image.Source = bitmap;
+
+                                // 设置Stretch模式为Uniform，以保持图片的纵横比
+                                image.Stretch = Stretch.Uniform;
+
+                                // 检查图片的宽度和高度并相应地设置Image控件的MaxHeight和MaxWidth
+                                if (bitmap.PixelWidth > 128 || bitmap.PixelHeight > 128)
+                                {
+                                    // 计算缩放比例
+                                    double scale = Math.Min(128.0 / bitmap.PixelWidth, 128.0 / bitmap.PixelHeight);
+                                    image.MaxHeight = bitmap.PixelHeight * scale;
+                                    image.MaxWidth = bitmap.PixelWidth * scale;
+                                }
+                                else
+                                {
+                                    image.MaxHeight = bitmap.PixelHeight;
+                                    image.MaxWidth = bitmap.PixelWidth;
+                                }
+                            }
+                            catch
+                            {
+                            }
+                            image.MouseLeftButtonUp += (s, e) =>
+                            {
+
+                            };
+                            InlineUIContainer container = new InlineUIContainer(image);
+                            textBlock.Inlines.Add(container);
+                        }
+                        else if (body.Type == ContentType.File)
+                        {
+                            Image image = new Image
+                            {
+                                Source = new BitmapImage(),
+                            };
+                            image.MouseLeftButtonUp += (s, e) =>
+                            {
+
+                            };
+                            InlineUIContainer container = new InlineUIContainer(image);
+                            textBlock.Inlines.Add(container);
+                        }
                     }
-                    
-                    if (body.Type == ContentType.Text)
+
+                    if (userMessage.IP == GlobalVariables.SelfInfo[0].IP && userMessage.Name == GlobalVariables.SelfInfo[0].Name)
                     {
+                        textBlock.HorizontalAlignment = HorizontalAlignment.Right;
+                    }
+                    else
+                    {
+                        textBlock.HorizontalAlignment = HorizontalAlignment.Left;
+                    }
+                }
+                else if (userMessage.Type == MessageType.Error)
+                {
+                    List<UserMessageBody> userMessageBodyList = userMessage.MessageBody;
+                    textBlock = new TextBlock();
+
+                    textBlock.Foreground = Brushes.Pink;
+
+                    foreach (UserMessageBody body in userMessageBodyList)
+                    {
+                        if (textBlock.Inlines.Count > 0)
+                        {
+                            textBlock.Inlines.Add(new LineBreak());
+                        }
+
                         Run run = new Run(body.Content);
                         textBlock.Inlines.Add(run);
                     }
-                    else if (body.Type == ContentType.Picture)
-                    {
-                        Image image = new Image();
-                        try 
-                        {
-                            BitmapImage bitmap = new BitmapImage();
-                            bitmap.BeginInit();
-                            bitmap.UriSource = new Uri(body.Content);
-                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                            bitmap.EndInit();
 
-                            image.Source = bitmap;
-
-                            // 设置Stretch模式为Uniform，以保持图片的纵横比
-                            image.Stretch = Stretch.Uniform;
-
-                            // 检查图片的宽度和高度并相应地设置Image控件的MaxHeight和MaxWidth
-                            if (bitmap.PixelWidth > 128 || bitmap.PixelHeight > 128)
-                            {
-                                // 计算缩放比例
-                                double scale = Math.Min(128.0 / bitmap.PixelWidth, 128.0 / bitmap.PixelHeight);
-                                image.MaxHeight = bitmap.PixelHeight * scale;
-                                image.MaxWidth = bitmap.PixelWidth * scale;
-                            }
-                            else
-                            {
-                                image.MaxHeight = bitmap.PixelHeight;
-                                image.MaxWidth = bitmap.PixelWidth;
-                            }
-                        }
-                        catch
-                        { 
-                        } 
-                        image.MouseLeftButtonUp += (s, e) =>
-                        {
-
-                        };
-                        InlineUIContainer container = new InlineUIContainer(image);
-                        textBlock.Inlines.Add(container);
-                    }
-                    else if (body.Type == ContentType.File)
-                    {
-                        Image image = new Image
-                        {
-                            Source = new BitmapImage(),
-                        };
-                        image.MouseLeftButtonUp += (s, e) =>
-                        {
-
-                        };
-                        InlineUIContainer container = new InlineUIContainer(image);
-                        textBlock.Inlines.Add(container);
-                    }
-                }
-
-                if (userMessage.IP == GlobalVariables.SelfInfo[0].IP && userMessage.Name == GlobalVariables.SelfInfo[0].Name)
-                {
-                    textBlock.HorizontalAlignment = HorizontalAlignment.Right;
-                }
-                else
-                {
-                    textBlock.HorizontalAlignment = HorizontalAlignment.Left;
+                    textBlock.HorizontalAlignment = HorizontalAlignment.Center;
                 }
             });
             

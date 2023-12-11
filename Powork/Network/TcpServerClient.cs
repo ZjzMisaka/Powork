@@ -45,14 +45,33 @@ namespace Powork.Network
             });
         }
 
-        public void SendMessage(string message, string ipAddress, int port)
+        public bool SendMessage(string message, string ipAddress, int port)
         {
-            TcpClient tcpClient = new TcpClient(ipAddress, port);
-            NetworkStream stream = tcpClient.GetStream();
-            byte[] bytes = Encoding.UTF8.GetBytes(message);
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Dispose();
-            tcpClient.Dispose();
+            TcpClient tcpClient = null;
+            NetworkStream stream = null;
+            try
+            {
+                tcpClient = new TcpClient(ipAddress, port);
+                stream = tcpClient.GetStream();
+                byte[] bytes = Encoding.UTF8.GetBytes(message);
+                stream.Write(bytes, 0, bytes.Length);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+                if (tcpClient != null)
+                {
+                    tcpClient.Dispose();
+                }
+            }
         }
 
         public void SendFile(string filePath, string ipAddress, int port)

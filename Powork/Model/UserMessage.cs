@@ -12,11 +12,12 @@ namespace Powork.Model
     {
         Text = 0,
         File = 1,
-        Picture = 2
+        Picture = 2,
     }
     public enum MessageType
     {
-        Message = 0
+        Message = 0,
+        Error,
     }
     public class UserMessage
     {

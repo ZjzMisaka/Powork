@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -179,14 +180,24 @@ namespace Powork.ViewModel
             
             foreach (UserMessage message in messageList)
             {
-                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
-                TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
-                Application.Current.Dispatcher.Invoke(() =>
+                if (message.Type == MessageType.Message)
                 {
-
-                    MessageList.Add(timeTextBlock);
-                    MessageList.Add(textBlock);
-                });
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
+                    TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Add(timeTextBlock);
+                        MessageList.Add(textBlock);
+                    });
+                }
+                else if (message.Type == MessageType.Error)
+                {
+                    TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Add(textBlock);
+                    });
+                }
             }
         }
 
@@ -207,19 +218,35 @@ namespace Powork.ViewModel
             };
 
             string message = JsonConvert.SerializeObject(userMessage);
-            GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
+
+            bool sendSucceed = GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
 
             UserMessageHelper.ConvertImageInMessage(userMessage);
-            UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
 
             TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
             TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
             Application.Current.Dispatcher.Invoke(() =>
             {
-
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
+            if (!sendSucceed)
+            {
+                List<UserMessageBody> errorContent = [new UserMessageBody() { Content = "Send failed: User not online" }];
+                UserMessage errorMessage = new UserMessage()
+                {
+                    Type = MessageType.Error,
+                    MessageBody = errorContent,
+                };
+                TextBlock errorTextBlock = TextBlockHelper.GetMessageControl(errorMessage);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageList.Add(errorTextBlock);
+                });
+
+                UserMessageRepository.InsertMessage(errorMessage, nowUser.IP, nowUser.Name);
+            }
+            UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
 
             RichTextBoxDocument = new FlowDocument();
         }
@@ -239,13 +266,24 @@ namespace Powork.ViewModel
             int index = 0;
             foreach (UserMessage message in messageList)
             {
-                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
-                TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
-                Application.Current.Dispatcher.Invoke(() =>
+                if (message.Type == MessageType.Message)
                 {
-                    MessageList.Insert(index++, timeTextBlock);
-                    MessageList.Insert(index++, textBlock);
-                });
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
+                    TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Insert(index++, timeTextBlock);
+                        MessageList.Insert(index++, textBlock);
+                    });
+                }
+                else if (message.Type == MessageType.Error)
+                {
+                    TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Insert(index++, textBlock);
+                    });
+                }
             }
         }
     }
