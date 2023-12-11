@@ -65,7 +65,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <ScrollViewer Grid.Row="0">
+            <ScrollViewer Grid.Row="0"  helper:ScrollViewerExtensions.ScrollAtTopCommand="{Binding ScrollAtTopCommand}">
                 <ItemsControl ItemsSource="{Binding MessageList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

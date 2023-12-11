@@ -34,14 +34,19 @@ namespace Powork.Repository
             }
         }
 
-        static public List<UserMessage> SelectMessgae(string ip, string name)
+        static public List<UserMessage> SelectMessgae(string ip, string name, int id = -1)
         {
             List<UserMessage> userMessageList = new List<UserMessage>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
 
-                string sql = $"SELECT * FROM TMessage WHERE (fromIP='{ip}' AND fromName='{name}') OR (toIP='{ip}' AND toName='{name}') ORDER BY time DESC LIMIT 10";
+                string sql = $"SELECT * FROM TMessage WHERE ((fromIP='{ip}' AND fromName='{name}') OR (toIP='{ip}' AND toName='{name}'))";
+                if (id != -1)
+                {
+                    sql = $"{sql}  AND  id < {id}";
+                }
+                sql = $"{sql}  ORDER BY time DESC LIMIT 10";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
@@ -56,6 +61,7 @@ namespace Powork.Repository
                                 MessageBody = JsonConvert.DeserializeObject<List<UserMessageBody>>(reader["body"].ToString()),
                                 Type = (MessageType)(int.Parse(reader["type"].ToString())),
                                 Time = reader["time"].ToString(),
+                                ID = int.Parse(reader["id"].ToString()),
                             });
                         }
                         userMessageList.Reverse();

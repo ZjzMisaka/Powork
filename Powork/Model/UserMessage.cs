@@ -29,6 +29,7 @@ namespace Powork.Model
         public List<UserMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }
         public string Time { get; set; }
+        public int ID { get; set; }
     }
     public class UserMessageBody
     {

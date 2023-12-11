@@ -18,6 +18,7 @@ namespace Powork.ViewModel
 {
     class MessagePageViewModel : ObservableObject
     {
+        private int firstMessageID = -1;
         private User nowUser = new User() { GroupName = "1", IP = "1", Name = "1" };
 
         public ObservableCollection<TextBlock> messageList;
@@ -83,6 +84,7 @@ namespace Powork.ViewModel
         public ICommand WindowClosedCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand UserClickCommand { get; set; }
+        public ICommand ScrollAtTopCommand { get; set; }
 
         public MessagePageViewModel()
         {
@@ -97,9 +99,10 @@ namespace Powork.ViewModel
             WindowClosedCommand = new RelayCommand(WindowClosed);
             SendMessageCommand = new RelayCommand(SendMessage);
             UserClickCommand = new RelayCommand<User>(UserClick);
+            ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
 
             UserList = GlobalVariables.UserList;
-            GlobalVariables.UserListChanged += (s, e) => 
+            GlobalVariables.UserListChanged += (s, e) =>
             {
                 UserList = (ObservableCollection<User>)s;
             };
@@ -118,7 +121,7 @@ namespace Powork.ViewModel
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    
+
                     MessageList.Add(timeTextBlock);
                     MessageList.Add(textBlock);
                 });
@@ -169,7 +172,12 @@ namespace Powork.ViewModel
             SendEnabled = true;
 
             List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
-            foreach (UserMessage message in messageList) 
+            if (messageList != null && messageList.Count >= 1)
+            {
+                firstMessageID = messageList[0].ID;
+            }
+            
+            foreach (UserMessage message in messageList)
             {
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
@@ -195,9 +203,9 @@ namespace Powork.ViewModel
                 MessageBody = userMessageBodyList,
                 Name = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.Message,
-                Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
-            
+
             string message = JsonConvert.SerializeObject(userMessage);
             GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
 
@@ -214,6 +222,31 @@ namespace Powork.ViewModel
             });
 
             RichTextBoxDocument = new FlowDocument();
+        }
+
+        private void ScrollAtTop()
+        {
+            if (firstMessageID == -1)
+            {
+                return;
+            }
+
+            List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name, firstMessageID);
+            if (messageList != null && messageList.Count >= 1)
+            {
+                firstMessageID = messageList[0].ID;
+            }
+            int index = 0;
+            foreach (UserMessage message in messageList)
+            {
+                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
+                TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageList.Insert(index++, timeTextBlock);
+                    MessageList.Insert(index++, textBlock);
+                });
+            }
         }
     }
 }
