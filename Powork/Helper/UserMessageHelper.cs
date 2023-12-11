@@ -30,11 +30,17 @@ namespace Powork.Helper
 
                     bitmapImage.Freeze();
 
-                    string localFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + "-" + Guid.NewGuid() + ".png");
+                    string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", DateTime.Now.ToString("yyyy-MM-dd"));
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
+                    string localFilePath = Path.Combine(directoryPath, DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + "-" + Guid.NewGuid() + ".png");
 
                     using (var fileStream = new FileStream(localFilePath, FileMode.Create))
                     {
-                        BitmapEncoder encoder = new PngBitmapEncoder(); // 或者使用JpegBitmapEncoder等其他编码器
+                        BitmapEncoder encoder = new PngBitmapEncoder();
                         encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
                         encoder.Save(fileStream);
                     }

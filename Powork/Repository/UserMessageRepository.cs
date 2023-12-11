@@ -47,14 +47,18 @@ namespace Powork.Repository
                 {
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
-                        userMessageList.Add(new UserMessage()
+                        while (reader.Read())
                         {
-                            IP = reader["ip"].ToString(),
-                            Name = reader["name"].ToString(),
-                            MessageBody = JsonConvert.DeserializeObject<List<UserMessageBody>>(reader["body"].ToString()),
-                            Type = (MessageType)(int.Parse(reader["type"].ToString())),
-                            Time = reader["time"].ToString(),
-                        });
+                            userMessageList.Add(new UserMessage()
+                            {
+                                IP = reader["fromIP"].ToString(),
+                                Name = reader["fromName"].ToString(),
+                                MessageBody = JsonConvert.DeserializeObject<List<UserMessageBody>>(reader["body"].ToString()),
+                                Type = (MessageType)(int.Parse(reader["type"].ToString())),
+                                Time = reader["time"].ToString(),
+                            });
+                        }
+                        userMessageList.Reverse();
                     }
                 }
             }

@@ -57,6 +57,18 @@ namespace Powork.ViewModel
                 SetProperty<bool>(ref pageEnabled, value);
             }
         }
+        private bool sendEnabled;
+        public bool SendEnabled
+        {
+            get
+            {
+                return sendEnabled;
+            }
+            set
+            {
+                SetProperty<bool>(ref sendEnabled, value);
+            }
+        }
         private FlowDocument richTextBoxDocument;
         public FlowDocument RichTextBoxDocument
         {
@@ -75,6 +87,7 @@ namespace Powork.ViewModel
         public MessagePageViewModel()
         {
             PageEnabled = true;
+            SendEnabled = false;
             RichTextBoxDocument = new FlowDocument();
 
             MessageList = new ObservableCollection<TextBlock>();
@@ -146,7 +159,14 @@ namespace Powork.ViewModel
 
         private void UserClick(User user)
         {
+            if (nowUser == null || nowUser.IP == user.IP || nowUser.Name == user.Name)
+            {
+                return;
+            }
+
+            MessageList.Clear();
             nowUser = user;
+            SendEnabled = true;
 
             List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
             foreach (UserMessage message in messageList) 
@@ -159,7 +179,6 @@ namespace Powork.ViewModel
                     MessageList.Add(timeTextBlock);
                     MessageList.Add(textBlock);
                 });
-                MessageList.Add(textBlock);
             }
         }
 
@@ -178,12 +197,13 @@ namespace Powork.ViewModel
                 Type = MessageType.Message,
                 Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
-            UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
+            
             string message = JsonConvert.SerializeObject(userMessage);
             GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
 
             UserMessageHelper.ConvertImageInMessage(userMessage);
-            
+            UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
+
             TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
             TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
             Application.Current.Dispatcher.Invoke(() =>

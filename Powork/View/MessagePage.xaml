@@ -58,7 +58,7 @@
         </ScrollViewer>
 
         <!-- Right Side -->
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1"  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*"/>
                 <RowDefinition Height="*"/>
@@ -76,7 +76,7 @@
             </ScrollViewer>
 
             <ui:RichTextBox helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
-            <ui:Button Grid.Row="2" HorizontalAlignment="Right" Content="Send" Command="{Binding SendMessageCommand}"></ui:Button>
+            <ui:Button Grid.Row="2" HorizontalAlignment="Right" Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}"></ui:Button>
         </Grid>
     </Grid>
 </Page>

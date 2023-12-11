@@ -91,6 +91,21 @@ namespace Powork.Helper
                         }
                     }
                 }
+                else if (block is BlockUIContainer)
+                {
+                    System.Windows.Controls.Image imageControl = (block as BlockUIContainer).Child as System.Windows.Controls.Image;
+                    BitmapSource image = imageControl.Source as BitmapSource;
+
+                    if (image != null)
+                    {
+                        string imageContent = ConvertImageToBase64(image);
+                        messages.Add(new UserMessageBody
+                        {
+                            Content = imageContent,
+                            Type = ContentType.Picture
+                        });
+                    }
+                }
             }
 
             return messages;

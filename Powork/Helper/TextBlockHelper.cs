@@ -49,10 +49,37 @@ namespace Powork.Helper
                     }
                     else if (body.Type == ContentType.Picture)
                     {
-                        Image image = new Image
+                        Image image = new Image();
+                        try 
                         {
-                            Source = new BitmapImage(new Uri(body.Content)),
-                        };
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = new Uri(body.Content);
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.EndInit();
+
+                            image.Source = bitmap;
+
+                            // 设置Stretch模式为Uniform，以保持图片的纵横比
+                            image.Stretch = Stretch.Uniform;
+
+                            // 检查图片的宽度和高度并相应地设置Image控件的MaxHeight和MaxWidth
+                            if (bitmap.PixelWidth > 128 || bitmap.PixelHeight > 128)
+                            {
+                                // 计算缩放比例
+                                double scale = Math.Min(128.0 / bitmap.PixelWidth, 128.0 / bitmap.PixelHeight);
+                                image.MaxHeight = bitmap.PixelHeight * scale;
+                                image.MaxWidth = bitmap.PixelWidth * scale;
+                            }
+                            else
+                            {
+                                image.MaxHeight = bitmap.PixelHeight;
+                                image.MaxWidth = bitmap.PixelWidth;
+                            }
+                        }
+                        catch
+                        { 
+                        } 
                         image.MouseLeftButtonUp += (s, e) =>
                         {
 
