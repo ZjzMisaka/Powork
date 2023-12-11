@@ -1,8 +1,9 @@
 ﻿using Powork.Control;
 using Powork.Model;
-using System.Reflection;
+using System.IO;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
@@ -98,16 +99,49 @@ namespace Powork.Helper
                         }
                         else if (body.Type == ContentType.File)
                         {
-                            Image image = new Image
+                            Image image = new Image();
+                            try
                             {
-                                Source = new BitmapImage(),
-                            };
-                            image.MouseLeftButtonUp += (s, e) =>
-                            {
+                                BitmapImage bitmap = new BitmapImage();
+                                bitmap.BeginInit();
+                                bitmap.UriSource = new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"));
+                                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                bitmap.EndInit();
 
+                                image.Source = bitmap;
+
+                                image.Stretch = Stretch.Uniform;
+
+                                if (bitmap.PixelWidth > 128 || bitmap.PixelHeight > 128)
+                                {
+                                    double scale = Math.Min(128.0 / bitmap.PixelWidth, 128.0 / bitmap.PixelHeight);
+                                    image.MaxHeight = bitmap.PixelHeight * scale;
+                                    image.MaxWidth = bitmap.PixelWidth * scale;
+                                }
+                                else
+                                {
+                                    image.MaxHeight = bitmap.PixelHeight;
+                                    image.MaxWidth = bitmap.PixelWidth;
+                                }
+                            }
+                            catch
+                            {
+                            }
+                            image.Cursor = Cursors.Hand;
+                            image.PreviewMouseUp += (s, e) =>
+                            {
+                                e.Handled = true;
                             };
                             InlineUIContainer container = new InlineUIContainer(image);
                             textBlock.Inlines.Add(container);
+
+                            textBlock.Inlines.Add(new LineBreak());
+
+                            FileAttributes attr = File.GetAttributes(body.Content);
+                            string path = body.Content;
+                            string name = new DirectoryInfo(path).Name;
+                            Run run = new Run(name);
+                            textBlock.Inlines.Add(run);
                         }
                     }
 

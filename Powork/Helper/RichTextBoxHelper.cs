@@ -66,7 +66,7 @@ namespace Powork.Helper
                             Hyperlink hyperlink = inline as Hyperlink;
                             messages.Add(new UserMessageBody
                             {
-                                Content = hyperlink.NavigateUri.ToString(),
+                                Content = hyperlink.NavigateUri.LocalPath,
                                 Type = ContentType.File
                             });
                         }

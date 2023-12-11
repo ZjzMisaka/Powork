@@ -35,4 +35,10 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Image\file.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
