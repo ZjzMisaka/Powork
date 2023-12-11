@@ -34,6 +34,11 @@ namespace Powork.Repository
                 connection.Open();
 
                 string sql = "SELECT * FROM TUser";
+                List<User> selfInfo = GlobalVariables.SelfInfo;
+                if (selfInfo != null && selfInfo.Count == 1)
+                {
+                    sql = $"{sql} WHERE ip <> '{selfInfo[0].IP}' AND name <> '{selfInfo[0].Name}'";
+                }
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {

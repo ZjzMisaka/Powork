@@ -24,7 +24,7 @@ namespace Powork.Helper
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                 }
-                timeTextBlock.Foreground = Brushes.AliceBlue;
+                timeTextBlock.Foreground = Brushes.LightGreen;
                 timeTextBlock.Text = userMessage.Time;
             });
             
