@@ -7,6 +7,8 @@ using PowerThreadPool;
 using System.Windows;
 using Powork.Model;
 using Newtonsoft.Json;
+using System.Windows.Controls;
+using System.Windows.Shapes;
 
 namespace Powork.Network
 {
@@ -76,30 +78,39 @@ namespace Powork.Network
             }
         }
 
-        public void SendFile(string filePath, string ipAddress, int port, string relativePath = "")
+        public void SendFile(string filePath, string ipAddress, string guid, int port, string relativePath = "")
         {
             try
             {
                 TcpClient tcpClient = new TcpClient();
                 tcpClient.Connect(ipAddress, port);
 
-                using (NetworkStream stream = tcpClient.GetStream())
+                using (NetworkStream networkStream = tcpClient.GetStream())
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
-                    byte[] buffer = new byte[1024];
-                    int bytesRead;
-
-                    FilePack filePack = new FilePack()
+                    Model.FileInfo fileInfo = new Model.FileInfo()
                     {
+                        Guid = guid,
+                        Status = Model.Status.Start,
                         Name = new DirectoryInfo(filePath).Name,
                         RelativePath = relativePath,
+                        Size = new System.IO.FileInfo(filePath).Length
                     };
+                    List<UserMessageBody> messageBody = [new UserMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
+                    UserMessage getFileMessage = new UserMessage()
+                    {
+                        Type = MessageType.FileInfo,
+                        IP = GlobalVariables.SelfInfo[0].IP,
+                        MessageBody = messageBody,
+                    };
+                    byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageBody));
+                    networkStream.Write(getFileMessageBytes, 0, getFileMessageBytes.Length);
 
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
                     while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
-                        filePack.Buffer = buffer;
-                        byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(filePack));
-                        stream.Write(bytes, 0, bytes.Length);
+                        networkStream.Write(buffer, 0, bytesRead);
                     }
                 }
 

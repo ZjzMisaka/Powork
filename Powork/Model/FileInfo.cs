@@ -6,10 +6,17 @@ using System.Threading.Tasks;
 
 namespace Powork.Model
 {
-    public class FilePack
+    public enum Status
+    { 
+        Start = 0,
+        NoSuchFile = 2,
+    }
+    public class FileInfo
     {
+        public Status Status { get; set; }
         public string Name { get; set; }
         public string RelativePath { get; set; }
-        public byte[] Buffer { get; set; }
+        public string Guid { get; set; }
+        public long Size { get; set; }
     }
 }

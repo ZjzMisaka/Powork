@@ -19,6 +19,7 @@ namespace Powork.Model
         Message = 0,
         Error = 1,
         FileRequest = 2,
+        FileInfo = 3,
     }
     public class UserMessage
     {

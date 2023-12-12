@@ -89,8 +89,40 @@ namespace Powork.ViewModel
                 }
                 else if (userMessage.Type == MessageType.FileRequest)
                 {
-                    string path = FileRepository.SelectFile(userMessage.MessageBody[0].Content);
-                    GlobalVariables.TcpServerClient.SendFile(path, userMessage.IP, GlobalVariables.TcpPort);
+                    string guid = userMessage.MessageBody[0].Content;
+                    string path = FileRepository.SelectFile(guid);
+                    GlobalVariables.TcpServerClient.SendFile(path, userMessage.IP, guid, GlobalVariables.TcpPort);
+                }
+                else if (userMessage.Type == MessageType.FileInfo)
+                {
+                    string json = userMessage.MessageBody[0].Content;
+                    Model.FileInfo fileInfo = JsonConvert.DeserializeObject<Model.FileInfo>(json);
+                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", fileInfo.RelativePath);
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    try
+                    {
+                        string receivedFilePath = Path.Combine(path, fileInfo.Name);
+                        using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
+                        {
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+
+                            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, bytesRead);
+                            }
+                        }
+
+                        MessageBox.Show("File received successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
             });
         }
