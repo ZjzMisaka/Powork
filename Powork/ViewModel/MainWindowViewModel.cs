@@ -79,8 +79,12 @@ namespace Powork.ViewModel
                     return;
                 }
 
-                using var reader = new StreamReader(stream);
-                string message = reader.ReadToEnd();
+                using var reader = new BinaryReader(stream);
+                // First read the length of the incoming message
+                int length = reader.ReadInt32();
+                // Then read the message itself
+                byte[] messageBytes = reader.ReadBytes(length);
+                string message = Encoding.UTF8.GetString(messageBytes);
                 UserMessage userMessage = JsonConvert.DeserializeObject<UserMessage>(message);
                 if (userMessage.Type == MessageType.Message)
                 {

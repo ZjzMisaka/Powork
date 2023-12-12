@@ -49,7 +49,7 @@ namespace Powork.Network
             });
         }
 
-        public bool SendMessage(string message, string ipAddress, int port)
+        public Exception SendMessage(string message, string ipAddress, int port)
         {
             TcpClient tcpClient = null;
             NetworkStream stream = null;
@@ -58,12 +58,15 @@ namespace Powork.Network
                 tcpClient = new TcpClient(ipAddress, port);
                 stream = tcpClient.GetStream();
                 byte[] bytes = Encoding.UTF8.GetBytes(message);
+                int length = bytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
-                return true;
+                return null;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return ex;
             }
             finally
             {
@@ -103,7 +106,10 @@ namespace Powork.Network
                         IP = GlobalVariables.SelfInfo[0].IP,
                         MessageBody = messageBody,
                     };
-                    byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageBody));
+                    byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                    int length = getFileMessageBytes.Length;
+                    byte[] lengthPrefix = BitConverter.GetBytes(length);
+                    networkStream.Write(lengthPrefix, 0, lengthPrefix.Length);
                     networkStream.Write(getFileMessageBytes, 0, getFileMessageBytes.Length);
 
                     byte[] buffer = new byte[1024];
@@ -140,6 +146,9 @@ namespace Powork.Network
                 };
 
                 byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                int length = bytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
             catch

@@ -73,7 +73,7 @@ namespace Powork.Helper
                                 Content = name + " | " + guid,
                                 Type = ContentType.File
                             });
-                            FileRepository.InsertFile(guid, name);
+                            FileRepository.InsertFile(guid, hyperlink.NavigateUri.LocalPath);
                         }
                         else if (inline is InlineUIContainer)
                         {
