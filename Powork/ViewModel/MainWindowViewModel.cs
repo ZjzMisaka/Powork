@@ -123,7 +123,7 @@ namespace Powork.ViewModel
 
                     if (fileInfo.Status == Model.Status.Start)
                     {
-                        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", fileInfo.RelativePath);
+                        string path = Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], fileInfo.RelativePath);
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
@@ -152,6 +152,7 @@ namespace Powork.ViewModel
                     {
                         // Check
                         MessageBox.Show("File received successfully.");
+                        GlobalVariables.TcpServerClient.savePathDict.Remove(fileInfo.Guid);
                     }
                     else if (fileInfo.Status == Model.Status.NoSuchFile)
                     {

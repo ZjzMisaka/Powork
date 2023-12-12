@@ -76,7 +76,15 @@ namespace Powork.Helper
                         {
                             InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) => 
                             {
-                                GlobalVariables.TcpServerClient.RequestFile(body.Content.Split(" | ")[1], userMessage.IP, GlobalVariables.TcpPort);
+                                using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+                                {
+                                    fbd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                                    System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+                                    if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                                    {
+                                        GlobalVariables.TcpServerClient.RequestFile(body.Content.Split(" | ")[1], userMessage.IP, GlobalVariables.TcpPort, fbd.SelectedPath);
+                                    }
+                                }
                             })));
                             textBlock.Inlines.Add(container);
 

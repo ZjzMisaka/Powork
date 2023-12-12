@@ -18,6 +18,8 @@ namespace Powork.Network
         private TcpListener tcpListener;
         private PowerPool powerPool;
 
+        public Dictionary<string, string> savePathDict = new Dictionary<string, string>();
+
         public TcpServerClient(int port, PowerPool powerPool)
         {
             tcpListener = new TcpListener(IPAddress.Any, port);
@@ -155,10 +157,13 @@ namespace Powork.Network
             }
         }
 
-        public void RequestFile(string guid, string ipAddress, int port)
+        public void RequestFile(string guid, string ipAddress, int port, string savePath)
         {
             TcpClient tcpClient = null;
             NetworkStream stream = null;
+
+            savePathDict[guid] = savePath;
+
             try
             {
                 tcpClient = new TcpClient(ipAddress, port);
