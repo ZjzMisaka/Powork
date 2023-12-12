@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using PowerThreadPool.EventArguments;
 using Powork.Network;
+using System.Net.NetworkInformation;
 
 namespace Powork
 {
@@ -57,12 +58,24 @@ namespace Powork
 
         public static IPAddress GetLocalIPAddress()
         {
-            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in host.AddressList)
+            foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                if (ni.NetworkInterfaceType != NetworkInterfaceType.Loopback && ni.OperationalStatus == OperationalStatus.Up)
                 {
-                    return ip;
+                    var ipProperties = ni.GetIPProperties();
+                    if (ipProperties.GatewayAddresses.Count > 0)
+                    {
+                        foreach (var ip in ipProperties.UnicastAddresses)
+                        {
+                            if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                            {
+                                if (!ip.Address.ToString().StartsWith("169.254"))
+                                {
+                                    return ip.Address;
+                                }
+                            }
+                        }
+                    }
                 }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
