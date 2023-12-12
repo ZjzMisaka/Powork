@@ -40,7 +40,7 @@ namespace Powork.Repository
                     {
                         if (reader.Read())
                         {
-                            return reader["id"].ToString();
+                            return reader["path"].ToString();
                         }
                     }
                 }
