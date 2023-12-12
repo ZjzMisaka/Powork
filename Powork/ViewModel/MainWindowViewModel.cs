@@ -12,6 +12,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -95,37 +97,65 @@ namespace Powork.ViewModel
                 {
                     string guid = userMessage.MessageBody[0].Content;
                     string path = FileRepository.SelectFile(guid);
-                    GlobalVariables.TcpServerClient.SendFile(path, userMessage.IP, guid, GlobalVariables.TcpPort);
+                    if (FileHelper.GetType(path) == FileHelper.Type.None)
+                    {
+                        MessageBox.Show("No such file: " + path);
+                    }
+                    else if (FileHelper.GetType(path) == FileHelper.Type.File)
+                    {
+                        GlobalVariables.TcpServerClient.SendFile(path, guid, userMessage.IP, GlobalVariables.TcpPort);
+                    }
+                    else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
+                    {
+                        string[] allfiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+                        foreach (string file in allfiles)
+                        {
+                            string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
+                            GlobalVariables.TcpServerClient.SendFile(file, guid, userMessage.IP, GlobalVariables.TcpPort, relativePath);
+                        }
+                    }
+                    GlobalVariables.TcpServerClient.SendFileFinish(path, guid, userMessage.IP, GlobalVariables.TcpPort);
                 }
                 else if (userMessage.Type == MessageType.FileInfo)
                 {
                     string json = userMessage.MessageBody[0].Content;
                     Model.FileInfo fileInfo = JsonConvert.DeserializeObject<Model.FileInfo>(json);
-                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", fileInfo.RelativePath);
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
 
-                    try
+                    if (fileInfo.Status == Model.Status.Start)
                     {
-                        string receivedFilePath = Path.Combine(path, fileInfo.Name);
-                        using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
+                        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", fileInfo.RelativePath);
+                        if (!Directory.Exists(path))
                         {
-                            byte[] buffer = new byte[1024];
-                            int bytesRead;
-
-                            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                fileStream.Write(buffer, 0, bytesRead);
-                            }
+                            Directory.CreateDirectory(path);
                         }
 
+                        try
+                        {
+                            string receivedFilePath = Path.Combine(path, fileInfo.Name);
+                            using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
+                            {
+                                byte[] buffer = new byte[1024];
+                                int bytesRead;
+
+                                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    fileStream.Write(buffer, 0, bytesRead);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                    else if (fileInfo.Status == Model.Status.Finish)
+                    {
+                        // Check
                         MessageBox.Show("File received successfully.");
                     }
-                    catch (Exception ex)
+                    else if (fileInfo.Status == Model.Status.NoSuchFile)
                     {
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show("No such file: " + fileInfo.Name);
                     }
                 }
             });

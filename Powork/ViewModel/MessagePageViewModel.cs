@@ -325,23 +325,17 @@ namespace Powork.ViewModel
             string[] pathList = (string[])args.Data.GetData(DataFormats.FileDrop, false);
             foreach (string path in pathList) 
             {
-                FileAttributes attr = File.GetAttributes(path);
-
-                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                 {
                     InsertFile("Send directory: " + new DirectoryInfo(path).Name, path);
                 }
-                else
+                else if (FileHelper.GetType(path) == FileHelper.Type.Image)
                 {
-                    string extension = Path.GetExtension(path).ToLower();
-                    if (extension == ".png" || extension == ".jpg" || extension == ".bmp")
-                    {
-                        InsertImage(path);
-                    }
-                    else
-                    {
-                        InsertFile("Send file: " + Path.GetFileName(path), path);
-                    }
+                    InsertImage(path);
+                }
+                else if (FileHelper.GetType(path) == FileHelper.Type.File)
+                {
+                    InsertFile("Send file: " + Path.GetFileName(path), path);
                 }
             }
         }

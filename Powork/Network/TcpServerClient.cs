@@ -81,7 +81,7 @@ namespace Powork.Network
             }
         }
 
-        public void SendFile(string filePath, string ipAddress, string guid, int port, string relativePath = "")
+        public void SendFile(string filePath, string guid, string ipAddress, int port, string relativePath = "")
         {
             try
             {
@@ -125,6 +125,33 @@ namespace Powork.Network
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void SendFileFinish(string filePath, string guid, string ipAddress, int port)
+        {
+            TcpClient tcpClient = new TcpClient();
+            tcpClient.Connect(ipAddress, port);
+
+            using (NetworkStream networkStream = tcpClient.GetStream())
+            {
+                Model.FileInfo fileInfo = new Model.FileInfo()
+                {
+                    Guid = guid,
+                    Status = Model.Status.Finish,
+                };
+                List<UserMessageBody> messageBody = [new UserMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
+                UserMessage getFileMessage = new UserMessage()
+                {
+                    Type = MessageType.FileInfo,
+                    IP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
+                byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                int length = getFileMessageBytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                networkStream.Write(lengthPrefix, 0, lengthPrefix.Length);
+                networkStream.Write(getFileMessageBytes, 0, getFileMessageBytes.Length);
             }
         }
 
