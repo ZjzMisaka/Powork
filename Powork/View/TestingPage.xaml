@@ -4,8 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Powork.View"
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:viewmodel="clr-namespace:Powork.ViewModel"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d" 
+      d:DataContext="{d:DesignInstance viewmodel:TestingPageViewModel,
+                           IsDesignTimeCreatable=True}"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="TestingPage">
     
@@ -22,6 +25,87 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ui:TextBlock Foreground="White" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Path"></ui:TextBlock>
+            <ui:TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"></ui:TextBox>
+            <ui:TextBlock Foreground="White" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="File"></ui:TextBlock>
+            <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"></ComboBox>
+            <ui:TextBox Width="100" Grid.Row="4" Grid.Column="0"></ui:TextBox>
+            <ui:Button Grid.Row="4" Grid.Column="1" Content="Add"></ui:Button>
+            <ui:TextBlock Foreground="White" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Sheet"></ui:TextBlock>
+            <ComboBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"></ComboBox>
+            <ui:TextBox Width="100" Grid.Row="7" Grid.Column="0"></ui:TextBox>
+            <ui:Button Grid.Row="7" Grid.Column="1" Content="Add"></ui:Button>
+            <ui:TextBlock Foreground="White" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Text="Column"></ui:TextBlock>
+            <ComboBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2"></ComboBox>
+            <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0"></ui:TextBox>
+            <ui:Button Grid.Row="10" Grid.Column="1" Content="Add"></ui:Button>
+            <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
+                <ListBox ItemsSource="{Binding RowList}">
+
+                </ListBox>
+            </ScrollViewer>
+            <ui:Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Content="Add"></ui:Button>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Width="auto" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <ui:Button Grid.Column="0" Content="Line"></ui:Button>
+                    <ui:Button Grid.Column="1" Content="Grid"></ui:Button>
+                    <ui:Button Grid.Column="2" Content="Rectangle"></ui:Button>
+                </Grid>
+                <Grid Grid.Row="1">
+                    
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" Width="auto" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ui:Button Grid.Column="0" Content="Open"></ui:Button>
+                <ui:Button Grid.Column="1" Content="Send"></ui:Button>
+                <ui:Button Grid.Column="2" Content="Save"></ui:Button>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>
