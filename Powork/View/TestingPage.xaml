@@ -26,7 +26,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="150"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
@@ -46,17 +46,17 @@
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="50"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <ui:TextBlock Foreground="White" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Path"></ui:TextBlock>
-            <ui:TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"></ui:TextBox>
+            <ui:TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Path}"></ui:TextBox>
             <ui:TextBlock Foreground="White" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="File"></ui:TextBlock>
-            <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"></ComboBox>
+            <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding FileList}" SelectedValue="{Binding FileName}"></ComboBox>
             <ui:TextBox Width="100" Grid.Row="4" Grid.Column="0"></ui:TextBox>
             <ui:Button Grid.Row="4" Grid.Column="1" Content="Add"></ui:Button>
             <ui:TextBlock Foreground="White" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Sheet"></ui:TextBlock>
-            <ComboBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"></ComboBox>
+            <ComboBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding SheetList}" SelectedValue="{Binding SheetName}"></ComboBox>
             <ui:TextBox Width="100" Grid.Row="7" Grid.Column="0"></ui:TextBox>
             <ui:Button Grid.Row="7" Grid.Column="1" Content="Add"></ui:Button>
             <ui:TextBlock Foreground="White" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Text="Column"></ui:TextBlock>
@@ -89,7 +89,7 @@
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Title"></ui:TextBox>
-                    <ui:Button Grid.Column="1" Content="Line"></ui:Button>
+                    <ui:Button AllowDrop="True" Grid.Column="1" Content="Line"></ui:Button>
                     <ui:Button Grid.Column="2" Content="Empty Rectangle" Command="{Binding AddEmptyRectangleCommand}"></ui:Button>
                     <ui:Button Grid.Column="3" Content="Filled Rectangle"></ui:Button>
                 </Grid>
