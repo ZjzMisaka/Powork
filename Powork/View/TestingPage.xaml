@@ -83,13 +83,15 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Width="auto" HorizontalAlignment="Right">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <ui:Button Grid.Column="0" Content="Line"></ui:Button>
-                    <ui:Button Grid.Column="1" Content="Empty Rectangle" Command="{Binding AddEmptyRectangleCommand}"></ui:Button>
-                    <ui:Button Grid.Column="2" Content="Filled Rectangle"></ui:Button>
+                    <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Title"></ui:TextBox>
+                    <ui:Button Grid.Column="1" Content="Line"></ui:Button>
+                    <ui:Button Grid.Column="2" Content="Empty Rectangle" Command="{Binding AddEmptyRectangleCommand}"></ui:Button>
+                    <ui:Button Grid.Column="3" Content="Filled Rectangle"></ui:Button>
                 </Grid>
                 <Grid Grid.Row="1">
                     <ui:Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" Source="{Binding BitmapSource}" Stretch="Uniform">
