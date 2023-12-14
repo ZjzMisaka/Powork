@@ -88,11 +88,19 @@
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <ui:Button Grid.Column="0" Content="Line"></ui:Button>
-                    <ui:Button Grid.Column="1" Content="Grid"></ui:Button>
-                    <ui:Button Grid.Column="2" Content="Rectangle"></ui:Button>
+                    <ui:Button Grid.Column="1" Content="Empty Rectangle" Command="{Binding AddEmptyRectangleCommand}"></ui:Button>
+                    <ui:Button Grid.Column="2" Content="Filled Rectangle"></ui:Button>
                 </Grid>
                 <Grid Grid.Row="1">
-                    
+                    <ui:Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" Source="{Binding BitmapSource}" Stretch="Uniform">
+                    </ui:Image>
+                    <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" ItemsSource="{Binding ShapeItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                 </Grid>
             </Grid>
 
@@ -101,10 +109,12 @@
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ui:Button Grid.Column="0" Content="Open"></ui:Button>
                 <ui:Button Grid.Column="1" Content="Send"></ui:Button>
                 <ui:Button Grid.Column="2" Content="Save"></ui:Button>
+                <ui:Button Grid.Column="3" Content="Set image" Command="{Binding SetImageCommand}"></ui:Button>
             </Grid>
         </Grid>
     </Grid>
