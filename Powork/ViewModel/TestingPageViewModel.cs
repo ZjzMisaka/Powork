@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NPOI.SS.UserModel;
 using NPOI.Util;
 using NPOI.XSSF.UserModel;
 using PowerThreadPool;
@@ -98,12 +99,14 @@ namespace Powork.ViewModel
                 SetProperty<string>(ref fileName, value);
 
                 SheetList.Clear();
-
+                List<string> newSheetList = new List<string>();
                 nowWorkBook = new XSSFWorkbook(System.IO.Path.Combine(Path, FileName));
                 for (int i = 0; i < nowWorkBook.NumberOfSheets; ++i)
                 {
-                    SheetList.Add(nowWorkBook.GetSheetAt(i).SheetName);
+                    newSheetList.Add(nowWorkBook.GetSheetAt(i).SheetName);
                 }
+
+                SheetList = newSheetList;
             }
         }
 
@@ -131,17 +134,28 @@ namespace Powork.ViewModel
                 {
                     nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
                     XSSFRow row = (XSSFRow)nowSheet.GetRow(1);
+                    if (row == null)
+                    {
+                        return;
+                    }
                     ColumnList.Clear();
                     columnDict.Clear();
-                    for (int i = 0; i < row.LastCellNum; ++i)
+                    List<string> newColumnList = new List<string>(); ;
+                    for (int i = 0; i < row.Cells.Count; ++i)
                     {
+                        if (row.Cells[i].CellType.ToString() != "String")
+                        {
+                            continue;
+                        }
                         string str = row.Cells[i].StringCellValue;
                         if (!string.IsNullOrEmpty(str))
                         {
-                            ColumnList.Add(str);
+                            newColumnList.Add(str);
                             columnDict[str] = i;
                         }
                     }
+
+                    ColumnList = newColumnList;
                 }
                 catch
                 { }
@@ -171,14 +185,23 @@ namespace Powork.ViewModel
                     RowList.Clear();
                     rowDict.Clear();
                     int columnIndex = columnDict[ColumnName];
-                    for (int row = 0; row < nowSheet.LastRowNum; ++row)
+                    for (int rowNum = 0; rowNum < nowSheet.LastRowNum; ++rowNum)
                     {
-                        XSSFCell cell = (XSSFCell)nowSheet.GetRow(row).Cells[columnIndex];
-                        string str = cell.StringCellValue;
-                        if (!string.IsNullOrEmpty(str))
+                        IRow row = nowSheet.GetRow(rowNum);
+                        if (row == null)
                         {
-                            RowList.Add(new Button());
-                            rowDict[str] = row;
+                            continue;
+                        }
+                        List<ICell> cellList = nowSheet.GetRow(rowNum).Cells;
+                        if (cellList.Count > columnIndex)
+                        {
+                            XSSFCell cell = (XSSFCell)cellList[columnIndex];
+                            string str = cell.StringCellValue;
+                            if (!string.IsNullOrEmpty(str))
+                            {
+                                RowList.Add(new Button());
+                                rowDict[str] = rowNum;
+                            }
                         }
                     }
                 }

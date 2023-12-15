@@ -60,7 +60,7 @@
             <ui:TextBox Width="100" Grid.Row="7" Grid.Column="0"></ui:TextBox>
             <ui:Button Grid.Row="7" Grid.Column="1" Content="Add"></ui:Button>
             <ui:TextBlock Foreground="White" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Text="Column"></ui:TextBlock>
-            <ComboBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2"></ComboBox>
+            <ComboBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding ColumnList}" SelectedValue="{Binding ColumnName}"></ComboBox>
             <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0"></ui:TextBox>
             <ui:Button Grid.Row="10" Grid.Column="1" Content="Add"></ui:Button>
             <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
