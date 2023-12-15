@@ -185,7 +185,7 @@ namespace Powork.ViewModel
                     RowList.Clear();
                     rowDict.Clear();
                     int columnIndex = columnDict[ColumnName];
-                    for (int rowNum = 0; rowNum < nowSheet.LastRowNum; ++rowNum)
+                    for (int rowNum = 2; rowNum < nowSheet.LastRowNum; ++rowNum)
                     {
                         IRow row = nowSheet.GetRow(rowNum);
                         if (row == null)
