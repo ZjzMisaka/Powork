@@ -27,6 +27,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
@@ -68,11 +69,13 @@
 
                 </ListBox>
             </ScrollViewer>
-            <ui:Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Content="Add"></ui:Button>
+            <ui:TextBox Width="100" Grid.Row="12" Grid.Column="0" PlaceholderText="Line title"></ui:TextBox>
+            <ui:Button Grid.Row="12" Grid.Column="1" HorizontalAlignment="Stretch" Content="Add"></ui:Button>
         </Grid>
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
 
@@ -81,14 +84,14 @@
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Width="auto" HorizontalAlignment="Right">
+                <Grid Grid.Row="0" Width="auto" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                         <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Title"></ui:TextBox>
+                    <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Content"></ui:TextBox>
                     <ui:Button AllowDrop="True" Grid.Column="1" Content="Line"></ui:Button>
                     <ui:Button Grid.Column="2" Content="Empty Rectangle" Command="{Binding AddEmptyRectangleCommand}"></ui:Button>
                     <ui:Button Grid.Column="3" Content="Filled Rectangle"></ui:Button>
@@ -106,17 +109,21 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="1" Width="auto" HorizontalAlignment="Right">
+            <ui:TextBox Grid.Row="1" PlaceholderEnabled="True" AcceptsReturn="True" TextWrapping="Wrap" PlaceholderText="Block description"></ui:TextBox>
+
+            <Grid Grid.Row="2" Width="auto" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ui:Button Grid.Column="0" Content="Open"></ui:Button>
-                <ui:Button Grid.Column="1" Content="Send"></ui:Button>
-                <ui:Button Grid.Column="2" Content="Save"></ui:Button>
-                <ui:Button Grid.Column="3" Content="Set image" Command="{Binding SetImageCommand}"></ui:Button>
+                <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Block title"></ui:TextBox>
+                <ui:Button Grid.Column="1" Content="Open"></ui:Button>
+                <ui:Button Grid.Column="2" Content="Send"></ui:Button>
+                <ui:Button Grid.Column="3" Content="Save"></ui:Button>
+                <ui:Button Grid.Column="4" Content="Set image" Command="{Binding SetImageCommand}"></ui:Button>
             </Grid>
         </Grid>
     </Grid>

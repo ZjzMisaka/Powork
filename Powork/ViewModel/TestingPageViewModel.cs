@@ -266,8 +266,5 @@ namespace Powork.ViewModel
         {
             ShapeItems.Add(new Rectangle());
         }
-
-        
-
     }
 }
