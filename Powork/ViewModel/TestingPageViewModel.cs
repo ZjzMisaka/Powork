@@ -51,16 +51,6 @@ namespace Powork.ViewModel
             }
         }
 
-        private ObservableCollection<UserControl> outerItems;
-        public ObservableCollection<UserControl> OuterItems
-        {
-            get { return outerItems; }
-            set
-            {
-                SetProperty<ObservableCollection<UserControl>>(ref outerItems, value);
-            }
-        }
-
         private string path;
         public string Path
         {
@@ -233,7 +223,6 @@ namespace Powork.ViewModel
             columnDict = new Dictionary<string, int>();
             rowDict = new Dictionary<string, int>();
             ShapeItems = new ObservableCollection<UserControl>();
-            OuterItems = new ObservableCollection<UserControl>();
             FileList = new List<string>();
             SheetList = new List<string>();
             ColumnList = new List<string>();
