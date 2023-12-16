@@ -37,6 +37,9 @@
             <i:EventTrigger EventName="MouseLeftButtonUp">
                 <i:InvokeCommandAction Command="{Binding MouseLeftButtonUpCommand}" PassEventArgsToCommand="True" />
             </i:EventTrigger>
+            <i:EventTrigger EventName="MouseRightButtonUp">
+                <i:InvokeCommandAction Command="{Binding MouseRightButtonUpCommand}" PassEventArgsToCommand="True" />
+            </i:EventTrigger>
         </i:Interaction.Triggers>
     </Rectangle>
 </UserControl>

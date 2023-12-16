@@ -5,6 +5,7 @@ using NPOI.Util;
 using NPOI.XSSF.UserModel;
 using PowerThreadPool;
 using Powork.Control;
+using Powork.ControlViewModel;
 using Powork.Model;
 using Powork.Network;
 using System;
@@ -264,7 +265,12 @@ namespace Powork.ViewModel
 
         private void AddEmptyRectangle()
         {
-            ShapeItems.Add(new Rectangle());
+            Powork.Control.Rectangle rectangle = new Rectangle();
+            ((RectangleViewModel)rectangle.DataContext).Remove += (sender) =>
+            {
+                ShapeItems.Remove(rectangle);
+            };
+            ShapeItems.Add(rectangle);
         }
     }
 }

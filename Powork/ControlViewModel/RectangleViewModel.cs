@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Windows.Media;
+using PowerThreadPool.EventArguments;
 
 namespace Powork.ControlViewModel
 {
@@ -19,6 +20,9 @@ namespace Powork.ControlViewModel
         private bool isDragging;
         private bool isResizing;
         private Point clickPosition;
+
+        public delegate void RemoveEventHandler(RectangleViewModel sender);
+        public event RemoveEventHandler Remove;
 
         private double x;
         public double X
@@ -66,6 +70,7 @@ namespace Powork.ControlViewModel
         public ICommand MouseLeftButtonDownCommand { get; }
         public ICommand MouseMoveCommand { get; }
         public ICommand MouseLeftButtonUpCommand { get; }
+        public ICommand MouseRightButtonUpCommand { get; }
 
         public RectangleViewModel()
         {
@@ -75,6 +80,7 @@ namespace Powork.ControlViewModel
             MouseLeftButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonDown);
             MouseMoveCommand = new RelayCommand<MouseEventArgs>(MouseMove);
             MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseLeftButtonUp);
+            MouseRightButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(MouseRightButtonUp);
 
             RectangleWidth = 100;
             RectangleHeight = 100;
@@ -145,6 +151,14 @@ namespace Powork.ControlViewModel
             isDragging = false;
             isResizing = false;
             rectangle.ReleaseMouseCapture();
+        }
+
+        private void MouseRightButtonUp(MouseButtonEventArgs e)
+        {
+            if (Remove != null)
+            {
+                Remove.Invoke(this);
+            }
         }
     }
 }
