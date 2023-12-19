@@ -64,16 +64,16 @@ namespace Powork.ViewModel
                 try
                 {
                     string[] allfiles = Directory.GetFiles(path, "*.xlsx", SearchOption.TopDirectoryOnly);
-                    FileList = new List<string>(allfiles);
+                    FileList = new ObservableCollection<string>(allfiles);
                 }
                 catch
                 { }
             }
         }
 
-        private List<string> fileList;
+        private ObservableCollection<string> fileList;
 
-        public List<string> FileList 
+        public ObservableCollection<string> FileList 
         { 
             get => fileList;
             set
@@ -92,7 +92,7 @@ namespace Powork.ViewModel
                 SetProperty<string>(ref fileName, value);
 
                 SheetList.Clear();
-                List<string> newSheetList = new List<string>();
+                ObservableCollection<string> newSheetList = new ObservableCollection<string>();
                 nowWorkBook = new XSSFWorkbook(System.IO.Path.Combine(Path, FileName));
                 for (int i = 0; i < nowWorkBook.NumberOfSheets; ++i)
                 {
@@ -103,9 +103,9 @@ namespace Powork.ViewModel
             }
         }
 
-        private List<string> sheetList;
+        private ObservableCollection<string> sheetList;
 
-        public List<string> SheetList
+        public ObservableCollection<string> SheetList
         {
             get => sheetList;
             set
@@ -133,7 +133,7 @@ namespace Powork.ViewModel
                     }
                     ColumnList.Clear();
                     columnDict.Clear();
-                    List<string> newColumnList = new List<string>(); ;
+                    ObservableCollection<string> newColumnList = new ObservableCollection<string>(); ;
                     for (int i = 0; i < row.Cells.Count; ++i)
                     {
                         if (row.Cells[i].CellType.ToString() != "String")
@@ -158,8 +158,8 @@ namespace Powork.ViewModel
             }
         }
 
-        private List<string> columnList;
-        public List<string> ColumnList
+        private ObservableCollection<string> columnList;
+        public ObservableCollection<string> ColumnList
         {
             get => columnList;
             set
@@ -206,14 +206,43 @@ namespace Powork.ViewModel
             }
         }
 
-        private List<System.Windows.Controls.Control> rowList;
-        public List<System.Windows.Controls.Control> RowList
+        private ObservableCollection<System.Windows.Controls.Control> rowList;
+        public ObservableCollection<System.Windows.Controls.Control> RowList
         {
             get => rowList;
             set
             {
-                SetProperty<List<System.Windows.Controls.Control>>(ref rowList, value);
+                SetProperty<ObservableCollection<System.Windows.Controls.Control>>(ref rowList, value);
             }
+        }
+
+        private string newFileName;
+
+        public string NewFileName 
+        { 
+            get => newFileName; 
+            set => SetProperty(ref newFileName, value); 
+        }
+        private string newSheetName;
+
+        public string NewSheetName 
+        { 
+            get => newSheetName;
+            set => SetProperty(ref newSheetName, value); 
+        }
+        private string newColumnName;
+
+        public string NewColumnName
+        {
+            get => newColumnName;
+            set => SetProperty(ref newColumnName, value); 
+        }
+        private string newRowTitle;
+
+        public string NewRowTitle
+        {
+            get => newRowTitle;
+            set => SetProperty(ref newRowTitle, value);
         }
 
 
@@ -222,22 +251,30 @@ namespace Powork.ViewModel
         public ICommand WindowClosedCommand { get; set; }
         public ICommand SetImageCommand { get; set; }
         public ICommand AddEmptyRectangleCommand { get; set; }
+        public ICommand AddFileCommand { get; set; }
+        public ICommand AddSheetCommand { get; set; }
+        public ICommand AddColumnCommand { get; set; }
+        public ICommand AddRowCommand { get; set; }
 
         public TestingPageViewModel()
         {
             columnDict = new Dictionary<string, int>();
             rowDict = new Dictionary<string, int>();
             ShapeItems = new ObservableCollection<UserControl>();
-            FileList = new List<string>();
-            SheetList = new List<string>();
-            ColumnList = new List<string>();
-            RowList = new List<System.Windows.Controls.Control>();
+            FileList = new ObservableCollection<string>();
+            SheetList = new ObservableCollection<string>();
+            ColumnList = new ObservableCollection<string>();
+            RowList = new ObservableCollection<System.Windows.Controls.Control>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
             SetImageCommand = new RelayCommand(SetImage);
             AddEmptyRectangleCommand = new RelayCommand(AddEmptyRectangle);
+            AddFileCommand = new RelayCommand(AddFile);
+            AddSheetCommand = new RelayCommand(AddSheet);
+            AddColumnCommand = new RelayCommand(AddColumn);
+            AddRowCommand = new RelayCommand(AddRow);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -265,6 +302,23 @@ namespace Powork.ViewModel
                 ShapeItems.Remove(rectangle);
             };
             ShapeItems.Add(rectangle);
+        }
+
+        private void AddFile()
+        {
+        }
+
+        private void AddSheet()
+        {
+            SheetList.Add(NewSheetName);
+        }
+
+        private void AddColumn()
+        {
+        }
+
+        private void AddRow()
+        {
         }
     }
 }

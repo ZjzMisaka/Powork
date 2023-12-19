@@ -54,23 +54,23 @@
             <ui:TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Path}"></ui:TextBox>
             <ui:TextBlock Foreground="White" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="File"></ui:TextBlock>
             <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding FileList}" SelectedValue="{Binding FileName}"></ComboBox>
-            <ui:TextBox Width="100" Grid.Row="4" Grid.Column="0"></ui:TextBox>
-            <ui:Button Grid.Row="4" Grid.Column="1" Content="Add"></ui:Button>
+            <ui:TextBox Width="100" Grid.Row="4" Grid.Column="0" Text="{Binding NewFileName}"></ui:TextBox>
+            <ui:Button Grid.Row="4" Grid.Column="1" Content="Add" Command="{Binding AddFileCommand}"></ui:Button>
             <ui:TextBlock Foreground="White" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Sheet"></ui:TextBlock>
             <ComboBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding SheetList}" SelectedValue="{Binding SheetName}"></ComboBox>
-            <ui:TextBox Width="100" Grid.Row="7" Grid.Column="0"></ui:TextBox>
-            <ui:Button Grid.Row="7" Grid.Column="1" Content="Add"></ui:Button>
+            <ui:TextBox Width="100" Grid.Row="7" Grid.Column="0" Text="{Binding NewSheetName}"></ui:TextBox>
+            <ui:Button Grid.Row="7" Grid.Column="1" Content="Add" Command="{Binding AddSheetCommand}"></ui:Button>
             <ui:TextBlock Foreground="White" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Text="Column"></ui:TextBlock>
             <ComboBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding ColumnList}" SelectedValue="{Binding ColumnName}"></ComboBox>
-            <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0"></ui:TextBox>
-            <ui:Button Grid.Row="10" Grid.Column="1" Content="Add"></ui:Button>
+            <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0" Text="{Binding NewColumnName}"></ui:TextBox>
+            <ui:Button Grid.Row="10" Grid.Column="1" Content="Add" Command="{Binding AddColumnCommand}"></ui:Button>
             <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
                 <ListBox ItemsSource="{Binding RowList}">
 
                 </ListBox>
             </ScrollViewer>
-            <ui:TextBox Width="100" Grid.Row="12" Grid.Column="0" PlaceholderText="Line title"></ui:TextBox>
-            <ui:Button Grid.Row="12" Grid.Column="1" HorizontalAlignment="Stretch" Content="Add"></ui:Button>
+            <ui:TextBox Width="100" Grid.Row="12" Grid.Column="0" PlaceholderText="Row title" Text="{Binding NewRowTitle}"></ui:TextBox>
+            <ui:Button Grid.Row="12" Grid.Column="1" HorizontalAlignment="Stretch" Content="Add" Command="{Binding AddRowCommand}"></ui:Button>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
