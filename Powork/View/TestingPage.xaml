@@ -65,7 +65,7 @@
             <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0" Text="{Binding NewColumnName}"></ui:TextBox>
             <ui:Button Grid.Row="10" Grid.Column="1" Content="Add" Command="{Binding AddColumnCommand}"></ui:Button>
             <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
-                <ListBox ItemsSource="{Binding RowList}">
+                <ListBox ItemsSource="{Binding BlockList}">
 
                 </ListBox>
             </ScrollViewer>

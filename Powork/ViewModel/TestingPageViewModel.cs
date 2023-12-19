@@ -27,8 +27,6 @@ namespace Powork.ViewModel
 {
     class TestingPageViewModel : ObservableObject
     {
-        private Dictionary<string, int> columnDict;
-        private Dictionary<string, int> rowDict;
         private XSSFWorkbook nowWorkBook;
         private XSSFSheet nowSheet;
         private Sheet sheetModel;
@@ -125,6 +123,8 @@ namespace Powork.ViewModel
 
                 try
                 {
+                    sheetModel = new Sheet();
+
                     nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
                     XSSFRow row = (XSSFRow)nowSheet.GetRow(1);
                     if (row == null)
@@ -132,7 +132,6 @@ namespace Powork.ViewModel
                         return;
                     }
                     ColumnList.Clear();
-                    columnDict.Clear();
                     ObservableCollection<string> newColumnList = new ObservableCollection<string>(); ;
                     for (int i = 0; i < row.Cells.Count; ++i)
                     {
@@ -144,14 +143,15 @@ namespace Powork.ViewModel
                         if (!string.IsNullOrEmpty(str))
                         {
                             newColumnList.Add(str);
-                            columnDict[str] = i;
+
+                            Column column = new Column();
+                            column.Name = str;
+                            column.Index = i;
+                            sheetModel.ColumnList.Add(column);
                         }
                     }
 
                     ColumnList = newColumnList;
-
-                    sheetModel = new Sheet();
-                    // TODO
                 }
                 catch
                 { }
@@ -178,9 +178,20 @@ namespace Powork.ViewModel
 
                 try
                 {
-                    RowList.Clear();
-                    rowDict.Clear();
-                    int columnIndex = columnDict[ColumnName];
+                    if (sheetModel.RowTitleList != null)
+                    {
+                        return;
+                    }
+
+                    BlockList.Clear();
+                    int columnIndex = -1;
+                    foreach (Column column in sheetModel.ColumnList)
+                    {
+                        if (column.Name == ColumnName)
+                        {
+                            columnIndex = column.Index;
+                        }
+                    }
                     for (int rowNum = 2; rowNum < nowSheet.LastRowNum; ++rowNum)
                     {
                         IRow row = nowSheet.GetRow(rowNum);
@@ -195,8 +206,9 @@ namespace Powork.ViewModel
                             string str = cell.StringCellValue;
                             if (!string.IsNullOrEmpty(str))
                             {
-                                RowList.Add(new Button());
-                                rowDict[str] = rowNum;
+                                BlockList.Add(new Button());
+
+                                sheetModel.RowTitleList.Add(str);
                             }
                         }
                     }
@@ -206,13 +218,13 @@ namespace Powork.ViewModel
             }
         }
 
-        private ObservableCollection<System.Windows.Controls.Control> rowList;
-        public ObservableCollection<System.Windows.Controls.Control> RowList
+        private ObservableCollection<System.Windows.Controls.Control> blockList;
+        public ObservableCollection<System.Windows.Controls.Control> BlockList
         {
-            get => rowList;
+            get => blockList;
             set
             {
-                SetProperty<ObservableCollection<System.Windows.Controls.Control>>(ref rowList, value);
+                SetProperty<ObservableCollection<System.Windows.Controls.Control>>(ref blockList, value);
             }
         }
 
@@ -258,13 +270,11 @@ namespace Powork.ViewModel
 
         public TestingPageViewModel()
         {
-            columnDict = new Dictionary<string, int>();
-            rowDict = new Dictionary<string, int>();
             ShapeItems = new ObservableCollection<UserControl>();
             FileList = new ObservableCollection<string>();
             SheetList = new ObservableCollection<string>();
             ColumnList = new ObservableCollection<string>();
-            RowList = new ObservableCollection<System.Windows.Controls.Control>();
+            BlockList = new ObservableCollection<System.Windows.Controls.Control>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);

@@ -8,6 +8,7 @@ namespace Powork.Model.Evidence
 {
     public class Column
     {
+        public int Index { get; set; }
         public string Name { get; set; }
         public List<Block> BlockList { get; set; }
     }
