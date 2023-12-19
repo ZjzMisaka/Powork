@@ -7,6 +7,7 @@ using PowerThreadPool;
 using Powork.Control;
 using Powork.ControlViewModel;
 using Powork.Model;
+using Powork.Model.Evidence;
 using Powork.Network;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace Powork.ViewModel
         private Dictionary<string, int> rowDict;
         private XSSFWorkbook nowWorkBook;
         private XSSFSheet nowSheet;
+        private Sheet sheetModel;
 
         private BitmapSource bitmapSource;
         public BitmapSource BitmapSource
@@ -147,6 +149,9 @@ namespace Powork.ViewModel
                     }
 
                     ColumnList = newColumnList;
+
+                    sheetModel = new Sheet();
+                    // TODO
                 }
                 catch
                 { }
