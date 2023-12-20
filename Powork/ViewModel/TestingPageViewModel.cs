@@ -124,6 +124,7 @@ namespace Powork.ViewModel
                 try
                 {
                     sheetModel = new Sheet();
+                    sheetModel.ColumnList = new List<Column>();
 
                     nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
                     XSSFRow row = (XSSFRow)nowSheet.GetRow(1);
@@ -183,6 +184,7 @@ namespace Powork.ViewModel
                         return;
                     }
 
+                    sheetModel.RowTitleList = new List<string>();
                     BlockList.Clear();
                     int columnIndex = -1;
                     foreach (Column column in sheetModel.ColumnList)
@@ -206,7 +208,9 @@ namespace Powork.ViewModel
                             string str = cell.StringCellValue;
                             if (!string.IsNullOrEmpty(str))
                             {
-                                BlockList.Add(new Button());
+                                Button button = new Button();
+                                button.Content = str;
+                                BlockList.Add(button);
 
                                 sheetModel.RowTitleList.Add(str);
                             }
@@ -329,6 +333,12 @@ namespace Powork.ViewModel
 
         private void AddRow()
         {
+            sheetModel.RowTitleList.Add(NewRowTitle);
+            Button button = new Button();
+            button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            button.Margin = new Thickness(0);
+            button.Content = NewRowTitle;
+            BlockList.Add(button);
         }
     }
 }
