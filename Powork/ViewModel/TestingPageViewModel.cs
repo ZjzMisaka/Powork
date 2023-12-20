@@ -147,7 +147,6 @@ namespace Powork.ViewModel
 
                             Column column = new Column();
                             column.Name = str;
-                            column.Index = i;
                             sheetModel.ColumnList.Add(column);
                         }
                     }
@@ -191,7 +190,7 @@ namespace Powork.ViewModel
                     {
                         if (column.Name == ColumnName)
                         {
-                            columnIndex = column.Index;
+                            columnIndex = column.GetIndex(nowSheet);
                         }
                     }
                     for (int rowNum = 2; rowNum < nowSheet.LastRowNum; ++rowNum)
