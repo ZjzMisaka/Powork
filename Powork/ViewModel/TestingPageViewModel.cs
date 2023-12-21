@@ -328,6 +328,9 @@ namespace Powork.ViewModel
 
         private void AddColumn()
         {
+            Column column = new Column();
+            column.Name = NewColumnName;
+            sheetModel.ColumnList.Add(column);
         }
 
         private void AddRow()
