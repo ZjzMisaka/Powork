@@ -123,6 +123,8 @@ namespace Powork.ViewModel
 
                 try
                 {
+                    ColumnList.Clear();
+
                     sheetModel = new Sheet();
                     sheetModel.ColumnList = new List<Column>();
 
@@ -132,7 +134,7 @@ namespace Powork.ViewModel
                     {
                         return;
                     }
-                    ColumnList.Clear();
+                    
                     ObservableCollection<string> newColumnList = new ObservableCollection<string>(); ;
                     for (int i = 0; i < row.Cells.Count; ++i)
                     {
@@ -178,21 +180,16 @@ namespace Powork.ViewModel
 
                 try
                 {
-                    if (sheetModel.RowTitleList != null)
+                    BlockList.Clear();
+
+                    Column columnModel = sheetModel.ColumnList[ColumnIndex];
+                    if (columnModel.BlockList == null)
                     {
-                        return;
+                        columnModel.BlockList = new List<Block>();
                     }
 
                     sheetModel.RowTitleList = new List<string>();
-                    BlockList.Clear();
-                    int columnIndex = -1;
-                    foreach (Column column in sheetModel.ColumnList)
-                    {
-                        if (column.Name == ColumnName)
-                        {
-                            columnIndex = column.GetIndex(nowSheet);
-                        }
-                    }
+                    
                     for (int rowNum = 2; rowNum < nowSheet.LastRowNum; ++rowNum)
                     {
                         IRow row = nowSheet.GetRow(rowNum);
@@ -201,15 +198,21 @@ namespace Powork.ViewModel
                             continue;
                         }
                         List<ICell> cellList = nowSheet.GetRow(rowNum).Cells;
-                        if (cellList.Count > columnIndex)
+                        if (cellList.Count > ColumnIndex)
                         {
-                            XSSFCell cell = (XSSFCell)cellList[columnIndex];
+                            XSSFCell cell = (XSSFCell)cellList[ColumnIndex];
                             string str = cell.StringCellValue;
                             if (!string.IsNullOrEmpty(str))
                             {
                                 Button button = new Button();
                                 button.Content = str;
                                 BlockList.Add(button);
+
+                                if (BlockList.Count > columnModel.BlockList.Count)
+                                {
+                                    Block blockModel = new Block();
+                                    columnModel.BlockList.Add(blockModel);
+                                }
 
                                 sheetModel.RowTitleList.Add(str);
                             }
@@ -221,6 +224,13 @@ namespace Powork.ViewModel
             }
         }
 
+        private int columnIndex;
+        public int ColumnIndex
+        {
+            get => columnIndex;
+            set => SetProperty(ref columnIndex, value);
+        }
+
         private ObservableCollection<System.Windows.Controls.Control> blockList;
         public ObservableCollection<System.Windows.Controls.Control> BlockList
         {
@@ -229,6 +239,13 @@ namespace Powork.ViewModel
             {
                 SetProperty<ObservableCollection<System.Windows.Controls.Control>>(ref blockList, value);
             }
+        }
+
+        private int blockIndex;
+        public int BlockIndex
+        {
+            get => blockIndex;
+            set => SetProperty(ref blockIndex, value);
         }
 
         private string newFileName;
@@ -270,6 +287,10 @@ namespace Powork.ViewModel
         public ICommand AddSheetCommand { get; set; }
         public ICommand AddColumnCommand { get; set; }
         public ICommand AddRowCommand { get; set; }
+        public ICommand OpenFileCommand { get; set; }
+        public ICommand SendFileCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
+        
 
         public TestingPageViewModel()
         {
@@ -288,6 +309,9 @@ namespace Powork.ViewModel
             AddSheetCommand = new RelayCommand(AddSheet);
             AddColumnCommand = new RelayCommand(AddColumn);
             AddRowCommand = new RelayCommand(AddRow);
+            OpenFileCommand = new RelayCommand(OpenFile);
+            SendFileCommand = new RelayCommand(SendFile);
+            SaveCommand = new RelayCommand(Save);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -309,7 +333,7 @@ namespace Powork.ViewModel
 
         private void AddEmptyRectangle()
         {
-            Powork.Control.Rectangle rectangle = new Rectangle();
+            Rectangle rectangle = new Rectangle();
             ((RectangleViewModel)rectangle.DataContext).Remove += (sender) =>
             {
                 ShapeItems.Remove(rectangle);
@@ -341,6 +365,43 @@ namespace Powork.ViewModel
             button.Margin = new Thickness(0);
             button.Content = NewRowTitle;
             BlockList.Add(button);
+        }
+
+        private void OpenFile()
+        {
+        }
+
+        private void SendFile()
+        {
+        }
+
+        private void Save()
+        {
+            Column columnModel = sheetModel.ColumnList[ColumnIndex];
+            Block blockModel = columnModel.BlockList[BlockIndex];
+            blockModel.ImageSource = BitmapSource;
+            blockModel.ShapeList = new List<Shape>();
+            foreach (UserControl shape in ShapeItems)
+            {
+                Shape shapeModel = new Shape();
+                if (shape.DataContext.GetType() == typeof(RectangleViewModel)) 
+                {
+                    RectangleViewModel rectangleViewModel = (RectangleViewModel)shape.DataContext;
+
+                    shapeModel.Type = Model.Evidence.Type.EmptyRectangle;
+                    shapeModel.Position = new System.Drawing.Point((int)rectangleViewModel.X, (int)rectangleViewModel.Y);
+
+                    
+                }
+
+
+                blockModel.ShapeList.Add(shapeModel);
+            }
+
+        }
+        private void SaveFile() 
+        {
+        
         }
     }
 }

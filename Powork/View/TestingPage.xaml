@@ -61,11 +61,11 @@
             <ui:TextBox Width="100" Grid.Row="7" Grid.Column="0" Text="{Binding NewSheetName}"></ui:TextBox>
             <ui:Button Grid.Row="7" Grid.Column="1" Content="Add" Command="{Binding AddSheetCommand}"></ui:Button>
             <ui:TextBlock Foreground="White" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Text="Column"></ui:TextBlock>
-            <ComboBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding ColumnList}" SelectedValue="{Binding ColumnName}"></ComboBox>
+            <ComboBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding ColumnList}" SelectedValue="{Binding ColumnName}" SelectedIndex="{Binding ColumnIndex}"></ComboBox>
             <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0" Text="{Binding NewColumnName}"></ui:TextBox>
             <ui:Button Grid.Row="10" Grid.Column="1" Content="Add" Command="{Binding AddColumnCommand}"></ui:Button>
             <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
-                <ListBox ItemsSource="{Binding BlockList}">
+                <ListBox ItemsSource="{Binding BlockList}" SelectedIndex="{Binding BlockIndex}">
 
                 </ListBox>
             </ScrollViewer>
@@ -120,9 +120,9 @@
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Block title"></ui:TextBox>
-                <ui:Button Grid.Column="1" Content="Open"></ui:Button>
-                <ui:Button Grid.Column="2" Content="Send"></ui:Button>
-                <ui:Button Grid.Column="3" Content="Save"></ui:Button>
+                <ui:Button Grid.Column="1" Content="Open" Command="{Binding OpenFileCommand}"></ui:Button>
+                <ui:Button Grid.Column="2" Content="Send" Command="{Binding SendFileCommand}"></ui:Button>
+                <ui:Button Grid.Column="3" Content="Save" Command="{Binding SaveCommand}"></ui:Button>
                 <ui:Button Grid.Column="4" Content="Set image" Command="{Binding SetImageCommand}"></ui:Button>
             </Grid>
         </Grid>
