@@ -219,17 +219,16 @@ namespace Powork.ViewModel
                             {
                                 XSSFCell cell = (XSSFCell)cellList[ColumnIndex];
                                 string str = cell.StringCellValue;
-                                if (!string.IsNullOrEmpty(str))
-                                {
-                                    Button button = new Button();
-                                    button.Content = rowTitle + "\n" + str;
-                                    BlockList.Add(button);
 
-                                    if (BlockList.Count > columnModel.BlockList.Count)
-                                    {
-                                        Block blockModel = new Block();
-                                        columnModel.BlockList.Add(blockModel);
-                                    }
+                                Button button = new Button();
+                                button.Content = rowTitle + "\n" + str;
+                                BlockList.Add(button);
+
+                                if (BlockList.Count > columnModel.BlockList.Count)
+                                {
+                                    Block blockModel = new Block();
+                                    blockModel.Title = str;
+                                    columnModel.BlockList.Add(blockModel);
                                 }
                             }
                             else
@@ -243,6 +242,22 @@ namespace Powork.ViewModel
                                     Block blockModel = new Block();
                                     columnModel.BlockList.Add(blockModel);
                                 }
+                            }
+                        }
+                        else
+                        {
+                            if (cellList.Count > ColumnIndex)
+                            {
+                                XSSFCell cell = (XSSFCell)cellList[ColumnIndex];
+                                string str = cell.StringCellValue;
+                                if (!string.IsNullOrEmpty(str))
+                                {
+                                    columnModel.BlockList[rowIndexList.Count - 1].Description = str;
+                                }
+                            }
+                            else
+                            {
+                                columnModel.BlockList[rowIndexList.Count - 1].Description = "";
                             }
                         }
                     }
