@@ -65,8 +65,15 @@
             <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0" Text="{Binding NewColumnName}"></ui:TextBox>
             <ui:Button Grid.Row="10" Grid.Column="1" Content="Add" Command="{Binding AddColumnCommand}"></ui:Button>
             <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
-                <ListBox ItemsSource="{Binding BlockList}" SelectedIndex="{Binding BlockIndex}">
-
+                <ListBox x:Name="DynamicListBox" ItemsSource="{Binding Path=BlockListForDisplay}" Width="150">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"/>
+                                <Image Source="{Binding ImageSource}" HorizontalAlignment="Center" Stretch="Uniform" Width="100"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </ScrollViewer>
             <ui:TextBox Width="100" Grid.Row="12" Grid.Column="0" PlaceholderText="Row title" Text="{Binding NewRowTitle}"></ui:TextBox>

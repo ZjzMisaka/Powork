@@ -26,11 +26,40 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Powork.ViewModel
 {
-    class TestingPageViewModel : ObservableObject
+    public class TestingPageViewModel : ObservableObject
     {
         private XSSFWorkbook nowWorkBook;
         private XSSFSheet nowSheet;
+
         private Sheet sheetModel;
+        public Sheet SheetModel
+        {
+            get { return sheetModel; }
+            set
+            {
+                SetProperty<Sheet>(ref sheetModel, value);
+
+                if (sheetModel != null && sheetModel.ColumnList != null && sheetModel.ColumnList.Count > ColumnIndex)
+                {
+                    BlockListForDisplay = sheetModel.ColumnList[ColumnIndex].BlockList;
+                }
+                else
+                {
+                    BlockListForDisplay = new ObservableCollection<Block>();
+                }
+            }
+        }
+
+        private ObservableCollection<Block> blockListForDisplay;
+        public ObservableCollection<Block> BlockListForDisplay
+        {
+            get { return blockListForDisplay; }
+            set
+            {
+                SetProperty<ObservableCollection<Block>>(ref blockListForDisplay, value);
+            }
+        }
+
 
         private BitmapSource bitmapSource;
         public BitmapSource BitmapSource
@@ -126,8 +155,8 @@ namespace Powork.ViewModel
                 {
                     ColumnList.Clear();
 
-                    sheetModel = new Sheet();
-                    sheetModel.ColumnList = new List<Column>();
+                    SheetModel = new Sheet(this);
+                    SheetModel.ColumnList = new ObservableCollection<Column>();
 
                     nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
                     XSSFRow row = (XSSFRow)nowSheet.GetRow(1);
@@ -148,9 +177,9 @@ namespace Powork.ViewModel
                         {
                             newColumnList.Add(str);
 
-                            Column column = new Column();
+                            Column column = new Column(this);
                             column.Name = str;
-                            sheetModel.ColumnList.Add(column);
+                            SheetModel.ColumnList.Add(column);
                         }
                     }
 
@@ -183,13 +212,13 @@ namespace Powork.ViewModel
                 {
                     BlockList.Clear();
 
-                    Column columnModel = sheetModel.ColumnList[ColumnIndex];
+                    Column columnModel = SheetModel.ColumnList[ColumnIndex];
                     if (columnModel.BlockList == null)
                     {
-                        columnModel.BlockList = new List<Block>();
+                        columnModel.BlockList = new ObservableCollection<Block>();
                     }
 
-                    sheetModel.RowTitleList = new List<string>();
+                    SheetModel.RowTitleList = new ObservableCollection<string>();
 
                     List<int> rowIndexList = new List<int>();
                     string rowTitle = "";
@@ -210,7 +239,7 @@ namespace Powork.ViewModel
                         {
                             rowTitleIndex = nowSheet.GetRow(rowNum).RowNum;
                             rowTitle = cellList[0].StringCellValue;
-                            sheetModel.RowTitleList.Add(rowTitle);
+                            SheetModel.RowTitleList.Add(rowTitle);
                             rowIndexList.Add(nowSheet.GetRow(rowNum).RowNum);
                         }
                         else if (nowSheet.GetRow(rowNum).RowNum == rowTitleIndex + 1)
@@ -226,7 +255,7 @@ namespace Powork.ViewModel
 
                                 if (BlockList.Count > columnModel.BlockList.Count)
                                 {
-                                    Block blockModel = new Block();
+                                    Block blockModel = new Block(this);
                                     blockModel.Title = str;
                                     columnModel.BlockList.Add(blockModel);
                                 }
@@ -239,7 +268,7 @@ namespace Powork.ViewModel
 
                                 if (BlockList.Count > columnModel.BlockList.Count)
                                 {
-                                    Block blockModel = new Block();
+                                    Block blockModel = new Block(this);
                                     columnModel.BlockList.Add(blockModel);
                                 }
                             }
@@ -262,7 +291,7 @@ namespace Powork.ViewModel
                         }
                     }
 
-                    int columnIndex = sheetModel.ColumnList[ColumnIndex].GetIndex(nowSheet) + 1;
+                    int columnIndex = SheetModel.ColumnList[ColumnIndex].GetIndex(nowSheet) + 1;
                     for (int i = 0; i < rowIndexList.Count; ++i)
                     {
                         int rowIndex = rowIndexList[i];
@@ -302,9 +331,9 @@ namespace Powork.ViewModel
                                     {
                                         nextRow = rowIndexList[i + 1] - 1;
                                     }
-                                    if (ColumnIndex + 1 < sheetModel.ColumnList.Count)
+                                    if (ColumnIndex + 1 < SheetModel.ColumnList.Count)
                                     {
-                                        nextColumn = sheetModel.ColumnList[ColumnIndex + 1].GetIndex(nowSheet) + 1 - 1;
+                                        nextColumn = SheetModel.ColumnList[ColumnIndex + 1].GetIndex(nowSheet) + 1 - 1;
                                     }
                                     if (shapePosition.Row1 >= rowIndex + 3 && shapePosition.Row2 <= nextRow && shapePosition.Col1 >= columnIndex && shapePosition.Col2 <= nextColumn)
                                     {
@@ -312,7 +341,7 @@ namespace Powork.ViewModel
                                         {
                                             if (columnModel.BlockList[i].ShapeList == null)
                                             {
-                                                columnModel.BlockList[i].ShapeList = new List<Shape>();
+                                                columnModel.BlockList[i].ShapeList = new ObservableCollection<Shape>();
                                             }
                                             Shape shapeModel = new Shape();
                                             shapeModel.Type = Model.Evidence.Type.EmptyRectangle;
@@ -334,7 +363,10 @@ namespace Powork.ViewModel
         public int ColumnIndex
         {
             get => columnIndex;
-            set => SetProperty(ref columnIndex, value);
+            set
+            { 
+                SetProperty(ref columnIndex, value);
+            }
         }
 
         private ObservableCollection<System.Windows.Controls.Control> blockList;
@@ -458,14 +490,14 @@ namespace Powork.ViewModel
 
         private void AddColumn()
         {
-            Column column = new Column();
+            Column column = new Column(this);
             column.Name = NewColumnName;
-            sheetModel.ColumnList.Add(column);
+            SheetModel.ColumnList.Add(column);
         }
 
         private void AddRow()
         {
-            sheetModel.RowTitleList.Add(NewRowTitle);
+            SheetModel.RowTitleList.Add(NewRowTitle);
             Button button = new Button();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.Margin = new Thickness(0);
@@ -483,10 +515,10 @@ namespace Powork.ViewModel
 
         private void Save()
         {
-            Column columnModel = sheetModel.ColumnList[ColumnIndex];
+            Column columnModel = SheetModel.ColumnList[ColumnIndex];
             Block blockModel = columnModel.BlockList[BlockIndex];
             blockModel.ImageSource = BitmapSource;
-            blockModel.ShapeList = new List<Shape>();
+            blockModel.ShapeList = new ObservableCollection<Shape>();
             foreach (UserControl shape in ShapeItems)
             {
                 Shape shapeModel = new Shape();

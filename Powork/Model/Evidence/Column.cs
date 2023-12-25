@@ -1,16 +1,44 @@
-﻿using NPOI.XSSF.UserModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NPOI.XSSF.UserModel;
+using Powork.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Powork.Model.Evidence
 {
-    public class Column
+    public class Column : ObservableObject
     {
-        public string Name { get; set; }
-        public List<Block> BlockList { get; set; }
+        private TestingPageViewModel parent;
+        public Column(TestingPageViewModel parent)
+        {
+            this.parent = parent;
+        }
+
+        private string name;
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                SetProperty<string>(ref name, value);
+                parent.SheetModel = parent.SheetModel;
+            }
+        }
+
+        private ObservableCollection<Block> blockList;
+        public ObservableCollection<Block> BlockList
+        {
+            get { return blockList; }
+            set
+            {
+                SetProperty<ObservableCollection<Block>>(ref blockList, value);
+                parent.SheetModel = parent.SheetModel;
+            }
+        }
 
         public int GetIndex(XSSFSheet nowSheet)
         {
