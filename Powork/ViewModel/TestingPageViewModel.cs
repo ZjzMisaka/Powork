@@ -280,6 +280,46 @@ namespace Powork.ViewModel
                                 }
                                 else if (shape is XSSFSimpleShape simpleShape)
                                 {
+                                    ShapePosition shapePosition = new ShapePosition();
+
+                                    if (simpleShape.GetAnchor() is XSSFClientAnchor)
+                                    {
+                                        XSSFClientAnchor anchor = (XSSFClientAnchor)simpleShape.GetAnchor();
+
+                                        shapePosition.Col1 = anchor.Col1;
+                                        shapePosition.Col2 = anchor.Col2;
+                                        shapePosition.Row1 = anchor.Row1;
+                                        shapePosition.Row2 = anchor.Row2;
+                                        shapePosition.Dx1 = anchor.Dx1;
+                                        shapePosition.Dy1 = anchor.Dy1;
+                                        shapePosition.Dx2 = anchor.Dx2;
+                                        shapePosition.Dy2 = anchor.Dy2;
+                                    }
+
+                                    int nextRow = int.MaxValue;
+                                    int nextColumn = int.MaxValue;
+                                    if (i + 1 < rowIndexList.Count)
+                                    {
+                                        nextRow = rowIndexList[i + 1] - 1;
+                                    }
+                                    if (ColumnIndex + 1 < sheetModel.ColumnList.Count)
+                                    {
+                                        nextColumn = sheetModel.ColumnList[ColumnIndex + 1].GetIndex(nowSheet) + 1 - 1;
+                                    }
+                                    if (shapePosition.Row1 >= rowIndex + 3 && shapePosition.Row2 <= nextRow && shapePosition.Col1 >= columnIndex && shapePosition.Col2 <= nextColumn)
+                                    {
+                                        if (simpleShape.ShapeType == 5 && simpleShape.IsNoFill == true)
+                                        {
+                                            if (columnModel.BlockList[i].ShapeList == null)
+                                            {
+                                                columnModel.BlockList[i].ShapeList = new List<Shape>();
+                                            }
+                                            Shape shapeModel = new Shape();
+                                            shapeModel.Type = Model.Evidence.Type.EmptyRectangle;
+                                            shapeModel.Position = shapePosition;
+                                            columnModel.BlockList[i].ShapeList.Add(shapeModel);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -455,7 +495,9 @@ namespace Powork.ViewModel
                     RectangleViewModel rectangleViewModel = (RectangleViewModel)shape.DataContext;
 
                     shapeModel.Type = Model.Evidence.Type.EmptyRectangle;
-                    shapeModel.Position = new System.Drawing.Point((int)rectangleViewModel.X, (int)rectangleViewModel.Y);
+                    ShapePosition shapePosition = new ShapePosition();
+
+                    //shapeModel.Position = new System.Drawing.Point((int)rectangleViewModel.X, (int)rectangleViewModel.Y);
 
                     
                 }

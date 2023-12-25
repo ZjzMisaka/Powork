@@ -17,6 +17,6 @@ namespace Powork.Model.Evidence
     {
         public Type Type { get; set; }
         public string Content { get; set; }
-        public Point Position { get; set; }
+        public ShapePosition Position { get; set; }
     }
 }
