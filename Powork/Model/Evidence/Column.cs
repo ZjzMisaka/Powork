@@ -29,7 +29,7 @@ namespace Powork.Model.Evidence
                 string str = row.Cells[i].StringCellValue;
                 if (str == Name)
                 {
-                    return i;
+                    return row.Cells[i].ColumnIndex;
                 }
             }
 

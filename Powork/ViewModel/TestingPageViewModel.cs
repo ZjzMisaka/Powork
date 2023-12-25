@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -189,7 +190,13 @@ namespace Powork.ViewModel
                     }
 
                     sheetModel.RowTitleList = new List<string>();
-                    
+
+                    List<int> rowIndexList = new List<int>();
+                    string rowTitle = "";
+                    int rowTitleIndex = -1;
+
+                    XSSFDrawing drawing = (XSSFDrawing)nowSheet.CreateDrawingPatriarch();
+
                     for (int rowNum = 2; rowNum < nowSheet.LastRowNum; ++rowNum)
                     {
                         IRow row = nowSheet.GetRow(rowNum);
@@ -198,14 +205,37 @@ namespace Powork.ViewModel
                             continue;
                         }
                         List<ICell> cellList = nowSheet.GetRow(rowNum).Cells;
-                        if (cellList.Count > ColumnIndex)
+
+                        if (cellList[0].ColumnIndex == 1)
                         {
-                            XSSFCell cell = (XSSFCell)cellList[ColumnIndex];
-                            string str = cell.StringCellValue;
-                            if (!string.IsNullOrEmpty(str))
+                            rowTitleIndex = nowSheet.GetRow(rowNum).RowNum;
+                            rowTitle = cellList[0].StringCellValue;
+                            sheetModel.RowTitleList.Add(rowTitle);
+                            rowIndexList.Add(nowSheet.GetRow(rowNum).RowNum);
+                        }
+                        else if (nowSheet.GetRow(rowNum).RowNum == rowTitleIndex + 1)
+                        {
+                            if (cellList.Count > ColumnIndex)
+                            {
+                                XSSFCell cell = (XSSFCell)cellList[ColumnIndex];
+                                string str = cell.StringCellValue;
+                                if (!string.IsNullOrEmpty(str))
+                                {
+                                    Button button = new Button();
+                                    button.Content = rowTitle + "\n" + str;
+                                    BlockList.Add(button);
+
+                                    if (BlockList.Count > columnModel.BlockList.Count)
+                                    {
+                                        Block blockModel = new Block();
+                                        columnModel.BlockList.Add(blockModel);
+                                    }
+                                }
+                            }
+                            else
                             {
                                 Button button = new Button();
-                                button.Content = str;
+                                button.Content = rowTitle + "\n" + "Empty";
                                 BlockList.Add(button);
 
                                 if (BlockList.Count > columnModel.BlockList.Count)
@@ -213,8 +243,29 @@ namespace Powork.ViewModel
                                     Block blockModel = new Block();
                                     columnModel.BlockList.Add(blockModel);
                                 }
+                            }
+                        }
+                    }
 
-                                sheetModel.RowTitleList.Add(str);
+                    int columnIndex = sheetModel.ColumnList[ColumnIndex].GetIndex(nowSheet) + 1;
+                    for (int i = 0; i < rowIndexList.Count; ++i)
+                    {
+                        int rowIndex = rowIndexList[i];
+                        if (drawing is XSSFDrawing xssfDrawing)
+                        {
+                            foreach (XSSFShape shape in xssfDrawing.GetShapes())
+                            {
+                                if (shape is XSSFPicture picture)
+                                {
+                                    XSSFClientAnchor anchor = (XSSFClientAnchor)picture.GetPreferredSize();
+                                    if (anchor.Row1 <= rowIndex + 3 && anchor.Row2 >= rowIndex + 3 && anchor.Col1 <= columnIndex && anchor.Col2 >= columnIndex)
+                                    {
+                                        columnModel.BlockList[i].ImageSource = ConvertByteArrayToImageSource(picture.PictureData.Data);
+                                    }
+                                }
+                                else if (shape is XSSFSimpleShape simpleShape)
+                                {
+                                }
                             }
                         }
                     }
@@ -402,6 +453,22 @@ namespace Powork.ViewModel
         private void SaveFile() 
         {
         
+        }
+
+
+
+        private ImageSource ConvertByteArrayToImageSource(byte[] imageData)
+        {
+            using (MemoryStream ms = new MemoryStream(imageData))
+            {
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // 设置缓存选项
+                bitmapImage.StreamSource = ms;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze(); // 冻结对象，使其可以跨线程使用
+                return bitmapImage;
+            }
         }
     }
 }
