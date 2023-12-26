@@ -69,7 +69,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" TextWrapping="Wrap" Width="100"/>
                                 <Image Source="{Binding ImageSource}" HorizontalAlignment="Center" Stretch="Uniform" Width="100"/>
                             </StackPanel>
                         </DataTemplate>
