@@ -22,7 +22,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Powork.ViewModel
 {
@@ -30,6 +29,7 @@ namespace Powork.ViewModel
     {
         private XSSFWorkbook nowWorkBook;
         private XSSFSheet nowSheet;
+        private double imageScale;
 
         private Sheet sheetModel;
         public Sheet SheetModel
@@ -286,6 +286,7 @@ namespace Powork.ViewModel
                         int rowIndex = rowIndexList[i];
                         if (drawing is XSSFDrawing xssfDrawing)
                         {
+                            XSSFClientAnchor imageAnchor = null;
                             foreach (XSSFShape shape in xssfDrawing.GetShapes())
                             {
                                 if (shape is XSSFPicture picture)
@@ -293,7 +294,12 @@ namespace Powork.ViewModel
                                     XSSFClientAnchor anchor = (XSSFClientAnchor)picture.GetPreferredSize();
                                     if (anchor.Row1 <= rowIndex + 3 && anchor.Row2 >= rowIndex + 3 && anchor.Col1 <= columnIndex && anchor.Col2 >= columnIndex)
                                     {
+                                        imageAnchor = anchor;
+                                        Model.Evidence.ImageInfo imageInfoModel = new Model.Evidence.ImageInfo();
+                                        imageInfoModel.WidthInExcel = (int)((anchor.Col2 - anchor.Col1 + 1) * nowSheet.GetColumnWidthInPixels(0) - ((anchor.Dx1 / 914400.0) * 96) - ((anchor.Dx2 / 914400.0) * 96));
+                                        imageInfoModel.HeightInExcel = (int)((anchor.Row2 - anchor.Row1 + 1) * nowSheet.DefaultRowHeightInPoints - ((anchor.Dy1 / 914400.0) * 96) - ((anchor.Dy2 / 914400.0) * 96));
                                         columnModel.BlockList[i].ImageSource = ConvertByteArrayToImageSource(picture.PictureData.Data);
+                                        columnModel.BlockList[i].ImageInfo = imageInfoModel;
                                     }
                                 }
                                 else if (shape is XSSFSimpleShape simpleShape)
@@ -308,10 +314,10 @@ namespace Powork.ViewModel
                                         shapePosition.Col2 = anchor.Col2;
                                         shapePosition.Row1 = anchor.Row1;
                                         shapePosition.Row2 = anchor.Row2;
-                                        shapePosition.Dx1 = anchor.Dx1;
-                                        shapePosition.Dy1 = anchor.Dy1;
-                                        shapePosition.Dx2 = anchor.Dx2;
-                                        shapePosition.Dy2 = anchor.Dy2;
+                                        shapePosition.Dx1 = (int)((anchor.Dx1 / 914400.0) * 96);
+                                        shapePosition.Dy1 = (int)((anchor.Dy1 / 914400.0) * 96);
+                                        shapePosition.Dx2 = (int)((anchor.Dx2 / 914400.0) * 96);
+                                        shapePosition.Dy2 = (int)((anchor.Dy2 / 914400.0) * 96);
                                     }
 
                                     int nextRow = int.MaxValue;
@@ -338,6 +344,15 @@ namespace Powork.ViewModel
                                             columnModel.BlockList[i].ShapeList.Add(shapeModel);
                                         }
                                     }
+                                }
+                            }
+
+                            if (imageAnchor != null && columnModel.BlockList[i].ShapeList != null)
+                            {
+                                foreach (Shape shape in columnModel.BlockList[i].ShapeList)
+                                {
+                                    shape.Position.DeltaRow = shape.Position.Row1 - imageAnchor.Row1;
+                                    shape.Position.DeltaCol = shape.Position.Col1 - imageAnchor.Col1;
                                 }
                             }
                         }
@@ -372,7 +387,28 @@ namespace Powork.ViewModel
         public Block SelectedBlock
         {
             get => selectedBlock;
-            set => SetProperty(ref selectedBlock, value);
+            set
+            {
+                SetProperty(ref selectedBlock, value);
+
+                ShapeItems = new ObservableCollection<UserControl>();
+                if (value != null && value.ShapeList != null)
+                {
+                    foreach (Shape shape in value.ShapeList)
+                    {
+                        if (shape.Type == Model.Evidence.Type.EmptyRectangle)
+                        {
+                            double excelImageScaleX = SelectedBlock.ImageInfo.WidthInExcel / SelectedBlock.ImageSource.Width;
+                            double excelImageScaleY = SelectedBlock.ImageInfo.HeightInExcel / SelectedBlock.ImageSource.Height;
+                            int x = (int)((shape.Position.DeltaCol * nowSheet.GetColumnWidthInPixels(0) + shape.Position.Dx1) * imageScale / excelImageScaleX);
+                            int y = (int)((shape.Position.DeltaRow * nowSheet.DefaultRowHeightInPoints + shape.Position.Dy1) * imageScale / excelImageScaleY);
+                            int width = (int)(((shape.Position.Col2 - shape.Position.Col1 + 1) * nowSheet.GetColumnWidthInPixels(0) - shape.Position.Dx1 - shape.Position.Dx2) * imageScale / excelImageScaleX);
+                            int height = (int)(((shape.Position.Row2 - shape.Position.Row1 + 1) * nowSheet.DefaultRowHeightInPoints - shape.Position.Dy1 - shape.Position.Dy2) * imageScale / excelImageScaleY);
+                            AddEmptyRectangle(x, y, width, height);
+                        }
+                    }
+                }
+            }
         }
 
         private int blockIndex;
@@ -383,7 +419,6 @@ namespace Powork.ViewModel
         }
 
         private string newFileName;
-
         public string NewFileName 
         { 
             get => newFileName; 
@@ -425,7 +460,8 @@ namespace Powork.ViewModel
         public ICommand OpenFileCommand { get; set; }
         public ICommand SendFileCommand { get; set; }
         public ICommand SaveCommand { get; set; }
-        
+        public ICommand ImageSizeChangedCommand { get; set; }
+
 
         public TestingPageViewModel()
         {
@@ -447,6 +483,7 @@ namespace Powork.ViewModel
             OpenFileCommand = new RelayCommand(OpenFile);
             SendFileCommand = new RelayCommand(SendFile);
             SaveCommand = new RelayCommand(Save);
+            ImageSizeChangedCommand = new RelayCommand<SizeChangedEventArgs>(ImageSizeChanged);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -468,11 +505,22 @@ namespace Powork.ViewModel
 
         private void AddEmptyRectangle()
         {
+            AddEmptyRectangle(0, 0, 100, 100);
+        }
+
+        private void AddEmptyRectangle(int x, int y, int width, int height)
+        {
             Rectangle rectangle = new Rectangle();
+            ((RectangleViewModel)rectangle.DataContext).X = x;
+            ((RectangleViewModel)rectangle.DataContext).Y = y;
+            ((RectangleViewModel)rectangle.DataContext).RectangleWidth = width;
+            ((RectangleViewModel)rectangle.DataContext).RectangleHeight = height;
             ((RectangleViewModel)rectangle.DataContext).Remove += (sender) =>
             {
                 ShapeItems.Remove(rectangle);
             };
+            Canvas.SetLeft(rectangle, x);
+            Canvas.SetTop(rectangle, y);
             ShapeItems.Add(rectangle);
         }
 
@@ -537,6 +585,15 @@ namespace Powork.ViewModel
         
         }
 
+        private void ImageSizeChanged(SizeChangedEventArgs e)
+        {
+            if (SelectedBlock == null)
+            {
+                return;
+            }
+            imageScale = e.NewSize.Height / SelectedBlock.ImageSource.Height;
+            SelectedBlock = SelectedBlock;
+        }
 
 
         private ImageSource ConvertByteArrayToImageSource(byte[] imageData)

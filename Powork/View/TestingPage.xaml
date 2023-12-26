@@ -104,15 +104,22 @@
                     <ui:Button Grid.Column="3" Content="Filled Rectangle"></ui:Button>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <ui:Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" Source="{Binding SelectedBlock.ImageSource}" Stretch="Uniform">
-                    </ui:Image>
-                    <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" ItemsSource="{Binding ShapeItems}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                    <Grid Width="300" Height="300" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ui:Image VerticalAlignment="Top" HorizontalAlignment="Left" MaxWidth="300" MaxHeight="300" Source="{Binding SelectedBlock.ImageSource}" Stretch="Uniform">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SizeChanged">
+                                    <i:InvokeCommandAction Command="{Binding ImageSizeChangedCommand}" PassEventArgsToCommand="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ui:Image>
+                        <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" ItemsSource="{Binding ShapeItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Grid>
                 </Grid>
             </Grid>
 

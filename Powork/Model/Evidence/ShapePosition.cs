@@ -17,5 +17,8 @@ namespace Powork.Model.Evidence
         public int Dy1 { get; set; }
         public int Dx2 { get; set; }
         public int Dy2 { get; set; }
+
+        public int DeltaRow { get; set; }
+        public int DeltaCol { get; set; }
     }
 }

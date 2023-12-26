@@ -51,6 +51,17 @@ namespace Powork.Model.Evidence
             }
         }
 
+        private ImageInfo imageInfo;
+        public ImageInfo ImageInfo
+        {
+            get { return imageInfo; }
+            set
+            {
+                SetProperty<ImageInfo>(ref imageInfo, value);
+                parent.SheetModel = parent.SheetModel;
+            }
+        }
+
         private ObservableCollection<Shape> shapeList;
         public ObservableCollection<Shape> ShapeList
         {
