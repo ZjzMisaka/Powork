@@ -24,6 +24,9 @@ namespace Powork.ControlViewModel
         public delegate void RemoveEventHandler(RectangleViewModel sender);
         public event RemoveEventHandler Remove;
 
+        public delegate void ChangedEventHandler(RectangleViewModel sender);
+        public event ChangedEventHandler Changed;
+
         private double x;
         public double X
         {
@@ -151,6 +154,11 @@ namespace Powork.ControlViewModel
             isDragging = false;
             isResizing = false;
             rectangle.ReleaseMouseCapture();
+
+            if (Changed != null)
+            {
+                Changed.Invoke(this);
+            }
         }
 
         private void MouseRightButtonUp(MouseButtonEventArgs e)
@@ -158,6 +166,10 @@ namespace Powork.ControlViewModel
             if (Remove != null)
             {
                 Remove.Invoke(this);
+            }
+            if (Changed != null)
+            {
+                Changed.Invoke(this);
             }
         }
     }

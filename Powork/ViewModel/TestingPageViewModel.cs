@@ -482,7 +482,7 @@ namespace Powork.ViewModel
             AddRowCommand = new RelayCommand(AddRow);
             OpenFileCommand = new RelayCommand(OpenFile);
             SendFileCommand = new RelayCommand(SendFile);
-            SaveCommand = new RelayCommand(Save);
+            SaveCommand = new RelayCommand(SaveFile);
             ImageSizeChangedCommand = new RelayCommand<SizeChangedEventArgs>(ImageSizeChanged);
         }
 
@@ -519,9 +519,15 @@ namespace Powork.ViewModel
             {
                 ShapeItems.Remove(rectangle);
             };
+            ((RectangleViewModel)rectangle.DataContext).Changed += (sender) =>
+            {
+                SaveShapes();
+            };
             Canvas.SetLeft(rectangle, x);
             Canvas.SetTop(rectangle, y);
             ShapeItems.Add(rectangle);
+
+            SaveShapes();
         }
 
         private void AddFile()
@@ -558,7 +564,7 @@ namespace Powork.ViewModel
         {
         }
 
-        private void Save()
+        private void SaveShapes()
         {
             SelectedBlock.ShapeList = new ObservableCollection<Shape>();
             foreach (UserControl shape in ShapeItems)
@@ -580,6 +586,7 @@ namespace Powork.ViewModel
             }
 
         }
+
         private void SaveFile() 
         {
         
