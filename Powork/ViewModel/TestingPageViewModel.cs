@@ -60,17 +60,6 @@ namespace Powork.ViewModel
             }
         }
 
-
-        private BitmapSource bitmapSource;
-        public BitmapSource BitmapSource
-        {
-            get { return bitmapSource; }
-            set
-            {
-                SetProperty<BitmapSource>(ref bitmapSource, value);
-            }
-        }
-
         private ObservableCollection<UserControl> shapeItems;
         public ObservableCollection<UserControl> ShapeItems
         {
@@ -379,6 +368,13 @@ namespace Powork.ViewModel
             }
         }
 
+        private Block selectedBlock;
+        public Block SelectedBlock
+        {
+            get => selectedBlock;
+            set => SetProperty(ref selectedBlock, value);
+        }
+
         private int blockIndex;
         public int BlockIndex
         {
@@ -407,6 +403,7 @@ namespace Powork.ViewModel
             get => newColumnName;
             set => SetProperty(ref newColumnName, value); 
         }
+
         private string newRowTitle;
 
         public string NewRowTitle
@@ -466,7 +463,7 @@ namespace Powork.ViewModel
 
         private void SetImage()
         {
-            BitmapSource = Clipboard.GetImage();
+            SelectedBlock.ImageSource = Clipboard.GetImage();
         }
 
         private void AddEmptyRectangle()
@@ -515,10 +512,7 @@ namespace Powork.ViewModel
 
         private void Save()
         {
-            Column columnModel = SheetModel.ColumnList[ColumnIndex];
-            Block blockModel = columnModel.BlockList[BlockIndex];
-            blockModel.ImageSource = BitmapSource;
-            blockModel.ShapeList = new ObservableCollection<Shape>();
+            SelectedBlock.ShapeList = new ObservableCollection<Shape>();
             foreach (UserControl shape in ShapeItems)
             {
                 Shape shapeModel = new Shape();
@@ -534,8 +528,7 @@ namespace Powork.ViewModel
                     
                 }
 
-
-                blockModel.ShapeList.Add(shapeModel);
+                SelectedBlock.ShapeList.Add(shapeModel);
             }
 
         }

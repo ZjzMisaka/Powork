@@ -65,7 +65,7 @@
             <ui:TextBox Width="100" Grid.Row="10" Grid.Column="0" Text="{Binding NewColumnName}"></ui:TextBox>
             <ui:Button Grid.Row="10" Grid.Column="1" Content="Add" Command="{Binding AddColumnCommand}"></ui:Button>
             <ScrollViewer Grid.Row="11" Grid.ColumnSpan="2">
-                <ListBox x:Name="DynamicListBox" ItemsSource="{Binding Path=BlockListForDisplay}" Width="150">
+                <ListBox x:Name="DynamicListBox" ItemsSource="{Binding Path=BlockListForDisplay}" SelectedValue="{Binding SelectedBlock}" SelectedIndex="{Binding BlockIndex}" Width="150">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical">
@@ -104,7 +104,7 @@
                     <ui:Button Grid.Column="3" Content="Filled Rectangle"></ui:Button>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <ui:Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" Source="{Binding BitmapSource}" Stretch="Uniform">
+                    <ui:Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" Source="{Binding SelectedBlock.ImageSource}" Stretch="Uniform">
                     </ui:Image>
                     <ItemsControl VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="300" ItemsSource="{Binding ShapeItems}">
                         <ItemsControl.ItemsPanel>
@@ -116,7 +116,7 @@
                 </Grid>
             </Grid>
 
-            <ui:TextBox Grid.Row="1" PlaceholderEnabled="True" AcceptsReturn="True" TextWrapping="Wrap" PlaceholderText="Block description"></ui:TextBox>
+            <ui:TextBox Grid.Row="1" PlaceholderEnabled="True" AcceptsReturn="True" TextWrapping="Wrap" PlaceholderText="Block description" Text="{Binding SelectedBlock.Description}"></ui:TextBox>
 
             <Grid Grid.Row="2" Width="auto" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
@@ -126,7 +126,7 @@
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Block title"></ui:TextBox>
+                <ui:TextBox Grid.Column="0" PlaceholderEnabled="True" PlaceholderText="Block title" Text="{Binding SelectedBlock.Title}"></ui:TextBox>
                 <ui:Button Grid.Column="1" Content="Open" Command="{Binding OpenFileCommand}"></ui:Button>
                 <ui:Button Grid.Column="2" Content="Send" Command="{Binding SendFileCommand}"></ui:Button>
                 <ui:Button Grid.Column="3" Content="Save" Command="{Binding SaveCommand}"></ui:Button>
