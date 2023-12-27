@@ -48,5 +48,16 @@ namespace Powork.Model.Evidence
                 parent.SheetModel = parent.SheetModel;
             }
         }
+
+        private bool removed;
+        public bool Removed
+        {
+            get { return removed; }
+            set
+            {
+                SetProperty<bool>(ref removed, value);
+                parent.SheetModel = parent.SheetModel;
+            }
+        }
     }
 }

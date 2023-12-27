@@ -30,6 +30,7 @@ namespace Powork.ViewModel
         private XSSFWorkbook nowWorkBook;
         private XSSFSheet nowSheet;
         private double imageScale;
+        private Dictionary<string, Sheet> sheetDict;
 
         private Sheet sheetModel;
         public Sheet SheetModel
@@ -144,35 +145,48 @@ namespace Powork.ViewModel
                 {
                     ColumnList.Clear();
 
-                    SheetModel = new Sheet(this);
-                    SheetModel.ColumnList = new ObservableCollection<Column>();
-
-                    nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
-                    XSSFRow row = (XSSFRow)nowSheet.GetRow(1);
-                    if (row == null)
+                    if (sheetDict.ContainsKey(SheetName))
                     {
-                        return;
+                        SheetModel = sheetDict[SheetName];
+                        ObservableCollection<string> newColumnList = new ObservableCollection<string>();
+                        foreach (Column column in SheetModel.ColumnList)
+                        {
+                            newColumnList.Add(column.Name);
+                        }
+                        ColumnList = newColumnList;
                     }
-                    
-                    ObservableCollection<string> newColumnList = new ObservableCollection<string>(); ;
-                    for (int i = 0; i < row.Cells.Count; ++i)
+                    else
                     {
-                        if (row.Cells[i].CellType.ToString() != "String")
-                        {
-                            continue;
-                        }
-                        string str = row.Cells[i].StringCellValue;
-                        if (!string.IsNullOrEmpty(str))
-                        {
-                            newColumnList.Add(str);
+                        SheetModel = new Sheet(this);
+                        SheetModel.ColumnList = new ObservableCollection<Column>();
 
-                            Column column = new Column(this);
-                            column.Name = str;
-                            SheetModel.ColumnList.Add(column);
+                        nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
+                        XSSFRow row = (XSSFRow)nowSheet.GetRow(1);
+                        if (row == null)
+                        {
+                            return;
                         }
+
+                        ObservableCollection<string> newColumnList = new ObservableCollection<string>();
+                        for (int i = 0; i < row.Cells.Count; ++i)
+                        {
+                            if (row.Cells[i].CellType.ToString() != "String")
+                            {
+                                continue;
+                            }
+                            string str = row.Cells[i].StringCellValue;
+                            if (!string.IsNullOrEmpty(str))
+                            {
+                                newColumnList.Add(str);
+
+                                Column column = new Column(this);
+                                column.Name = str;
+                                SheetModel.ColumnList.Add(column);
+                            }
+                        }
+
+                        ColumnList = newColumnList;
                     }
-
-                    ColumnList = newColumnList;
                 }
                 catch
                 { }
@@ -465,6 +479,8 @@ namespace Powork.ViewModel
 
         public TestingPageViewModel()
         {
+            sheetDict = new Dictionary<string, Sheet>();
+
             ShapeItems = new ObservableCollection<UserControl>();
             FileList = new ObservableCollection<string>();
             SheetList = new ObservableCollection<string>();
@@ -589,7 +605,36 @@ namespace Powork.ViewModel
 
         private void SaveFile() 
         {
-        
+            foreach (string sheetName in SheetList)
+            {
+                if (sheetDict.ContainsKey(sheetName))
+                { 
+                    Sheet sheetModel = sheetDict[sheetName];
+                    if (sheetModel.Removed)
+                    {
+                        nowWorkBook.RemoveSheetAt(nowWorkBook.GetSheetIndex(sheetName));
+                    }
+                    else
+                    {
+                        // Save
+                        XSSFSheet sheet = (XSSFSheet)nowWorkBook.GetSheet(sheetName);
+                        foreach (Column columnModel in sheetModel.ColumnList)
+                        {
+                            foreach (Block blockModel in columnModel.BlockList)
+                            {
+                            }
+                        }
+                    }
+                }
+            }
+
+            string filePath = System.IO.Path.Combine(Path, FileName);
+            using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                nowWorkBook.Write(stream);
+            }
+
+            nowWorkBook.Close();
         }
 
         private void ImageSizeChanged(SizeChangedEventArgs e)
@@ -602,17 +647,16 @@ namespace Powork.ViewModel
             SelectedBlock = SelectedBlock;
         }
 
-
         private ImageSource ConvertByteArrayToImageSource(byte[] imageData)
         {
             using (MemoryStream ms = new MemoryStream(imageData))
             {
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // 设置缓存选项
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.StreamSource = ms;
                 bitmapImage.EndInit();
-                bitmapImage.Freeze(); // 冻结对象，使其可以跨线程使用
+                bitmapImage.Freeze();
                 return bitmapImage;
             }
         }
