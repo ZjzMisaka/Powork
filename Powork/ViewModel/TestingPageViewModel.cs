@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity.Migrations.Model;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -618,10 +619,32 @@ namespace Powork.ViewModel
                     {
                         // Save
                         XSSFSheet sheet = (XSSFSheet)nowWorkBook.GetSheet(sheetName);
+                        int columnIndex = 0;
+
+                        Dictionary<string, int> rowDict = new Dictionary<string, int>();
+                        int nowRowTitleRowIndex = 3;
+                        foreach (string rowTitle in sheetModel.RowTitleList)
+                        {
+                            XSSFCell cell = GetCell(sheet, nowRowTitleRowIndex, 1);
+                            cell.SetCellValue(rowTitle);
+
+                            rowDict[rowTitle] = nowRowTitleRowIndex;
+
+                            nowRowTitleRowIndex += 2;
+                        }
+
                         foreach (Column columnModel in sheetModel.ColumnList)
                         {
+                            int columnAndRowTitleColumnIndex = columnIndex + 1;
+
+                            XSSFCell cell = GetCell(sheet, 1, columnAndRowTitleColumnIndex);
+                            cell.SetCellValue(columnModel.Name);
+
                             foreach (Block blockModel in columnModel.BlockList)
                             {
+                                string rowTitle = sheetModel.RowTitleList[columnModel.BlockList.IndexOf(blockModel)];
+                                int blockRowIndex = rowDict[rowTitle] + 1;
+                                int blockColumnIndex = columnIndex + 2;
                             }
                         }
                     }
@@ -645,6 +668,14 @@ namespace Powork.ViewModel
             }
             imageScale = e.NewSize.Height / SelectedBlock.ImageSource.Height;
             SelectedBlock = SelectedBlock;
+        }
+
+        private XSSFCell GetCell(XSSFSheet sheet, int rowIndex, int columnIndex)
+        {
+            XSSFRow row = (XSSFRow)sheet.GetRow(rowIndex) ?? (XSSFRow)sheet.CreateRow(rowIndex);
+            XSSFCell cell = (XSSFCell)row.GetCell(columnIndex) ?? (XSSFCell)row.CreateCell(columnIndex);
+
+            return cell;
         }
 
         private ImageSource ConvertByteArrayToImageSource(byte[] imageData)
