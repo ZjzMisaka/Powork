@@ -9,9 +9,9 @@ using System.Windows.Media.Imaging;
 
 namespace Powork.Helper
 {
-    static internal class UserMessageHelper
+    internal static class UserMessageHelper
     {
-        static internal void ConvertImageInMessage(UserMessage userMessage)
+        internal static void ConvertImageInMessage(UserMessage userMessage)
         {
             foreach (UserMessageBody messageBody in userMessage.MessageBody)
             {

@@ -12,9 +12,9 @@ using System.IO;
 
 namespace Powork.Helper
 {
-    static public class ButtonHelper
+    public static class ButtonHelper
     {
-        static public Button CreateImageButton(string path, RoutedEventHandler handler)
+        public static Button CreateImageButton(string path, RoutedEventHandler handler)
         {
             Button button = new Button();
             ImageBrush imgBrush = new ImageBrush(new BitmapImage(new Uri(path, UriKind.Absolute)))

@@ -11,9 +11,9 @@ using Wpf.Ui.Controls;
 
 namespace Powork.Helper
 {
-    static public class ShapeHelper
+    public static class ShapeHelper
     {
-        static public void CreateLine(XSSFSheet sheet, int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2)
+        public static void CreateLine(XSSFSheet sheet, int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2)
         {
             XSSFDrawing drawing = (XSSFDrawing)sheet.CreateDrawingPatriarch();
             XSSFClientAnchor anchor = new XSSFClientAnchor(dx1, dy1, dx2, dy2, col1, row1, col2, row2);
@@ -23,7 +23,7 @@ namespace Powork.Helper
             shape.LineWidth = 2;
         }
 
-        static public void CreateBorderRectangle(XSSFSheet sheet, int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2)
+        public static void CreateBorderRectangle(XSSFSheet sheet, int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2)
         {
             XSSFDrawing drawing = (XSSFDrawing)sheet.CreateDrawingPatriarch();
             XSSFClientAnchor anchor = new XSSFClientAnchor(dx1, dy1, dx2, dy2, col1, row1, col2, row2);
@@ -34,7 +34,7 @@ namespace Powork.Helper
             shape.LineWidth = 2;
         }
 
-        static public void CreateRectangleWithText(XSSFSheet sheet, int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2, string text)
+        public static void CreateRectangleWithText(XSSFSheet sheet, int dx1, int dy1, int dx2, int dy2, int col1, int row1, int col2, int row2, string text)
         {
             XSSFDrawing drawing = (XSSFDrawing)sheet.CreateDrawingPatriarch();
             XSSFClientAnchor anchor = new XSSFClientAnchor(dx1, dy1, dx2, dy2, col1, row1, col2, row2);

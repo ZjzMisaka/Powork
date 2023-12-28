@@ -12,7 +12,7 @@ namespace Powork.Repository
 {
     public class UserMessageRepository
     {
-        static public void InsertMessage(UserMessage userMessage, string toIP, string toName)
+        public static void InsertMessage(UserMessage userMessage, string toIP, string toName)
         {
             string body = JsonConvert.SerializeObject(userMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -34,7 +34,7 @@ namespace Powork.Repository
             }
         }
 
-        static public List<UserMessage> SelectMessgae(string ip, string name, int id = -1)
+        public static List<UserMessage> SelectMessgae(string ip, string name, int id = -1)
         {
             List<UserMessage> userMessageList = new List<UserMessage>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))

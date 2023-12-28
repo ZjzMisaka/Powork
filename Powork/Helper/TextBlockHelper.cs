@@ -12,9 +12,9 @@ using Wpf.Ui.Controls;
 
 namespace Powork.Helper
 {
-    static public class TextBlockHelper
+    public static class TextBlockHelper
     {
-        static public TextBlock GetTimeControl(UserMessage userMessage)
+        public static TextBlock GetTimeControl(UserMessage userMessage)
         {
             TextBlock timeTextBlock = null;
 
@@ -35,7 +35,7 @@ namespace Powork.Helper
             
             return timeTextBlock;
         }
-        static public TextBlock GetMessageControl (UserMessage userMessage)
+        public static TextBlock GetMessageControl (UserMessage userMessage)
         {
             TextBlock textBlock = null;
             Application.Current.Dispatcher.Invoke(() =>

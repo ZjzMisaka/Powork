@@ -16,14 +16,14 @@ using System.Net.NetworkInformation;
 
 namespace Powork
 {
-    static public class GlobalVariables
+    public static class GlobalVariables
     {
-        static private IPAddress localIP = GetLocalIPAddress();
-        static public IPAddress LocalIP { get => localIP; }
-        static public int UdpPort { get; } = 1096;
-        static public int TcpPort { get; } = 614;
-        static public string DbName { get; } = "PoworkDB";
-        static public TcpServerClient TcpServerClient { get; set; }
+        private static IPAddress localIP = GetLocalIPAddress();
+        public static IPAddress LocalIP { get => localIP; }
+        public static int UdpPort { get; } = 1096;
+        public static int TcpPort { get; } = 614;
+        public static string DbName { get; } = "PoworkDB";
+        public static TcpServerClient TcpServerClient { get; set; }
         private static ObservableCollection<User> userList;
         public static ObservableCollection<User> UserList 
         { 
@@ -38,9 +38,9 @@ namespace Powork
             }
         }
         public delegate void UserListChangedEventHandler(object sender, EventArgs e);
-        static public event UserListChangedEventHandler UserListChanged;
+        public static event UserListChangedEventHandler UserListChanged;
         public delegate void GetMessageEventHandler(object sender, EventArgs e);
-        static public event GetMessageEventHandler GetMessage;
+        public static event GetMessageEventHandler GetMessage;
         public static void InvokeGetMessageEvent(UserMessage userMessage)
         {
             if (GetMessage != null)
@@ -48,7 +48,7 @@ namespace Powork
                 GetMessage.Invoke(userMessage, new EventArgs());
             }
         }
-        static public List<User> SelfInfo 
+        public static List<User> SelfInfo 
         { 
             get
             { 

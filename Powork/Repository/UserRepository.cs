@@ -9,9 +9,9 @@ using System.Xml.Linq;
 
 namespace Powork.Repository
 {
-    static public class UserRepository
+    public static class UserRepository
     {
-        static public void InsertUser(User user)
+        public static void InsertUser(User user)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
@@ -26,7 +26,7 @@ namespace Powork.Repository
             }
         }
 
-        static public List<User> SelectUser()
+        public static List<User> SelectUser()
         {
             List<User> userList = new List<User>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -59,7 +59,7 @@ namespace Powork.Repository
             return userList;
         }
 
-        static public void UpdateUserByIp(User user)
+        public static void UpdateUserByIp(User user)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
@@ -74,7 +74,7 @@ namespace Powork.Repository
             }
         }
 
-        static public List<User> SelectUserByIp(string ip)
+        public static List<User> SelectUserByIp(string ip)
         {
             List<User> userList = new List<User>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -104,7 +104,7 @@ namespace Powork.Repository
             }
         }
 
-        static public List<User> SelectUserByIpName(string ip, string name)
+        public static List<User> SelectUserByIpName(string ip, string name)
         {
             List<User> userList = new List<User>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -134,7 +134,7 @@ namespace Powork.Repository
             }
         }
 
-        static public void RemoveUserByIp(string ip)
+        public static void RemoveUserByIp(string ip)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {

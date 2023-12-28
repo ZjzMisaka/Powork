@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace Powork.Repository
 {
-    static public class CommonRepository
+    public static class CommonRepository
     {
-        static public void CreateDatabase()
+        public static void CreateDatabase()
         {
             if (!File.Exists(GlobalVariables.DbName))
             {
@@ -22,7 +22,7 @@ namespace Powork.Repository
             }
         }
 
-        static public void CreateTable()
+        public static void CreateTable()
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {

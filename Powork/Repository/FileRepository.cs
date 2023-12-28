@@ -9,9 +9,9 @@ using System.Xml.Linq;
 
 namespace Powork.Repository
 {
-    static public class FileRepository
+    public static class FileRepository
     {
-        static public void InsertFile(string guid, string path)
+        public static void InsertFile(string guid, string path)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
@@ -26,7 +26,7 @@ namespace Powork.Repository
             }
         }
 
-        static public string SelectFile(string guid)
+        public static string SelectFile(string guid)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {

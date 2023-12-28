@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Powork.Helper
 {
-    static public class FileHelper
+    public static class FileHelper
     {
         public enum Type
         { 
@@ -17,7 +17,7 @@ namespace Powork.Helper
             Directory,
             None,
         }
-        static public Type GetType(string path)
+        public static Type GetType(string path)
         {
             FileAttributes attr = File.GetAttributes(path);
 
