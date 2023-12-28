@@ -18,7 +18,7 @@ namespace Powork.Model.Evidence
         public int Dx2 { get; set; }
         public int Dy2 { get; set; }
 
-        public int DeltaRow { get; set; }
-        public int DeltaCol { get; set; }
+        public int RowOffsetForImage { get; set; }
+        public int ColOffsetForImage { get; set; }
     }
 }

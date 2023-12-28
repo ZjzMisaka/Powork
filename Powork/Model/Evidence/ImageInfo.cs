@@ -12,8 +12,8 @@ namespace Powork.Model.Evidence
 {
     public class ImageInfo
     {
-        public int WidthInExcel { get; set; }
+        public double WidthInExcel { get; set; }
 
-        public int HeightInExcel { get; set; }
+        public double HeightInExcel { get; set; }
     }
 }
