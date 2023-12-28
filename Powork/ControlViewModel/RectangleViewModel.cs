@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Windows.Media;
 using PowerThreadPool.EventArguments;
+using Powork.Model.Evidence;
+using MathNet.Numerics;
 
 namespace Powork.ControlViewModel
 {
@@ -20,12 +21,26 @@ namespace Powork.ControlViewModel
         private bool isDragging;
         private bool isResizing;
         private Point clickPosition;
+        private double origX;
+        private double origY;
+        private double origWidth;
+        private double origHeight;
 
         public delegate void RemoveEventHandler(RectangleViewModel sender);
         public event RemoveEventHandler Remove;
 
-        public delegate void ChangedEventHandler(RectangleViewModel sender);
+        public delegate void ChangedEventHandler(RectangleViewModel sender, double origX, double origY, double origWidth, double origHeight);
         public event ChangedEventHandler Changed;
+
+        private Shape shapeModel;
+        public Shape ShapeModel
+        {
+            get { return shapeModel; }
+            set
+            {
+                SetProperty<Shape>(ref shapeModel, value);
+            }
+        }
 
         private double x;
         public double X
@@ -103,6 +118,11 @@ namespace Powork.ControlViewModel
 
         private void MouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            origX = X;
+            origY = Y;
+            origWidth = RectangleWidth;
+            origHeight = RectangleHeight;
+
             var rectangle = e.Source as FrameworkElement;
             Point _startPoint = e.GetPosition(rectangle);
 
@@ -157,7 +177,7 @@ namespace Powork.ControlViewModel
 
             if (Changed != null)
             {
-                Changed.Invoke(this);
+                Changed.Invoke(this, origX, origY, origWidth, origHeight);
             }
         }
 
@@ -169,7 +189,7 @@ namespace Powork.ControlViewModel
             }
             if (Changed != null)
             {
-                Changed.Invoke(this);
+                Changed.Invoke(this, -1, -1, -1, -1);
             }
         }
     }

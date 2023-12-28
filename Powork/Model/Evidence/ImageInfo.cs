@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NPOI.POIFS.Properties;
+using NPOI.XSSF.UserModel;
 using Powork.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,6 @@ namespace Powork.Model.Evidence
         public double WidthInExcel { get; set; }
 
         public double HeightInExcel { get; set; }
+        public XSSFClientAnchor Anchor { get; set; }
     }
 }
