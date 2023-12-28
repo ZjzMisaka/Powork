@@ -6,6 +6,7 @@ using NPOI.XSSF.UserModel;
 using PowerThreadPool;
 using Powork.Control;
 using Powork.ControlViewModel;
+using Powork.Helper;
 using Powork.Model;
 using Powork.Model.Evidence;
 using Powork.Network;
@@ -313,7 +314,7 @@ namespace Powork.ViewModel
                                         Model.Evidence.ImageInfo imageInfoModel = new Model.Evidence.ImageInfo();
                                         imageInfoModel.WidthInExcel = (int)((anchor.Col2 - anchor.Col1 + 1) * nowSheet.GetColumnWidthInPixels(0) - ((anchor.Dx1 / 914400.0) * 96) - ((anchor.Dx2 / 914400.0) * 96));
                                         imageInfoModel.HeightInExcel = (int)((anchor.Row2 - anchor.Row1 + 1) * nowSheet.DefaultRowHeightInPoints - ((anchor.Dy1 / 914400.0) * 96) - ((anchor.Dy2 / 914400.0) * 96));
-                                        columnModel.BlockList[i].ImageSource = ConvertByteArrayToImageSource(picture.PictureData.Data);
+                                        columnModel.BlockList[i].ImageSource = ExcelHelper.ConvertByteArrayToImageSource(picture.PictureData.Data);
                                         columnModel.BlockList[i].ImageInfo = imageInfoModel;
                                     }
                                 }
@@ -625,7 +626,7 @@ namespace Powork.ViewModel
                         int nowRowTitleRowIndex = 3;
                         foreach (string rowTitle in sheetModel.RowTitleList)
                         {
-                            XSSFCell cell = GetCell(sheet, nowRowTitleRowIndex, 1);
+                            XSSFCell cell = ExcelHelper.GetOrCreateCell(sheet, nowRowTitleRowIndex, 1);
                             cell.SetCellValue(rowTitle);
 
                             rowDict[rowTitle] = nowRowTitleRowIndex;
@@ -637,7 +638,7 @@ namespace Powork.ViewModel
                         {
                             int columnAndRowTitleColumnIndex = columnIndex + 1;
 
-                            XSSFCell cell = GetCell(sheet, 1, columnAndRowTitleColumnIndex);
+                            XSSFCell cell = ExcelHelper.GetOrCreateCell(sheet, 1, columnAndRowTitleColumnIndex);
                             cell.SetCellValue(columnModel.Name);
 
                             foreach (Block blockModel in columnModel.BlockList)
@@ -668,28 +669,6 @@ namespace Powork.ViewModel
             }
             imageScale = e.NewSize.Height / SelectedBlock.ImageSource.Height;
             SelectedBlock = SelectedBlock;
-        }
-
-        private XSSFCell GetCell(XSSFSheet sheet, int rowIndex, int columnIndex)
-        {
-            XSSFRow row = (XSSFRow)sheet.GetRow(rowIndex) ?? (XSSFRow)sheet.CreateRow(rowIndex);
-            XSSFCell cell = (XSSFCell)row.GetCell(columnIndex) ?? (XSSFCell)row.CreateCell(columnIndex);
-
-            return cell;
-        }
-
-        private ImageSource ConvertByteArrayToImageSource(byte[] imageData)
-        {
-            using (MemoryStream ms = new MemoryStream(imageData))
-            {
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = ms;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-                return bitmapImage;
-            }
         }
     }
 }
