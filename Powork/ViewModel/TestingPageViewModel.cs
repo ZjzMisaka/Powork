@@ -632,18 +632,18 @@ namespace Powork.ViewModel
                     shapeModel.Position.Dy1 = rectangleViewModel.ShapeModel.Position.Dy1 + (int)diffY;
                     shapeModel.Position.Dy2 = rectangleViewModel.ShapeModel.Position.Dy2 + (int)(diffY + diffHeight);
 
-                    int columnOffset1 = (int)shapeModel.Position.Dx1 / (int)columnWidthInPixels;
+                    int columnOffset1 = (int)(shapeModel.Position.Dx1 / columnWidthInPixels);
                     shapeModel.Position.Col1 += columnOffset1;
-                    shapeModel.Position.Dx1 -= columnOffset1 * (int)columnWidthInPixels;
-                    int rowOffset1 = (int)shapeModel.Position.Dy1 / (int)defaultRowHeightInPoints;
+                    shapeModel.Position.Dx1 -= (int)(columnOffset1 * columnWidthInPixels);
+                    int rowOffset1 = (int)(shapeModel.Position.Dy1 / defaultRowHeightInPoints);
                     shapeModel.Position.Row1 += rowOffset1;
-                    shapeModel.Position.Dy1 -= rowOffset1 * (int)defaultRowHeightInPoints;
-                    int columnOffset2 = (int)shapeModel.Position.Dx2 / (int)columnWidthInPixels;
+                    shapeModel.Position.Dy1 -= (int)(rowOffset1 * defaultRowHeightInPoints);
+                    int columnOffset2 = (int)(shapeModel.Position.Dx2 / columnWidthInPixels);
                     shapeModel.Position.Col2 += columnOffset2;
-                    shapeModel.Position.Dx2 -= columnOffset2 * (int)columnWidthInPixels;
-                    int rowOffset2 = (int)shapeModel.Position.Dy2 / (int)defaultRowHeightInPoints;
+                    shapeModel.Position.Dx2 -= (int)(columnOffset2 * columnWidthInPixels);
+                    int rowOffset2 = (int)(shapeModel.Position.Dy2 / defaultRowHeightInPoints);
                     shapeModel.Position.Row2 += rowOffset2;
-                    shapeModel.Position.Dy2 -= rowOffset2 * (int)defaultRowHeightInPoints;
+                    shapeModel.Position.Dy2 -= (int)(rowOffset2 * defaultRowHeightInPoints);
 
                     shapeModel.Position.RowOffsetForImage = shapeModel.Position.Row1 - anchor.Row1;
                     shapeModel.Position.ColOffsetForImage = shapeModel.Position.Col1 - anchor.Col1;

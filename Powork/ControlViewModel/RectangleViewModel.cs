@@ -13,6 +13,7 @@ using System.Windows.Media;
 using PowerThreadPool.EventArguments;
 using Powork.Model.Evidence;
 using MathNet.Numerics;
+using NPOI.POIFS.Properties;
 
 namespace Powork.ControlViewModel
 {
@@ -143,23 +144,32 @@ namespace Powork.ControlViewModel
 
             if (isDragging && e.LeftButton == MouseButtonState.Pressed)
             {
-                var currentPosition = e.GetPosition(rectangle.Parent as UIElement);
+                DependencyObject parent = VisualTreeHelper.GetParent(rectangle);
+                while (parent != null && !(parent is Canvas))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+                Point currentPosition = e.GetPosition(parent as UIElement);
 
-                var newX = currentPosition.X - clickPosition.X;
-                var newY = currentPosition.Y - clickPosition.Y;
+                double newX = currentPosition.X - rectangleWidth / 2;
+                double newY = currentPosition.Y - rectangleHeight / 2;
 
-                X= newX;
+                X = newX;
                 Y = newY;
 
-                var transform = rectangle.RenderTransform as TranslateTransform;
+                Point offsetPosition = e.GetPosition(rectangle.Parent as UIElement);
+                double offsetX = offsetPosition.X - rectangleWidth / 2;
+                double offsetY = offsetPosition.Y - rectangleHeight / 2;
+
+                TranslateTransform transform = rectangle.RenderTransform as TranslateTransform;
                 if (transform == null)
                 {
                     transform = new TranslateTransform();
                     rectangle.RenderTransform = transform;
                 }
 
-                transform.X = currentPosition.X - clickPosition.X - rectangleWidth / 2;
-                transform.Y = currentPosition.Y - clickPosition.Y - rectangleHeight / 2;
+                transform.X = offsetX;
+                transform.Y = offsetY;
             }
             else if (isResizing)
             {
