@@ -647,6 +647,8 @@ namespace Powork.ViewModel
 
                     shapeModel.Position.RowOffsetForImage = shapeModel.Position.Row1 - anchor.Row1;
                     shapeModel.Position.ColOffsetForImage = shapeModel.Position.Col1 - anchor.Col1;
+
+                    return;
                 }
             }
         }
