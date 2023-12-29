@@ -558,13 +558,15 @@ namespace Powork.ViewModel
             };
             ((RectangleViewModel)rectangle.DataContext).Changed += (rectangleViewModel, origX, origY, origWidth, origHeight) =>
             {
-                SaveShapes(rectangleViewModel, origX, origY, origWidth, origHeight);
+                SaveShape(rectangleViewModel, origX, origY, origWidth, origHeight);
             };
             Canvas.SetLeft(rectangle, x);
             Canvas.SetTop(rectangle, y);
             ShapeItems.Add(rectangle);
 
-            // SaveShapes();
+            shapeModel.ID = Guid.NewGuid().ToString();
+
+            //SaveShape((RectangleViewModel)rectangle.DataContext, x, y, width, height);
         }
 
         private void AddFile()
@@ -601,32 +603,22 @@ namespace Powork.ViewModel
         {
         }
 
-        private void SaveShapes(RectangleViewModel rectangleViewModel, double origX, double origY, double origWidth, double origHeight)
+        private void SaveShape(RectangleViewModel rectangleViewModel, double origX, double origY, double origWidth, double origHeight)
         {
-            SelectedBlock.ShapeList = new ObservableCollection<Shape>();
-            foreach (UserControl shape in ShapeItems)
+            foreach (Shape shapeModel in SelectedBlock.ShapeList)
             {
-                Shape shapeModel = new Shape();
-                if (shape.DataContext.GetType() == typeof(RectangleViewModel)) 
+                if (shapeModel.ID == rectangleViewModel.ShapeModel.ID)
                 {
-                    shapeModel.Type = Model.Evidence.Type.EmptyRectangle;
-
                     double columnWidthInPixels = nowSheet.GetColumnWidthInPixels(0);
                     double defaultRowHeightInPoints = nowSheet.DefaultRowHeightInPoints;
                     double excelImageScaleX = SelectedBlock.ImageInfo.WidthInExcel / SelectedBlock.ImageSource.Width;
                     double excelImageScaleY = SelectedBlock.ImageInfo.HeightInExcel / SelectedBlock.ImageSource.Height;
                     XSSFClientAnchor anchor = SelectedBlock.ImageInfo.Anchor;
 
-                    shapeModel.Position = new ShapePosition();
-
                     double diffX = (rectangleViewModel.X - origX) * excelImageScaleX / imageScale;
                     double diffY = (rectangleViewModel.Y - origY) * excelImageScaleY / imageScale;
                     double diffWidth = (rectangleViewModel.RectangleWidth - origWidth) * excelImageScaleX / imageScale;
                     double diffHeight = (rectangleViewModel.RectangleHeight - origHeight) * excelImageScaleY / imageScale;
-                    shapeModel.Position.Col1 = rectangleViewModel.ShapeModel.Position.Col1;
-                    shapeModel.Position.Col2 = rectangleViewModel.ShapeModel.Position.Col2;
-                    shapeModel.Position.Row1 = rectangleViewModel.ShapeModel.Position.Row1;
-                    shapeModel.Position.Row2 = rectangleViewModel.ShapeModel.Position.Row2;
                     shapeModel.Position.Dx1 = rectangleViewModel.ShapeModel.Position.Dx1 + (int)diffX;
                     shapeModel.Position.Dx2 = rectangleViewModel.ShapeModel.Position.Dx2 + (int)(diffX + diffWidth);
                     shapeModel.Position.Dy1 = rectangleViewModel.ShapeModel.Position.Dy1 + (int)diffY;
@@ -648,10 +640,7 @@ namespace Powork.ViewModel
                     shapeModel.Position.RowOffsetForImage = shapeModel.Position.Row1 - anchor.Row1;
                     shapeModel.Position.ColOffsetForImage = shapeModel.Position.Col1 - anchor.Col1;
                 }
-
-                SelectedBlock.ShapeList.Add(shapeModel);
             }
-
         }
 
         private void SaveFile() 

@@ -18,5 +18,6 @@ namespace Powork.Model.Evidence
         public Type Type { get; set; }
         public string Content { get; set; }
         public ShapePosition Position { get; set; }
+        public string ID { get; set; }
     }
 }
