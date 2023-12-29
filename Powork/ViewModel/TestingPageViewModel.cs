@@ -313,8 +313,8 @@ namespace Powork.ViewModel
                                     {
                                         imageAnchor = anchor;
                                         ImageInfo imageInfoModel = new Model.Evidence.ImageInfo();
-                                        imageInfoModel.WidthInExcel = (anchor.Col2 - anchor.Col1 + 1) * nowSheet.GetColumnWidthInPixels(0) - ((anchor.Dx1 / 914400.0) * 96) - ((anchor.Dx2 / 914400.0) * 96);
-                                        imageInfoModel.HeightInExcel = (anchor.Row2 - anchor.Row1 + 1) * nowSheet.DefaultRowHeightInPoints - ((anchor.Dy1 / 914400.0) * 96) - ((anchor.Dy2 / 914400.0) * 96);
+                                        imageInfoModel.WidthInExcel = (anchor.Col2 - anchor.Col1 + 1) * nowSheet.GetColumnWidthInPixels(0) - ((anchor.Dx1 / 914400.0) * 96) + ((anchor.Dx2 / 914400.0) * 96);
+                                        imageInfoModel.HeightInExcel = (anchor.Row2 - anchor.Row1 + 1) * nowSheet.DefaultRowHeightInPoints - ((anchor.Dy1 / 914400.0) * 96) + ((anchor.Dy2 / 914400.0) * 96);
                                         imageInfoModel.Anchor = imageAnchor;
                                         columnModel.BlockList[i].ImageSource = ExcelHelper.ConvertByteArrayToImageSource(picture.PictureData.Data);
                                         columnModel.BlockList[i].ImageInfo = imageInfoModel;
@@ -423,8 +423,8 @@ namespace Powork.ViewModel
 
                             double x = (shapeModel.Position.ColOffsetForImage * columnWidthInPixels + shapeModel.Position.Dx1) * imageScale / excelImageScaleX;
                             double y = (shapeModel.Position.RowOffsetForImage * defaultRowHeightInPoints + shapeModel.Position.Dy1) * imageScale / excelImageScaleY;
-                            double width = ((shapeModel.Position.Col2 - shapeModel.Position.Col1 + 1) * columnWidthInPixels - shapeModel.Position.Dx1 - shapeModel.Position.Dx2) * imageScale / excelImageScaleX;
-                            double height = ((shapeModel.Position.Row2 - shapeModel.Position.Row1 + 1) * defaultRowHeightInPoints - shapeModel.Position.Dy1 - shapeModel.Position.Dy2) * imageScale / excelImageScaleY;
+                            double width = ((shapeModel.Position.Col2 - shapeModel.Position.Col1 + 1) * columnWidthInPixels - shapeModel.Position.Dx1 + shapeModel.Position.Dx2) * imageScale / excelImageScaleX;
+                            double height = ((shapeModel.Position.Row2 - shapeModel.Position.Row1 + 1) * defaultRowHeightInPoints - shapeModel.Position.Dy1 + shapeModel.Position.Dy2) * imageScale / excelImageScaleY;
                             AddEmptyRectangle(shapeModel, x, y, width, height);
                         }
                     }
