@@ -529,10 +529,10 @@ namespace Powork.ViewModel
         private void AddEmptyRectangle()
         {
             ShapePosition shapePosition = new ShapePosition();
-            shapePosition.Col1 = 0;
-            shapePosition.Col2 = 0;
-            shapePosition.Row1 = 2;
-            shapePosition.Row2 = 2;
+            shapePosition.Col1 = SelectedBlock.ImageInfo.Anchor.Col1;
+            shapePosition.Col2 = SelectedBlock.ImageInfo.Anchor.Col1 + 1;
+            shapePosition.Row1 = SelectedBlock.ImageInfo.Anchor.Row1;
+            shapePosition.Row2 = SelectedBlock.ImageInfo.Anchor.Row1 + 1;
             shapePosition.Dx1 = 0;
             shapePosition.Dy1 = 0;
             shapePosition.Dx2 = 0;
@@ -541,7 +541,17 @@ namespace Powork.ViewModel
             Shape shapeModel = new Shape();
             shapeModel.Type = Model.Evidence.Type.EmptyRectangle;
             shapeModel.Position = shapePosition;
-            AddEmptyRectangle(shapeModel, 0, 0, 100, 100);
+
+            if (SelectedBlock.ShapeList == null)
+            {
+                SelectedBlock.ShapeList = new ObservableCollection<Shape>();
+            }
+            SelectedBlock.ShapeList.Add(shapeModel);
+
+            double columnWidthInPixels = nowSheet.GetColumnWidthInPixels(0);
+            double defaultRowHeightInPoints = nowSheet.DefaultRowHeightInPoints;
+
+            AddEmptyRectangle(shapeModel, 0, 0, columnWidthInPixels, defaultRowHeightInPoints);
         }
 
         private void AddEmptyRectangle(Shape shapeModel, double x, double y, double width, double height)
@@ -565,8 +575,6 @@ namespace Powork.ViewModel
             ShapeItems.Add(rectangle);
 
             shapeModel.ID = Guid.NewGuid().ToString();
-
-            //SaveShape((RectangleViewModel)rectangle.DataContext, x, y, width, height);
         }
 
         private void AddFile()
