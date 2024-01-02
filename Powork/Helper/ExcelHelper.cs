@@ -33,5 +33,26 @@ namespace Powork.Helper
                 return bitmapImage;
             }
         }
+
+        public static byte[] ConvertImageSourceToByteArray(ImageSource imageSource)
+        {
+            BitmapEncoder encoder = new PngBitmapEncoder();
+
+            byte[] bytes = null;
+            BitmapSource bitmapSource = imageSource as BitmapSource;
+
+            if (bitmapSource != null)
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+                using (var stream = new MemoryStream())
+                {
+                    encoder.Save(stream);
+                    bytes = stream.ToArray();
+                }
+            }
+
+            return bytes;
+        }
     }
 }

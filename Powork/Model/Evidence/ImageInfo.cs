@@ -14,7 +14,6 @@ namespace Powork.Model.Evidence
     public class ImageInfo
     {
         public double WidthInExcel { get; set; }
-
         public double HeightInExcel { get; set; }
         public XSSFClientAnchor Anchor { get; set; }
     }
