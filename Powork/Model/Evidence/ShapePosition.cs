@@ -20,5 +20,19 @@ namespace Powork.Model.Evidence
 
         public int RowOffsetForImage { get; set; }
         public int ColOffsetForImage { get; set; }
+        public int FullRowCount 
+        {
+            get
+            { 
+                return Row2 - Row1;
+            }
+        }
+        public int FullColumnCount
+        {
+            get
+            {
+                return Col2 - Col1;
+            }
+        }
     }
 }

@@ -669,6 +669,8 @@ namespace Powork.ViewModel
                     {
                         // Save
                         XSSFSheet sheet = (XSSFSheet)nowWorkBook.GetSheet(sheetName);
+                        double sheetDefaultColumnWidth = sheet.GetColumnWidthInPixels(0);
+                        double sheetDefaultRowHeight = sheet.DefaultRowHeightInPoints;
                         List<int> columnIndexList = new List<int>();
 
                         Dictionary<string, int> rowDict = new Dictionary<string, int>();
@@ -694,8 +696,8 @@ namespace Powork.ViewModel
                             Column columnModel = sheetModel.ColumnList[i];
 
 
-                            int columnIndex = -1;
-                            int columnLength = -1;
+                            int columnIndex;
+                            int columnLength;
                             if (columnIndexList.Count - 1 >= i)
                             {
                                 columnIndex = columnIndexList[i];
@@ -738,23 +740,25 @@ namespace Powork.ViewModel
                             XSSFCell cell = ExcelHelper.GetOrCreateCell(sheet, 1, columnIndex);
                             cell.SetCellValue(columnModel.Name);
 
+                            int totalAddedRowCount = 0;
+
                             foreach (Block blockModel in columnModel.BlockList)
                             {
                                 string rowTitle = sheetModel.RowTitleList[columnModel.BlockList.IndexOf(blockModel)];
-                                int blockRowIndex = rowDict[rowTitle];
+                                int blockRowIndex = rowDict[rowTitle] + totalAddedRowCount;
                                 int nowRowIndex = blockRowIndex;
                                 int blockColumnIndex = columnIndex + 1;
 
                                 // Block title
-                                CreateRow(sheet, nowRowIndex);
+                                totalAddedRowCount += CreateRow(sheet, nowRowIndex);
                                 cell = ExcelHelper.GetOrCreateCell(sheet, nowRowIndex, blockColumnIndex);
                                 cell.SetCellValue(blockModel.Title);
 
                                 // Image
                                 ++nowRowIndex;
-                                if (blockModel.ImageInfo.WidthInExcel / sheet.GetColumnWidthInPixels(0) > columnLength)
+                                if (blockModel.ImageInfo.WidthInExcel / sheetDefaultColumnWidth > columnLength)
                                 {
-                                    double newWidthInExcel = columnLength * sheet.GetColumnWidthInPixels(0);
+                                    double newWidthInExcel = columnLength * sheetDefaultColumnWidth;
                                     double newHeightInExcel = blockModel.ImageInfo.HeightInExcel * (newWidthInExcel / blockModel.ImageInfo.WidthInExcel);
                                     blockModel.ImageInfo.WidthInExcel = newWidthInExcel;
                                     blockModel.ImageInfo.HeightInExcel = newHeightInExcel;
@@ -764,22 +768,81 @@ namespace Powork.ViewModel
                                 ICreationHelper helper = nowWorkBook.GetCreationHelper();
                                 IDrawing drawing = sheet.CreateDrawingPatriarch();
                                 IClientAnchor anchor = helper.CreateClientAnchor();
+                                int imageRowCount = anchor.Row2 - anchor.Row1 + 1 + 2;
+                                int imageRowIndex = nowRowIndex + 1;
+                                int mRowOffsetForImage = 0;
+                                int xRowOffsetForImage = 0;
+                                int mColumnOffsetForImage = 0;
+                                int xColumnOffsetForImage = 0;
+                                foreach (Shape shapeModel in blockModel.ShapeList)
+                                {
+                                    if (shapeModel.Type == Model.Evidence.Type.EmptyRectangle)
+                                    {
+                                        if (shapeModel.Position.RowOffsetForImage >= 0)
+                                        {
+                                            if (shapeModel.Position.RowOffsetForImage > xRowOffsetForImage)
+                                            {
+                                                xRowOffsetForImage = shapeModel.Position.RowOffsetForImage;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (shapeModel.Position.RowOffsetForImage < mRowOffsetForImage)
+                                            {
+                                                mRowOffsetForImage = shapeModel.Position.RowOffsetForImage;
+                                            }
+                                        }
+                                        if (shapeModel.Position.ColOffsetForImage >= 0)
+                                        {
+                                            if (shapeModel.Position.ColOffsetForImage > xColumnOffsetForImage)
+                                            {
+                                                xColumnOffsetForImage = shapeModel.Position.ColOffsetForImage;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (shapeModel.Position.ColOffsetForImage < mColumnOffsetForImage)
+                                            {
+                                                mColumnOffsetForImage = shapeModel.Position.ColOffsetForImage;
+                                            }
+                                        }
+                                    }
+                                }
+                                imageRowCount += xRowOffsetForImage - mRowOffsetForImage;
+                                imageRowIndex -= mRowOffsetForImage;
                                 anchor.Col1 = blockColumnIndex;
-                                anchor.Row1 = blockRowIndex;
-                                anchor.Col2 = blockColumnIndex + (int)(blockModel.ImageInfo.WidthInExcel / sheet.GetColumnWidthInPixels(0));
-                                anchor.Row2 = blockRowIndex + (int)(blockModel.ImageInfo.HeightInExcel / sheet.DefaultRowHeightInPoints);
-                                anchor.Dx2 = (int)(blockModel.ImageInfo.WidthInExcel % sheet.GetColumnWidthInPixels(0));
-                                anchor.Dy2 = (int)(blockModel.ImageInfo.HeightInExcel / sheet.DefaultRowHeightInPoints);
-                                int imageRowCount = anchor.Row2 - anchor.Row1 + 1;
-                                CreateRow(sheet, nowRowIndex, imageRowCount);
+                                anchor.Row1 = imageRowIndex;
+                                anchor.Col2 = blockColumnIndex + (int)(blockModel.ImageInfo.WidthInExcel / sheetDefaultColumnWidth);
+                                anchor.Row2 = imageRowIndex + (int)(blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight);
+                                anchor.Dx2 = (int)(blockModel.ImageInfo.WidthInExcel % sheetDefaultColumnWidth);
+                                anchor.Dy2 = (int)(blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight);
+                                totalAddedRowCount += CreateRow(sheet, nowRowIndex, imageRowCount);
                                 IPicture picture = drawing.CreatePicture(anchor, pictureIndex);
                                 picture.Resize();
+                                double excelImageScaleX = blockModel.ImageInfo.WidthInExcel / blockModel.ImageSource.Width;
+                                double excelImageScaleY = blockModel.ImageInfo.HeightInExcel / blockModel.ImageSource.Height;
 
                                 // Shapes
+                                foreach (Shape shapeModel in blockModel.ShapeList)
+                                {
+                                    int row1 = anchor.Row1 + shapeModel.Position.RowOffsetForImage;
+                                    int col1 = anchor.Col1 + shapeModel.Position.ColOffsetForImage;
+                                    int row2 = row1 + shapeModel.Position.FullRowCount;
+                                    int col2 = col1 + shapeModel.Position.FullColumnCount;
+                                    int dx1 = (int)(shapeModel.Position.Dx1 / excelImageScaleX);
+                                    int dy1 = (int)(shapeModel.Position.Dy1 / excelImageScaleY);
+                                    int dx2 = (int)(shapeModel.Position.Dx2 / excelImageScaleX);
+                                    int dy2 = (int)(shapeModel.Position.Dy2 / excelImageScaleY);
+                                    double realWidth = (shapeModel.Position.Col2 - shapeModel.Position.Col1) * sheetDefaultColumnWidth + shapeModel.Position.Dx2 - shapeModel.Position.Dx1;
+                                    double realHeight = (shapeModel.Position.Col2 - shapeModel.Position.Col1) * sheetDefaultColumnWidth + shapeModel.Position.Dx2 - shapeModel.Position.Dx1;
+                                    ShapeHelper.CreateBorderRectangle(sheet, dx1, dy1, dx2, dy2, col1, row1, col2, row2);
+                                }
 
                                 // Block description
                                 nowRowIndex += imageRowCount;
-
+                                totalAddedRowCount += CreateRow(sheet, nowRowIndex);
+                                cell = ExcelHelper.GetOrCreateCell(sheet, nowRowIndex, blockColumnIndex);
+                                cell.SetCellValue(blockModel.Description);
                             }
                         }
                     }
@@ -795,12 +858,13 @@ namespace Powork.ViewModel
             nowWorkBook.Close();
         }
 
-        private static void CreateRow(XSSFSheet sheet, int index, int count = 1)
+        private static int CreateRow(XSSFSheet sheet, int index, int count = 1)
         {
             for (int i = 0; i < count; ++i)
             {
                 sheet.CreateRow(index);
             }
+            return count;
         }
 
         private void ImageSizeChanged(SizeChangedEventArgs e)
