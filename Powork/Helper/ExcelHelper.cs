@@ -7,6 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using NPOI.SS.UserModel;
+using Powork.Model.Evidence;
+using NPOI.HSSF.UserModel;
+using NPOI;
 
 namespace Powork.Helper
 {
@@ -53,6 +57,49 @@ namespace Powork.Helper
             }
 
             return bytes;
+        }
+
+        public static void ClearSheet(ISheet sheet)
+        {
+            if (sheet != null)
+            {
+                for (int rowIndex = sheet.FirstRowNum; rowIndex <= sheet.LastRowNum; rowIndex++)
+                {
+                    IRow row = sheet.GetRow(rowIndex);
+                    if (row != null)
+                    {
+                        for (int cellIndex = row.FirstCellNum; cellIndex < row.LastCellNum; cellIndex++)
+                        {
+                            ICell cell = row.GetCell(cellIndex);
+                            if (cell != null)
+                            {
+                                // 清空单元格内容
+                                cell.SetCellValue(string.Empty);
+                            }
+                        }
+                    }
+                }
+            }
+
+            int lastRowNum = sheet.LastRowNum;
+            for (int rowIndex = lastRowNum; rowIndex >= 0; rowIndex--)
+            {
+                IRow row = sheet.GetRow(rowIndex);
+                if (row != null)
+                {
+                    sheet.RemoveRow(row);
+                }
+            }
+
+            if (sheet is HSSFSheet)
+            {
+                HSSFPatriarch drawingPatriarch = (HSSFPatriarch)sheet.DrawingPatriarch;
+                drawingPatriarch.Clear();
+            }
+            else if (sheet is XSSFSheet xssfSheet)
+            {
+                xssfSheet.CreateDrawingPatriarch();
+            }
         }
     }
 }
