@@ -95,8 +95,8 @@ namespace Powork.ViewModel
 
         private ObservableCollection<string> fileList;
 
-        public ObservableCollection<string> FileList 
-        { 
+        public ObservableCollection<string> FileList
+        {
             get => fileList;
             set
             {
@@ -106,8 +106,8 @@ namespace Powork.ViewModel
 
         private string fileName;
 
-        public string FileName 
-        { 
+        public string FileName
+        {
             get => fileName;
             set
             {
@@ -115,7 +115,14 @@ namespace Powork.ViewModel
 
                 SheetList.Clear();
                 ObservableCollection<string> newSheetList = new ObservableCollection<string>();
-                nowWorkBook = new XSSFWorkbook(System.IO.Path.Combine(Path, FileName));
+                if (nowWorkBook != null)
+                {
+                    nowWorkBook.Close();
+                }
+                using (FileStream fs = new FileStream(System.IO.Path.Combine(Path, FileName), FileMode.Open, FileAccess.Read))
+                {
+                    nowWorkBook = new XSSFWorkbook(fs);
+                }
                 for (int i = 0; i < nowWorkBook.NumberOfSheets; ++i)
                 {
                     newSheetList.Add(nowWorkBook.GetSheetAt(i).SheetName);
@@ -162,6 +169,7 @@ namespace Powork.ViewModel
                     else
                     {
                         SheetModel = new Sheet(this);
+                        sheetDict[SheetName] = SheetModel;
                         SheetModel.ColumnList = new ObservableCollection<Column>();
 
                         nowSheet = (XSSFSheet)nowWorkBook.GetSheet(SheetName);
@@ -387,7 +395,7 @@ namespace Powork.ViewModel
         {
             get => columnIndex;
             set
-            { 
+            {
                 SetProperty(ref columnIndex, value);
             }
         }
@@ -441,24 +449,24 @@ namespace Powork.ViewModel
         }
 
         private string newFileName;
-        public string NewFileName 
-        { 
-            get => newFileName; 
-            set => SetProperty(ref newFileName, value); 
+        public string NewFileName
+        {
+            get => newFileName;
+            set => SetProperty(ref newFileName, value);
         }
         private string newSheetName;
 
-        public string NewSheetName 
-        { 
+        public string NewSheetName
+        {
             get => newSheetName;
-            set => SetProperty(ref newSheetName, value); 
+            set => SetProperty(ref newSheetName, value);
         }
         private string newColumnName;
 
         public string NewColumnName
         {
             get => newColumnName;
-            set => SetProperty(ref newColumnName, value); 
+            set => SetProperty(ref newColumnName, value);
         }
 
         private string newRowTitle;
@@ -645,7 +653,6 @@ namespace Powork.ViewModel
                     int rowOffset2 = (int)(shapeModel.Position.Dy2 / defaultRowHeightInPoints);
                     shapeModel.Position.Row2 += rowOffset2;
                     shapeModel.Position.Dy2 -= (int)(rowOffset2 * defaultRowHeightInPoints);
-
                     shapeModel.Position.RowOffsetForImage = shapeModel.Position.Row1 - anchor.Row1;
                     shapeModel.Position.ColOffsetForImage = shapeModel.Position.Col1 - anchor.Col1;
 
@@ -654,12 +661,12 @@ namespace Powork.ViewModel
             }
         }
 
-        private void SaveFile() 
+        private void SaveFile()
         {
             foreach (string sheetName in SheetList)
             {
                 if (sheetDict.ContainsKey(sheetName))
-                { 
+                {
                     Sheet sheetModel = sheetDict[sheetName];
                     if (sheetModel.Removed)
                     {
@@ -669,32 +676,22 @@ namespace Powork.ViewModel
                     {
                         // Save
                         XSSFSheet sheet = (XSSFSheet)nowWorkBook.GetSheet(sheetName);
-                        double sheetDefaultColumnWidth = sheet.GetColumnWidthInPixels(0);
-                        double sheetDefaultRowHeight = sheet.DefaultRowHeightInPoints;
                         List<int> columnIndexList = new List<int>();
-
-                        Dictionary<string, int> rowDict = new Dictionary<string, int>();
-                        int nowRowTitleRowIndex = 3;
-                        foreach (string rowTitle in sheetModel.RowTitleList)
-                        {
-                            XSSFCell cell = ExcelHelper.GetOrCreateCell(sheet, nowRowTitleRowIndex, 1);
-                            cell.SetCellValue(rowTitle);
-
-                            rowDict[rowTitle] = nowRowTitleRowIndex;
-
-                            nowRowTitleRowIndex += 2;
-                        }
-
+                        List<int> columnLengthList = new List<int>();
+                        int sheetIndex = nowWorkBook.GetSheetIndex(sheetName);
                         foreach (Column columnModel in sheetModel.ColumnList)
                         {
                             columnIndexList.Add(columnModel.GetIndex(sheet));
                         }
+                        double sheetDefaultColumnWidth = sheet.GetColumnWidthInPixels(0);
+                        double sheetDefaultRowHeight = sheet.DefaultRowHeightInPoints;
+                        ExcelHelper.ClearSheet(nowWorkBook, sheetName);
+                        sheet = (XSSFSheet)nowWorkBook.GetSheet(sheetName);
 
-
+                        // Column name
                         for (int i = 0; i < sheetModel.ColumnList.Count; ++i)
                         {
                             Column columnModel = sheetModel.ColumnList[i];
-
 
                             int columnIndex;
                             int columnLength;
@@ -736,135 +733,166 @@ namespace Powork.ViewModel
                                 columnIndexList.Add(columnIndex);
                             }
                             int blockColumnLength = columnLength - 2;
+                            columnLengthList.Add(blockColumnLength);
 
                             XSSFCell cell = ExcelHelper.GetOrCreateCell(sheet, 1, columnIndex);
                             cell.SetCellValue(columnModel.Name);
+                        }
 
-                            int totalAddedRowCount = 0;
+                        int nowRowIndex = 3;
 
-                            foreach (Block blockModel in columnModel.BlockList)
+                        for (int i = 0; i < sheetModel.RowTitleList.Count; ++i)
+                        {
+                            // Row title
+                            string nowRowTitle = sheetModel.RowTitleList[i];
+
+                            XSSFCell cell = ExcelHelper.GetOrCreateCell(sheet, nowRowIndex, 1);
+                            cell.SetCellValue(nowRowTitle);
+
+                            int nowBlockRowIndex = nowRowIndex + 1;
+                            // Block title
+                            for (int j = 0; j < sheetModel.ColumnList.Count; ++j)
                             {
-                                string rowTitle = sheetModel.RowTitleList[columnModel.BlockList.IndexOf(blockModel)];
-                                int blockRowIndex = rowDict[rowTitle] + totalAddedRowCount;
-                                int nowRowIndex = blockRowIndex;
-                                int blockColumnIndex = columnIndex + 1;
+                                Column columnModel = sheetModel.ColumnList[j];
+                                Block blockModel = columnModel.BlockList[i];
 
-                                // Block title
-                                totalAddedRowCount += CreateRow(sheet, nowRowIndex);
-                                cell = ExcelHelper.GetOrCreateCell(sheet, nowRowIndex, blockColumnIndex);
+                                int blockColumnIndex = columnIndexList[j] + 1;
+                                cell = ExcelHelper.GetOrCreateCell(sheet, nowBlockRowIndex, blockColumnIndex);
                                 cell.SetCellValue(blockModel.Title);
+                            }
 
-                                // Image
-                                ++nowRowIndex;
-                                if (blockModel.ImageInfo.WidthInExcel / sheetDefaultColumnWidth > columnLength)
+                            // Image precomputation
+                            int mRowOffsetForImage = 0;
+                            int xRowOffsetForImage = 0;
+                            int mColumnOffsetForImage = 0;
+                            int xColumnOffsetForImage = 0;
+                            int imageRowCount = 1;
+                            for (int j = 0; j < sheetModel.ColumnList.Count; ++j)
+                            {
+                                Column columnModel = sheetModel.ColumnList[j];
+                                Block blockModel = columnModel.BlockList[i];
+                                
+                                int blockColumnLength = columnLengthList[j];
+                                if (blockModel.ImageInfo != null)
                                 {
-                                    double newWidthInExcel = columnLength * sheetDefaultColumnWidth;
-                                    double newHeightInExcel = blockModel.ImageInfo.HeightInExcel * (newWidthInExcel / blockModel.ImageInfo.WidthInExcel);
-                                    blockModel.ImageInfo.WidthInExcel = newWidthInExcel;
-                                    blockModel.ImageInfo.HeightInExcel = newHeightInExcel;
-                                }
-                                byte[] data = ExcelHelper.ConvertImageSourceToByteArray(blockModel.ImageSource);
-                                int pictureIndex = nowWorkBook.AddPicture(data, PictureType.PNG);
-                                ICreationHelper helper = nowWorkBook.GetCreationHelper();
-                                IDrawing drawing = sheet.CreateDrawingPatriarch();
-                                IClientAnchor anchor = helper.CreateClientAnchor();
-                                int imageRowCount = anchor.Row2 - anchor.Row1 + 1 + 2;
-                                int imageRowIndex = nowRowIndex + 1;
-                                int mRowOffsetForImage = 0;
-                                int xRowOffsetForImage = 0;
-                                int mColumnOffsetForImage = 0;
-                                int xColumnOffsetForImage = 0;
-                                foreach (Shape shapeModel in blockModel.ShapeList)
-                                {
-                                    if (shapeModel.Type == Model.Evidence.Type.EmptyRectangle)
+                                    if (blockModel.ImageInfo.WidthInExcel / sheetDefaultColumnWidth > blockColumnLength)
                                     {
-                                        if (shapeModel.Position.RowOffsetForImage >= 0)
+                                        double newWidthInExcel = blockColumnLength * sheetDefaultColumnWidth;
+                                        double newHeightInExcel = blockModel.ImageInfo.HeightInExcel * (newWidthInExcel / blockModel.ImageInfo.WidthInExcel);
+                                        blockModel.ImageInfo.WidthInExcel = newWidthInExcel;
+                                        blockModel.ImageInfo.HeightInExcel = newHeightInExcel;
+                                    }
+
+                                    if (blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight > imageRowCount)
+                                    {
+                                        imageRowCount = (int)(blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight);
+                                    }
+                                    
+                                    if (blockModel.ShapeList != null)
+                                    {
+                                        foreach (Shape shapeModel in blockModel.ShapeList)
                                         {
-                                            if (shapeModel.Position.RowOffsetForImage > xRowOffsetForImage)
+                                            if (shapeModel.Type == Model.Evidence.Type.EmptyRectangle)
                                             {
-                                                xRowOffsetForImage = shapeModel.Position.RowOffsetForImage;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (shapeModel.Position.RowOffsetForImage < mRowOffsetForImage)
-                                            {
-                                                mRowOffsetForImage = shapeModel.Position.RowOffsetForImage;
-                                            }
-                                        }
-                                        if (shapeModel.Position.ColOffsetForImage >= 0)
-                                        {
-                                            if (shapeModel.Position.ColOffsetForImage > xColumnOffsetForImage)
-                                            {
-                                                xColumnOffsetForImage = shapeModel.Position.ColOffsetForImage;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (shapeModel.Position.ColOffsetForImage < mColumnOffsetForImage)
-                                            {
-                                                mColumnOffsetForImage = shapeModel.Position.ColOffsetForImage;
+                                                if (shapeModel.Position.RowOffsetForImage < mRowOffsetForImage)
+                                                {
+                                                    mRowOffsetForImage = shapeModel.Position.RowOffsetForImage;
+                                                }
+                                                if (shapeModel.Position.ColOffsetForImage < mColumnOffsetForImage)
+                                                {
+                                                    mColumnOffsetForImage = shapeModel.Position.ColOffsetForImage;
+                                                }
+                                                if (shapeModel.Position.RowOffsetForImage + shapeModel.Position.FullRowCount > xRowOffsetForImage)
+                                                {
+                                                    xRowOffsetForImage = shapeModel.Position.RowOffsetForImage + shapeModel.Position.FullRowCount;
+                                                }
+                                                if (shapeModel.Position.ColOffsetForImage + shapeModel.Position.FullColumnCount > xColumnOffsetForImage)
+                                                {
+                                                    xColumnOffsetForImage = shapeModel.Position.ColOffsetForImage + shapeModel.Position.FullColumnCount;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                                imageRowCount += xRowOffsetForImage - mRowOffsetForImage;
+                            }
+
+                            // Image
+                            nowBlockRowIndex += 2;
+                            int imageRowIndex = nowBlockRowIndex;
+                            if (xRowOffsetForImage > imageRowCount)
+                            {
+                                imageRowCount = xRowOffsetForImage;
+                            }
+                            if (mRowOffsetForImage < 0)
+                            {
                                 imageRowIndex -= mRowOffsetForImage;
-                                anchor.Col1 = blockColumnIndex;
-                                anchor.Row1 = imageRowIndex;
-                                anchor.Col2 = blockColumnIndex + (int)(blockModel.ImageInfo.WidthInExcel / sheetDefaultColumnWidth);
-                                anchor.Row2 = imageRowIndex + (int)(blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight);
-                                anchor.Dx2 = (int)(blockModel.ImageInfo.WidthInExcel % sheetDefaultColumnWidth);
-                                anchor.Dy2 = (int)(blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight);
-                                totalAddedRowCount += CreateRow(sheet, nowRowIndex, imageRowCount);
-                                IPicture picture = drawing.CreatePicture(anchor, pictureIndex);
-                                picture.Resize();
-                                double excelImageScaleX = blockModel.ImageInfo.WidthInExcel / blockModel.ImageSource.Width;
-                                double excelImageScaleY = blockModel.ImageInfo.HeightInExcel / blockModel.ImageSource.Height;
+                            }
+                            int descriptionIndex = imageRowIndex + imageRowCount + 1;
+                            for (int j = 0; j < sheetModel.ColumnList.Count; ++j)
+                            {
+                                Column columnModel = sheetModel.ColumnList[j];
+                                Block blockModel = columnModel.BlockList[i];
+                                IClientAnchor anchor = null;
+                                int blockColumnIndex = columnIndexList[j] + 1;
+
+                                if (blockModel.ImageInfo != null)
+                                {
+                                    ICreationHelper helper = nowWorkBook.GetCreationHelper();
+                                    IDrawing drawing = sheet.CreateDrawingPatriarch();
+                                    anchor = helper.CreateClientAnchor();
+
+                                    byte[] data = ExcelHelper.ConvertImageSourceToByteArray(blockModel.ImageSource);
+                                    int pictureIndex = nowWorkBook.AddPicture(data, PictureType.PNG);
+
+                                    anchor.Col1 = blockColumnIndex;
+                                    anchor.Row1 = imageRowIndex;
+                                    anchor.Col2 = blockColumnIndex + (int)(blockModel.ImageInfo.WidthInExcel / sheetDefaultColumnWidth);
+                                    anchor.Row2 = imageRowIndex + (int)(blockModel.ImageInfo.HeightInExcel / sheetDefaultRowHeight);
+
+                                    anchor.Dx2 = (int)(blockModel.ImageInfo.WidthInExcel % sheetDefaultColumnWidth);
+                                    anchor.Dy2 = (int)(blockModel.ImageInfo.HeightInExcel % sheetDefaultRowHeight);
+                                    IPicture picture = drawing.CreatePicture(anchor, pictureIndex);
+                                }
 
                                 // Shapes
-                                foreach (Shape shapeModel in blockModel.ShapeList)
+                                if (blockModel.ShapeList != null)
                                 {
-                                    int row1 = anchor.Row1 + shapeModel.Position.RowOffsetForImage;
-                                    int col1 = anchor.Col1 + shapeModel.Position.ColOffsetForImage;
-                                    int row2 = row1 + shapeModel.Position.FullRowCount;
-                                    int col2 = col1 + shapeModel.Position.FullColumnCount;
-                                    int dx1 = (int)(shapeModel.Position.Dx1 / excelImageScaleX);
-                                    int dy1 = (int)(shapeModel.Position.Dy1 / excelImageScaleY);
-                                    int dx2 = (int)(shapeModel.Position.Dx2 / excelImageScaleX);
-                                    int dy2 = (int)(shapeModel.Position.Dy2 / excelImageScaleY);
-                                    double realWidth = (shapeModel.Position.Col2 - shapeModel.Position.Col1) * sheetDefaultColumnWidth + shapeModel.Position.Dx2 - shapeModel.Position.Dx1;
-                                    double realHeight = (shapeModel.Position.Col2 - shapeModel.Position.Col1) * sheetDefaultColumnWidth + shapeModel.Position.Dx2 - shapeModel.Position.Dx1;
-                                    ShapeHelper.CreateBorderRectangle(sheet, dx1, dy1, dx2, dy2, col1, row1, col2, row2);
+                                    double excelImageScaleX = blockModel.ImageInfo.WidthInExcel / blockModel.ImageSource.Width;
+                                    double excelImageScaleY = blockModel.ImageInfo.HeightInExcel / blockModel.ImageSource.Height;
+                                    foreach (Shape shapeModel in blockModel.ShapeList)
+                                    {
+                                        int row1 = anchor.Row1 + shapeModel.Position.RowOffsetForImage;
+                                        int col1 = anchor.Col1 + shapeModel.Position.ColOffsetForImage;
+                                        int row2 = row1 + shapeModel.Position.FullRowCount;
+                                        int col2 = col1 + shapeModel.Position.FullColumnCount;
+                                        int dx1 = (int)(shapeModel.Position.Dx1 / 96.0 * 914400);
+                                        int dy1 = (int)(shapeModel.Position.Dy1 / 96.0 * 914400);
+                                        int dx2 = (int)(shapeModel.Position.Dx2 / 96.0 * 914400);
+                                        int dy2 = (int)(shapeModel.Position.Dy2 / 96.0 * 914400);
+                                        ShapeHelper.CreateBorderRectangle(sheet, dx1, dy1, dx2, dy2, col1, row1, col2, row2);
+                                    }
                                 }
 
                                 // Block description
-                                nowRowIndex += imageRowCount;
-                                totalAddedRowCount += CreateRow(sheet, nowRowIndex);
-                                cell = ExcelHelper.GetOrCreateCell(sheet, nowRowIndex, blockColumnIndex);
+                                cell = ExcelHelper.GetOrCreateCell(sheet, descriptionIndex, blockColumnIndex);
                                 cell.SetCellValue(blockModel.Description);
                             }
+
+                            nowRowIndex = descriptionIndex + 1;
                         }
+
+                        XSSFCell cellEnd = ExcelHelper.GetOrCreateCell(sheet, nowRowIndex + 2, 1);
+                        cellEnd.SetCellValue("END");
                     }
                 }
             }
 
-            string filePath = System.IO.Path.Combine(Path, FileName);
-            using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(System.IO.Path.Combine(Path, FileName), FileMode.Create, FileAccess.Write))
             {
-                nowWorkBook.Write(stream);
+                nowWorkBook.Write(fs);
             }
 
-            nowWorkBook.Close();
-        }
-
-        private static int CreateRow(XSSFSheet sheet, int index, int count = 1)
-        {
-            for (int i = 0; i < count; ++i)
-            {
-                sheet.CreateRow(index);
-            }
-            return count;
+            MessageBox.Show("Saved");
         }
 
         private void ImageSizeChanged(SizeChangedEventArgs e)
