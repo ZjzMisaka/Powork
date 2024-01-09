@@ -59,46 +59,19 @@ namespace Powork.Helper
             return bytes;
         }
 
-        public static void ClearSheet(ISheet sheet)
+        public static void ClearSheet(XSSFWorkbook workbook, string name)
         {
-            if (sheet != null)
+            int sheetIndex = workbook.GetSheetIndex(name);
+            workbook.RemoveSheetAt(sheetIndex);
+            if (sheetIndex != -1)
             {
-                for (int rowIndex = sheet.FirstRowNum; rowIndex <= sheet.LastRowNum; rowIndex++)
-                {
-                    IRow row = sheet.GetRow(rowIndex);
-                    if (row != null)
-                    {
-                        for (int cellIndex = row.FirstCellNum; cellIndex < row.LastCellNum; cellIndex++)
-                        {
-                            ICell cell = row.GetCell(cellIndex);
-                            if (cell != null)
-                            {
-                                // 清空单元格内容
-                                cell.SetCellValue(string.Empty);
-                            }
-                        }
-                    }
-                }
-            }
+                ISheet newSheet = workbook.CreateSheet(name);
 
-            int lastRowNum = sheet.LastRowNum;
-            for (int rowIndex = lastRowNum; rowIndex >= 0; rowIndex--)
-            {
-                IRow row = sheet.GetRow(rowIndex);
-                if (row != null)
-                {
-                    sheet.RemoveRow(row);
-                }
+                workbook.SetSheetOrder(newSheet.SheetName, sheetIndex);
             }
-
-            if (sheet is HSSFSheet)
+            else
             {
-                HSSFPatriarch drawingPatriarch = (HSSFPatriarch)sheet.DrawingPatriarch;
-                drawingPatriarch.Clear();
-            }
-            else if (sheet is XSSFSheet xssfSheet)
-            {
-                xssfSheet.CreateDrawingPatriarch();
+                throw new InvalidOperationException("Sheet with provided name doesn't exist.");
             }
         }
     }
