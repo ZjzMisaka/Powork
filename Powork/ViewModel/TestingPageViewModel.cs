@@ -754,6 +754,10 @@ namespace Powork.ViewModel
                             for (int j = 0; j < sheetModel.ColumnList.Count; ++j)
                             {
                                 Column columnModel = sheetModel.ColumnList[j];
+                                if (columnModel.BlockList == null)
+                                {
+                                    continue;
+                                }
                                 Block blockModel = columnModel.BlockList[i];
 
                                 int blockColumnIndex = columnIndexList[j] + 1;
@@ -770,6 +774,10 @@ namespace Powork.ViewModel
                             for (int j = 0; j < sheetModel.ColumnList.Count; ++j)
                             {
                                 Column columnModel = sheetModel.ColumnList[j];
+                                if (columnModel.BlockList == null)
+                                {
+                                    continue;
+                                }
                                 Block blockModel = columnModel.BlockList[i];
                                 
                                 int blockColumnLength = columnLengthList[j];
@@ -831,6 +839,10 @@ namespace Powork.ViewModel
                             for (int j = 0; j < sheetModel.ColumnList.Count; ++j)
                             {
                                 Column columnModel = sheetModel.ColumnList[j];
+                                if (columnModel.BlockList == null)
+                                {
+                                    continue;
+                                }
                                 Block blockModel = columnModel.BlockList[i];
                                 IClientAnchor anchor = null;
                                 int blockColumnIndex = columnIndexList[j] + 1;
