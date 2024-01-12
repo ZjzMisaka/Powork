@@ -21,11 +21,6 @@ namespace Powork.ControlViewModel
     {
         private bool isDragging;
         private bool isResizing;
-        private Point clickPosition;
-        private double origX;
-        private double origY;
-        private double origWidth;
-        private double origHeight;
 
         public delegate void RemoveEventHandler(RectangleViewModel sender);
         public event RemoveEventHandler Remove;
@@ -119,11 +114,6 @@ namespace Powork.ControlViewModel
 
         private void MouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            origX = X;
-            origY = Y;
-            origWidth = RectangleWidth;
-            origHeight = RectangleHeight;
-
             var rectangle = e.Source as FrameworkElement;
             Point _startPoint = e.GetPosition(rectangle);
 
