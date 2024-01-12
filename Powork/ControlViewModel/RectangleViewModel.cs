@@ -30,7 +30,7 @@ namespace Powork.ControlViewModel
         public delegate void RemoveEventHandler(RectangleViewModel sender);
         public event RemoveEventHandler Remove;
 
-        public delegate void ChangedEventHandler(RectangleViewModel sender, double origX, double origY, double origWidth, double origHeight);
+        public delegate void ChangedEventHandler(RectangleViewModel sender);
         public event ChangedEventHandler Changed;
 
         private Shape shapeModel;
@@ -187,7 +187,7 @@ namespace Powork.ControlViewModel
 
             if (Changed != null)
             {
-                Changed.Invoke(this, origX, origY, origWidth, origHeight);
+                Changed.Invoke(this);
             }
         }
 
@@ -199,7 +199,7 @@ namespace Powork.ControlViewModel
             }
             if (Changed != null)
             {
-                Changed.Invoke(this, -1, -1, -1, -1);
+                Changed.Invoke(this);
             }
         }
     }
