@@ -33,7 +33,9 @@ namespace Powork.ViewModel
     {
         private XSSFWorkbook nowWorkBook;
         private XSSFSheet nowSheet;
-        private double imageScale;
+        private double canvasImageScale;
+        private double excelImageScaleX;
+        private double excelImageScaleY;
         private Dictionary<string, Sheet> sheetDict;
 
         private Sheet sheetModel;
@@ -425,15 +427,15 @@ namespace Powork.ViewModel
                     {
                         if (shapeModel.Type == Model.Evidence.Type.EmptyRectangle)
                         {
-                            double excelImageScaleX = SelectedBlock.ImageInfo.WidthInExcel / SelectedBlock.ImageSource.Width;
-                            double excelImageScaleY = SelectedBlock.ImageInfo.HeightInExcel / SelectedBlock.ImageSource.Height;
+                            excelImageScaleX = SelectedBlock.ImageInfo.WidthInExcel / SelectedBlock.ImageSource.Width;
+                            excelImageScaleY = SelectedBlock.ImageInfo.HeightInExcel / SelectedBlock.ImageSource.Height;
                             double columnWidthInPixels = nowSheet.GetColumnWidthInPixels(0);
                             double defaultRowHeightInPoints = nowSheet.DefaultRowHeightInPoints;
 
-                            double x = (shapeModel.Position.ColOffsetForImage * columnWidthInPixels + shapeModel.Position.Dx1) * imageScale / excelImageScaleX;
-                            double y = (shapeModel.Position.RowOffsetForImage * defaultRowHeightInPoints + shapeModel.Position.Dy1) * imageScale / excelImageScaleY;
-                            double width = ((shapeModel.Position.Col2 - shapeModel.Position.Col1 + 1) * columnWidthInPixels - shapeModel.Position.Dx1 + shapeModel.Position.Dx2) * imageScale / excelImageScaleX;
-                            double height = ((shapeModel.Position.Row2 - shapeModel.Position.Row1 + 1) * defaultRowHeightInPoints - shapeModel.Position.Dy1 + shapeModel.Position.Dy2) * imageScale / excelImageScaleY;
+                            double x = ExcelHelper.ExcelLengthToCanvasLength(shapeModel.Position.ColOffsetForImage * columnWidthInPixels + shapeModel.Position.Dx1, canvasImageScale, excelImageScaleX);
+                            double y = ExcelHelper.ExcelLengthToCanvasLength(shapeModel.Position.RowOffsetForImage * defaultRowHeightInPoints + shapeModel.Position.Dy1, canvasImageScale, excelImageScaleY);
+                            double width = ExcelHelper.ExcelLengthToCanvasLength((shapeModel.Position.Col2 - shapeModel.Position.Col1 + 1) * columnWidthInPixels - shapeModel.Position.Dx1 + shapeModel.Position.Dx2, canvasImageScale, excelImageScaleX);
+                            double height = ExcelHelper.ExcelLengthToCanvasLength((shapeModel.Position.Row2 - shapeModel.Position.Row1 + 1) * defaultRowHeightInPoints - shapeModel.Position.Dy1 + shapeModel.Position.Dy2, canvasImageScale, excelImageScaleY);
                             AddEmptyRectangle(shapeModel, x, y, width, height);
                         }
                     }
@@ -628,14 +630,12 @@ namespace Powork.ViewModel
                 {
                     double columnWidthInPixels = nowSheet.GetColumnWidthInPixels(0);
                     double defaultRowHeightInPoints = nowSheet.DefaultRowHeightInPoints;
-                    double excelImageScaleX = SelectedBlock.ImageInfo.WidthInExcel / SelectedBlock.ImageSource.Width;
-                    double excelImageScaleY = SelectedBlock.ImageInfo.HeightInExcel / SelectedBlock.ImageSource.Height;
                     XSSFClientAnchor anchor = SelectedBlock.ImageInfo.Anchor;
 
-                    double diffX = (rectangleViewModel.X - origX) * excelImageScaleX / imageScale;
-                    double diffY = (rectangleViewModel.Y - origY) * excelImageScaleY / imageScale;
-                    double diffWidth = (rectangleViewModel.RectangleWidth - origWidth) * excelImageScaleX / imageScale;
-                    double diffHeight = (rectangleViewModel.RectangleHeight - origHeight) * excelImageScaleY / imageScale;
+                    double diffX = ExcelHelper.CanvasLengthToExcelLength(rectangleViewModel.X - origX, canvasImageScale, excelImageScaleX);
+                    double diffY = ExcelHelper.CanvasLengthToExcelLength(rectangleViewModel.Y - origY, canvasImageScale, excelImageScaleY);
+                    double diffWidth = ExcelHelper.CanvasLengthToExcelLength(rectangleViewModel.RectangleWidth - origWidth, canvasImageScale, excelImageScaleX);
+                    double diffHeight = ExcelHelper.CanvasLengthToExcelLength(rectangleViewModel.RectangleHeight - origHeight, canvasImageScale, excelImageScaleY);
                     shapeModel.Position.Dx1 = rectangleViewModel.ShapeModel.Position.Dx1 + (int)diffX;
                     shapeModel.Position.Dx2 = rectangleViewModel.ShapeModel.Position.Dx2 + (int)(diffX + diffWidth);
                     shapeModel.Position.Dy1 = rectangleViewModel.ShapeModel.Position.Dy1 + (int)diffY;
@@ -869,8 +869,6 @@ namespace Powork.ViewModel
                                 // Shapes
                                 if (blockModel.ShapeList != null)
                                 {
-                                    double excelImageScaleX = blockModel.ImageInfo.WidthInExcel / blockModel.ImageSource.Width;
-                                    double excelImageScaleY = blockModel.ImageInfo.HeightInExcel / blockModel.ImageSource.Height;
                                     foreach (Shape shapeModel in blockModel.ShapeList)
                                     {
                                         int row1 = anchor.Row1 + shapeModel.Position.RowOffsetForImage;
@@ -913,7 +911,7 @@ namespace Powork.ViewModel
             {
                 return;
             }
-            imageScale = e.NewSize.Height / SelectedBlock.ImageSource.Height;
+            canvasImageScale = e.NewSize.Height / SelectedBlock.ImageSource.Height;
             SelectedBlock = SelectedBlock;
         }
     }

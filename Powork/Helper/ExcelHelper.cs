@@ -74,5 +74,15 @@ namespace Powork.Helper
                 throw new InvalidOperationException("Sheet with provided name doesn't exist.");
             }
         }
+
+        public static double ExcelLengthToCanvasLength(double length, double canvasImageScale, double excelImageScale)
+        {
+            return length / excelImageScale * canvasImageScale;
+        }
+
+        public static double CanvasLengthToExcelLength(double length, double canvasImageScale, double excelImageScale)
+        {
+            return length / canvasImageScale * excelImageScale;
+        }
     }
 }
