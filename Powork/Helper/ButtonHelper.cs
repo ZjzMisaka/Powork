@@ -17,6 +17,10 @@ namespace Powork.Helper
         public static Button CreateImageButton(string path, RoutedEventHandler handler)
         {
             Button button = new Button();
+            if (!Path.Exists(path))
+            {
+                path = Path.GetFullPath("Image\\no_image.png");
+            }
             ImageBrush imgBrush = new ImageBrush(new BitmapImage(new Uri(path, UriKind.Absolute)))
             {
                 Stretch = Stretch.Uniform

@@ -1,14 +1,12 @@
 ﻿using Powork.Control;
 using Powork.Model;
 using System.Diagnostics;
-using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
+using System.Windows.Shapes;
 
 namespace Powork.Helper
 {
@@ -63,6 +61,11 @@ namespace Powork.Helper
                         {
                             InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(body.Content, new RoutedEventHandler((s, e) =>
                             {
+                                if (!System.IO.Path.Exists(body.Content))
+                                {
+                                    System.Windows.MessageBox.Show("No such file: " + body.Content);
+                                    return;
+                                }
                                 Process p = new Process();
                                 p.StartInfo = new ProcessStartInfo(body.Content)
                                 {
@@ -74,7 +77,7 @@ namespace Powork.Helper
                         }
                         else if (body.Type == ContentType.File)
                         {
-                            InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) => 
+                            InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) => 
                             {
                                 using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
                                 {
