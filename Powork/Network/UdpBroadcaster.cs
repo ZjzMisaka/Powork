@@ -6,6 +6,7 @@ using System.Threading;
 using PowerThreadPool;
 using Powork.Model;
 using Newtonsoft.Json;
+using PowerThreadPool.Options;
 
 namespace Powork.Network
 {
@@ -41,6 +42,9 @@ namespace Powork.Network
 
                     powerPool.StopIfRequested();
                 }
+            }, new WorkOption<object>()
+            {
+                LongRunning = true
             });
         }
 
@@ -63,6 +67,9 @@ namespace Powork.Network
                     }
                     powerPool.StopIfRequested();
                 }
+            }, new WorkOption<object>()
+            {
+                LongRunning = true
             });
         }
     }

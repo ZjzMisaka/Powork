@@ -9,6 +9,7 @@ using Powork.Model;
 using Newtonsoft.Json;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using PowerThreadPool.Options;
 
 namespace Powork.Network
 {
@@ -48,6 +49,9 @@ namespace Powork.Network
                         return;
                     }
                 }
+            }, new WorkOption()
+            {
+                LongRunning = true
             });
         }
 
