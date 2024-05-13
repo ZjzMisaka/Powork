@@ -164,10 +164,7 @@ namespace Powork.ViewModel
 
         private void WindowClosing(CancelEventArgs eventArgs)
         {
-            if (powerPool.Stop())
-            {
-                powerPool.Dispose();
-            }
+            powerPool.Dispose();
         }
 
         private void WindowClosed()
