@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
+using Powork.ViewModel.Inner;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -21,7 +22,8 @@ namespace Powork.ViewModel
     class MessagePageViewModel : ObservableObject
     {
         private int firstMessageID = -1;
-        private User nowUser = new User() { GroupName = "1", IP = "1", Name = "1" };
+        private UserViewModel nowUser = new UserViewModel() { GroupName = "1", IP = "1", Name = "1" };
+        private List<UserViewModel> selectedUserList = new List<UserViewModel>();
 
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
@@ -36,8 +38,8 @@ namespace Powork.ViewModel
             }
         }
 
-        private ObservableCollection<User> userList;
-        public ObservableCollection<User> UserList
+        private ObservableCollection<UserViewModel> userList;
+        public ObservableCollection<UserViewModel> UserList
         {
             get
             {
@@ -45,7 +47,7 @@ namespace Powork.ViewModel
             }
             set
             {
-                SetProperty<ObservableCollection<User>>(ref userList, value);
+                SetProperty<ObservableCollection<UserViewModel>>(ref userList, value);
             }
         }
         private bool pageEnabled;
@@ -101,14 +103,32 @@ namespace Powork.ViewModel
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
             SendMessageCommand = new RelayCommand(SendMessage);
-            UserClickCommand = new RelayCommand<User>(UserClick);
+            UserClickCommand = new RelayCommand<UserViewModel>(UserClick);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
-            UserList = GlobalVariables.UserList;
+            UserList = new ObservableCollection<UserViewModel>();
+            foreach (User user in GlobalVariables.UserList)
+            {
+                UserList.Add(new UserViewModel(user));
+            }
             GlobalVariables.UserListChanged += (s, e) =>
             {
-                UserList = (ObservableCollection<User>)s;
+                foreach (User user in (ObservableCollection<User>)s)
+                {
+                    bool contain = false;
+                    foreach (UserViewModel userVM in UserList)
+                    {
+                        if (userVM.IP == user.IP && userVM.Name == user.Name)
+                        {
+                            contain = true;
+                        }
+                    }
+                    if (!contain)
+                    {
+                        UserList.Add(new UserViewModel(user));
+                    }
+                }
             };
 
             GlobalVariables.GetMessage += (s, e) =>
@@ -194,15 +214,17 @@ namespace Powork.ViewModel
         {
         }
 
-        private void UserClick(User user)
+        private void UserClick(UserViewModel userViewModel)
         {
-            if (nowUser == null || nowUser.IP == user.IP || nowUser.Name == user.Name)
+            if (nowUser == null || nowUser.IP == userViewModel.IP || nowUser.Name == userViewModel.Name)
             {
                 return;
             }
 
             MessageList.Clear();
-            nowUser = user;
+            nowUser.Selected = false;
+            nowUser = userViewModel;
+            nowUser.Selected = true;
             SendEnabled = true;
 
             List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
