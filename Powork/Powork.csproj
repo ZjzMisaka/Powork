@@ -18,20 +18,19 @@
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NPOI" Version="2.7.0" />
     <PackageReference Include="PowerThreadPool" Version="4.1.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
     <PackageReference Include="WPF-UI" Version="3.0.4" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\TeamPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\MemoPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\TaskPage.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="View\TestingPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

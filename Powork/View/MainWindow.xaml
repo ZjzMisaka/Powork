@@ -62,14 +62,14 @@
                         <ui:SymbolIcon Symbol="Mail24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="Team" TargetPageType="{x:Type view:TeamPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="People24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="Task" TargetPageType="{x:Type view:TaskPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="TaskListAdd24" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-                <ui:NavigationViewItem Content="Testing" TargetPageType="{x:Type view:TestingPage}">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="Book24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="Memo" TargetPageType="{x:Type view:MemoPage}">

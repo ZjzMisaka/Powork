@@ -1,5 +1,4 @@
-﻿using Powork.ControlViewModel;
-using Powork.ViewModel;
+﻿using Powork.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +14,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Powork.Control
+namespace Powork.View
 {
     /// <summary>
-    /// Rectangle.xaml の相互作用ロジック
+    /// SettingsPage.xaml 的交互逻辑
     /// </summary>
-    public partial class Rectangle : UserControl
+    public partial class TeamPage : Page
     {
-        public Rectangle()
+        public TeamPage()
         {
             InitializeComponent();
-            this.DataContext = new RectangleViewModel();
+            this.DataContext = new TeamPageViewModel();
         }
     }
 }
