@@ -105,8 +105,8 @@ namespace Powork.Network
                         RelativePath = relativePath,
                         Size = new System.IO.FileInfo(filePath).Length
                     };
-                    List<UserMessageBody> messageBody = [new UserMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
-                    UserMessage getFileMessage = new UserMessage()
+                    List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
+                    TCPMessage getFileMessage = new TCPMessage()
                     {
                         Type = MessageType.FileInfo,
                         IP = GlobalVariables.SelfInfo[0].IP,
@@ -146,8 +146,8 @@ namespace Powork.Network
                     Guid = guid,
                     Status = Model.Status.Finish,
                 };
-                List<UserMessageBody> messageBody = [new UserMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
-                UserMessage getFileMessage = new UserMessage()
+                List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
+                TCPMessage getFileMessage = new TCPMessage()
                 {
                     Type = MessageType.FileInfo,
                     IP = GlobalVariables.SelfInfo[0].IP,
@@ -173,8 +173,8 @@ namespace Powork.Network
                 tcpClient = new TcpClient(ipAddress, port);
                 stream = tcpClient.GetStream();
 
-                List<UserMessageBody> messageBody = [new UserMessageBody() { Content = guid }];
-                UserMessage getFileMessage = new UserMessage()
+                List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = guid }];
+                TCPMessage getFileMessage = new TCPMessage()
                 {
                     Type = MessageType.FileRequest,
                     IP = GlobalVariables.SelfInfo[0].IP,

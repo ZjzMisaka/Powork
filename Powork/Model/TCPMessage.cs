@@ -16,16 +16,17 @@ namespace Powork.Model
     }
     public enum MessageType
     {
-        Message = 0,
-        Error = 1,
-        FileRequest = 2,
-        FileInfo = 3,
+        UserMessage = 0,
+        TeamMessage = 1,
+        Error = 2,
+        FileRequest = 3,
+        FileInfo = 4,
     }
-    public class UserMessage
+    public class TCPMessage
     {
-        public UserMessage() 
+        public TCPMessage() 
         {
-            MessageBody = new List<UserMessageBody>();
+            MessageBody = new List<TCPMessageBody>();
         }
         /// <summary>
         /// Sender IP
@@ -35,12 +36,12 @@ namespace Powork.Model
         /// Sender name
         /// </summary>
         public string Name { get; set; }
-        public List<UserMessageBody> MessageBody { get; set; }
+        public List<TCPMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }
         public string Time { get; set; }
         public int ID { get; set; }
     }
-    public class UserMessageBody
+    public class TCPMessageBody
     {
         public string Content { get; set; }
         public ContentType Type { get; set; }

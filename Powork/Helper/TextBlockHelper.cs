@@ -12,7 +12,7 @@ namespace Powork.Helper
 {
     public static class TextBlockHelper
     {
-        public static TextBlock GetTimeControl(UserMessage userMessage)
+        public static TextBlock GetTimeControl(TCPMessage userMessage)
         {
             TextBlock timeTextBlock = null;
 
@@ -33,19 +33,19 @@ namespace Powork.Helper
             
             return timeTextBlock;
         }
-        public static TextBlock GetMessageControl (UserMessage userMessage)
+        public static TextBlock GetMessageControl (TCPMessage userMessage)
         {
             TextBlock textBlock = null;
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (userMessage.Type == MessageType.Message)
+                if (userMessage.Type == MessageType.UserMessage)
                 {
-                    List<UserMessageBody> userMessageBodyList = userMessage.MessageBody;
+                    List<TCPMessageBody> userMessageBodyList = userMessage.MessageBody;
                     textBlock = new SelectableTextBlock();
 
                     textBlock.Foreground = Brushes.White;
 
-                    foreach (UserMessageBody body in userMessageBodyList)
+                    foreach (TCPMessageBody body in userMessageBodyList)
                     {
                         if (textBlock.Inlines.Count > 0)
                         {
@@ -110,12 +110,12 @@ namespace Powork.Helper
                 }
                 else if (userMessage.Type == MessageType.Error)
                 {
-                    List<UserMessageBody> userMessageBodyList = userMessage.MessageBody;
+                    List<TCPMessageBody> userMessageBodyList = userMessage.MessageBody;
                     textBlock = new TextBlock();
 
                     textBlock.Foreground = Brushes.Pink;
 
-                    foreach (UserMessageBody body in userMessageBodyList)
+                    foreach (TCPMessageBody body in userMessageBodyList)
                     {
                         if (textBlock.Inlines.Count > 0)
                         {

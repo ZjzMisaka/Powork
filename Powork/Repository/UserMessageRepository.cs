@@ -12,7 +12,7 @@ namespace Powork.Repository
 {
     public class UserMessageRepository
     {
-        public static void InsertMessage(UserMessage userMessage, string toIP, string toName)
+        public static void InsertMessage(TCPMessage userMessage, string toIP, string toName)
         {
             string body = JsonConvert.SerializeObject(userMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -34,9 +34,9 @@ namespace Powork.Repository
             }
         }
 
-        public static List<UserMessage> SelectMessgae(string ip, string name, int id = -1)
+        public static List<TCPMessage> SelectMessgae(string ip, string name, int id = -1)
         {
-            List<UserMessage> userMessageList = new List<UserMessage>();
+            List<TCPMessage> userMessageList = new List<TCPMessage>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
@@ -54,11 +54,11 @@ namespace Powork.Repository
                     {
                         while (reader.Read())
                         {
-                            userMessageList.Add(new UserMessage()
+                            userMessageList.Add(new TCPMessage()
                             {
                                 IP = reader["fromIP"].ToString(),
                                 Name = reader["fromName"].ToString(),
-                                MessageBody = JsonConvert.DeserializeObject<List<UserMessageBody>>(reader["body"].ToString()),
+                                MessageBody = JsonConvert.DeserializeObject<List<TCPMessageBody>>(reader["body"].ToString()),
                                 Type = (MessageType)(int.Parse(reader["type"].ToString())),
                                 Time = reader["time"].ToString(),
                                 ID = int.Parse(reader["id"].ToString()),

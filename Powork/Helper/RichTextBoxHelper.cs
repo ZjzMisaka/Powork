@@ -43,9 +43,9 @@ namespace Powork.Helper
             obj.SetValue(DocumentProperty, value);
         }
 
-        public static List<UserMessageBody> ConvertFlowDocumentToUserMessage(FlowDocument document)
+        public static List<TCPMessageBody> ConvertFlowDocumentToUserMessage(FlowDocument document)
         {
-            List<UserMessageBody> messages = new List<UserMessageBody>();
+            List<TCPMessageBody> messages = new List<TCPMessageBody>();
 
             foreach (Block block in document.Blocks)
             {
@@ -57,7 +57,7 @@ namespace Powork.Helper
                         if (inline is Run)
                         {
                             Run run = inline as Run;
-                            messages.Add(new UserMessageBody
+                            messages.Add(new TCPMessageBody
                             {
                                 Content = run.Text,
                                 Type = ContentType.Text
@@ -68,7 +68,7 @@ namespace Powork.Helper
                             Hyperlink hyperlink = inline as Hyperlink;
                             string guid = Guid.NewGuid().ToString();
                             string name = new DirectoryInfo(hyperlink.NavigateUri.LocalPath).Name;
-                            messages.Add(new UserMessageBody
+                            messages.Add(new TCPMessageBody
                             {
                                 Content = name + " | " + guid,
                                 Type = ContentType.File
@@ -86,7 +86,7 @@ namespace Powork.Helper
                                 if (image != null)
                                 {
                                     string imageContent = ConvertImageToBase64(image);
-                                    messages.Add(new UserMessageBody
+                                    messages.Add(new TCPMessageBody
                                     {
                                         Content = imageContent,
                                         Type = ContentType.Picture
@@ -106,7 +106,7 @@ namespace Powork.Helper
                         if (image != null)
                         {
                             string imageContent = ConvertImageToBase64(image);
-                            messages.Add(new UserMessageBody
+                            messages.Add(new TCPMessageBody
                             {
                                 Content = imageContent,
                                 Type = ContentType.Picture
@@ -121,7 +121,7 @@ namespace Powork.Helper
                         if (image != null)
                         {
                             string imageContent = ConvertImageToBase64(image);
-                            messages.Add(new UserMessageBody
+                            messages.Add(new TCPMessageBody
                             {
                                 Content = imageContent,
                                 Type = ContentType.Picture

@@ -33,13 +33,19 @@
 
         <!-- Left Side -->
         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto"  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
-            <ItemsControl ItemsSource="{Binding Path=UserList}">
+            <ItemsControl ItemsSource="{Binding Path=UserList}" x:Name="UserListControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch" Cursor="Hand" Background="{Binding BackgroundColor}">
                             <Grid.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
+                                <MouseBinding Gesture="CTRL+LeftClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
                             </Grid.InputBindings>
+                            <Grid.ContextMenu>
+                                <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference UserListControl}}">
+                                    <MenuItem Header="Create Team" Command="{Binding CreateTeamCommand}"/>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"></RowDefinition>
                                 <RowDefinition Height="auto"></RowDefinition>

@@ -41,7 +41,7 @@ namespace Powork
         public static event UserListChangedEventHandler UserListChanged;
         public delegate void GetMessageEventHandler(object sender, EventArgs e);
         public static event GetMessageEventHandler GetMessage;
-        public static void InvokeGetMessageEvent(UserMessage userMessage)
+        public static void InvokeGetMessageEvent(TCPMessage userMessage)
         {
             if (GetMessage != null)
             {

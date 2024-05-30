@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -88,6 +89,7 @@ namespace Powork.ViewModel
         public ICommand WindowClosedCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand UserClickCommand { get; set; }
+        public ICommand CreateTeamCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
@@ -104,6 +106,7 @@ namespace Powork.ViewModel
             WindowClosedCommand = new RelayCommand(WindowClosed);
             SendMessageCommand = new RelayCommand(SendMessage);
             UserClickCommand = new RelayCommand<UserViewModel>(UserClick);
+            CreateTeamCommand = new RelayCommand(CreateTeam);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
@@ -138,7 +141,7 @@ namespace Powork.ViewModel
                     return;
                 }
 
-                UserMessage userMessage = (UserMessage)s;
+                TCPMessage userMessage = (TCPMessage)s;
                 UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
 
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
@@ -216,9 +219,24 @@ namespace Powork.ViewModel
 
         private void UserClick(UserViewModel userViewModel)
         {
-            if (nowUser == null || nowUser.IP == userViewModel.IP || nowUser.Name == userViewModel.Name)
+            if (nowUser == null)
             {
                 return;
+            }
+
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+            {
+                selectedUserList.Add(userViewModel);
+                userViewModel.Selected = true;
+                return;
+            }
+            else
+            {
+                foreach (UserViewModel userVM in selectedUserList)
+                {
+                    userVM.Selected = false;
+                }
+                selectedUserList.Clear();
             }
 
             MessageList.Clear();
@@ -227,15 +245,15 @@ namespace Powork.ViewModel
             nowUser.Selected = true;
             SendEnabled = true;
 
-            List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
+            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
             if (messageList != null && messageList.Count >= 1)
             {
                 firstMessageID = messageList[0].ID;
             }
             
-            foreach (UserMessage message in messageList)
+            foreach (TCPMessage message in messageList)
             {
-                if (message.Type == MessageType.Message)
+                if (message.Type == MessageType.UserMessage)
                 {
                     TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
                     TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
@@ -256,19 +274,27 @@ namespace Powork.ViewModel
             }
         }
 
+        private void CreateTeam()
+        {
+            if (nowUser == null || UserList.Count == 0)
+            {
+                return;
+            }
+        }
+
         private void SendMessage()
         {
             if (nowUser == null)
             {
                 return;
             }
-            List<UserMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
-            UserMessage userMessage = new UserMessage
+            List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
+            TCPMessage userMessage = new TCPMessage
             {
                 IP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = userMessageBodyList,
                 Name = GlobalVariables.SelfInfo[0].Name,
-                Type = MessageType.Message,
+                Type = MessageType.UserMessage,
                 Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
 
@@ -287,8 +313,8 @@ namespace Powork.ViewModel
             });
             if (ex != null)
             {
-                List<UserMessageBody> errorContent = [new UserMessageBody() { Content = "Send failed: User not online" }];
-                UserMessage errorMessage = new UserMessage()
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
+                TCPMessage errorMessage = new TCPMessage()
                 {
                     Type = MessageType.Error,
                     MessageBody = errorContent,
@@ -313,15 +339,15 @@ namespace Powork.ViewModel
                 return;
             }
 
-            List<UserMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name, firstMessageID);
+            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name, firstMessageID);
             if (messageList != null && messageList.Count >= 1)
             {
                 firstMessageID = messageList[0].ID;
             }
             int index = 0;
-            foreach (UserMessage message in messageList)
+            foreach (TCPMessage message in messageList)
             {
-                if (message.Type == MessageType.Message)
+                if (message.Type == MessageType.UserMessage)
                 {
                     TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
                     TextBlock textBlock = TextBlockHelper.GetMessageControl(message);

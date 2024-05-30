@@ -11,9 +11,9 @@ namespace Powork.Helper
 {
     internal static class UserMessageHelper
     {
-        internal static void ConvertImageInMessage(UserMessage userMessage)
+        internal static void ConvertImageInMessage(TCPMessage userMessage)
         {
-            foreach (UserMessageBody messageBody in userMessage.MessageBody)
+            foreach (TCPMessageBody messageBody in userMessage.MessageBody)
             {
                 if (messageBody.Type == ContentType.Picture)
                 {

@@ -87,8 +87,8 @@ namespace Powork.ViewModel
                 // Then read the message itself
                 byte[] messageBytes = reader.ReadBytes(length);
                 string message = Encoding.UTF8.GetString(messageBytes);
-                UserMessage userMessage = JsonConvert.DeserializeObject<UserMessage>(message);
-                if (userMessage.Type == MessageType.Message)
+                TCPMessage userMessage = JsonConvert.DeserializeObject<TCPMessage>(message);
+                if (userMessage.Type == MessageType.UserMessage)
                 {
                     UserMessageHelper.ConvertImageInMessage(userMessage);
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
