@@ -18,7 +18,7 @@
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PowerThreadPool" Version="4.1.0" />
+    <PackageReference Include="PowerThreadPool" Version="4.5.1" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
     <PackageReference Include="WPF-UI" Version="3.0.4" />
   </ItemGroup>

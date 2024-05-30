@@ -34,7 +34,19 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (body VARCHAR(5000), type INTEGER, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fromIP VARCHAR(36), fromName VARCHAR(20), toIP VARCHAR(36), toName VARCHAR(20), id INTEGER PRIMARY KEY AUTOINCREMENT)";
+                string sqlTTeam = @"CREATE TABLE IF NOT EXISTS TTeam (id VARCHAR(36), name VARCHAR(20), primary key (id))";
+                using (var command = new SQLiteCommand(sqlTTeam, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string sqlTTeamMember = @"CREATE TABLE IF NOT EXISTS TTeamMember (id VARCHAR(36), userIP VARCHAR(15), userName VARCHAR(20))";
+                using (var command = new SQLiteCommand(sqlTTeamMember, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                string sqlTMessage = @"CREATE TABLE IF NOT EXISTS TMessage (body VARCHAR(5000), type INTEGER, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fromIP VARCHAR(36), fromName VARCHAR(20), toIP VARCHAR(36), toName VARCHAR(20), teamID VARCHAR(36), id INTEGER PRIMARY KEY AUTOINCREMENT)";
                 using (var command = new SQLiteCommand(sqlTMessage, connection))
                 {
                     command.ExecuteNonQuery();
