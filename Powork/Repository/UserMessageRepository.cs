@@ -19,12 +19,13 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO TMessage (body, type, fromIP, fromName, toIP, teamID, toName) VALUES (@body, @type, @fromIP, @fromName, @toIP, @teamID, @toName)";
+                string sql = $"INSERT INTO TMessage (body, type, time, fromIP, fromName, toIP, teamID, toName) VALUES (@body, @type, @time, @fromIP, @fromName, @toIP, @teamID, @toName)";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
                     command.Parameters.Add(new SQLiteParameter("@body", body));
                     command.Parameters.Add(new SQLiteParameter("@type", userMessage.Type));
+                    command.Parameters.Add(new SQLiteParameter("@time", userMessage.Time));
                     command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.IP));
                     command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.Name));
                     command.Parameters.Add(new SQLiteParameter("@toIP", toIP));

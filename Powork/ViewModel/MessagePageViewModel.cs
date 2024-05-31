@@ -295,7 +295,6 @@ namespace Powork.ViewModel
                 MessageBody = userMessageBodyList,
                 Name = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.UserMessage,
-                Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             };
 
             string message = JsonConvert.SerializeObject(userMessage);
