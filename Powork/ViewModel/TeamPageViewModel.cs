@@ -85,8 +85,10 @@ namespace Powork.ViewModel
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
+        public ICommand SendMessageCommand { get; set; }
         public ICommand TeamClickCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
+        public ICommand DropCommand { get; set; }
 
         public TeamPageViewModel()
         {
@@ -99,8 +101,10 @@ namespace Powork.ViewModel
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
+            SendMessageCommand = new RelayCommand(SendMessage);
             TeamClickCommand = new RelayCommand<TeamViewModel>(TeamClick);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
+            DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
             TeamList = new ObservableCollection<TeamViewModel>();
         }
@@ -120,6 +124,108 @@ namespace Powork.ViewModel
 
         private void WindowClosed()
         {
+        }
+
+        public void InsertImage(string uri)
+        {
+            var image = new Wpf.Ui.Controls.Image();
+            image.Source = new BitmapImage(new Uri(uri));
+            image.Width = image.Height = 64;
+            var container = new BlockUIContainer(image);
+            RichTextBoxDocument.Blocks.Add(container);
+        }
+
+        public void InsertFile(string displayText, string url)
+        {
+            Hyperlink link = new Hyperlink()
+            {
+                NavigateUri = new Uri(url),
+                Foreground = Brushes.AliceBlue,
+                TextDecorations = TextDecorations.Underline
+            };
+
+            link.RequestNavigate += (sender, e) =>
+            {
+                string uri = e.Uri.LocalPath;
+                Process p = new Process();
+                p.StartInfo = new ProcessStartInfo(uri)
+                {
+                    UseShellExecute = true
+                };
+                p.Start();
+                e.Handled = true;
+            };
+
+            link.Inlines.Add(displayText);
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(link);
+
+            RichTextBoxDocument.Blocks.Add(paragraph);
+        }
+
+        public void InsertText(string text)
+        {
+            Run run = new Run(text);
+            Paragraph paragraph = new Paragraph(run);
+            RichTextBoxDocument.Blocks.Add(paragraph);
+        }
+
+        private void SendMessage()
+        {
+            if (nowTeam == null)
+            {
+                return;
+            }
+            List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
+            TCPMessage userMessage = new TCPMessage
+            {
+                IP = GlobalVariables.LocalIP.ToString(),
+                MessageBody = userMessageBodyList,
+                Name = GlobalVariables.SelfInfo[0].Name,
+                Type = MessageType.UserMessage,
+            };
+
+            string message = JsonConvert.SerializeObject(userMessage);
+
+            List<Exception> exList = new List<Exception>();
+            foreach (User user in TeamRepository.SelectTeamMember(nowTeam.ID))
+            {
+                Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, user.IP, GlobalVariables.TcpPort);
+                if(ex != null)
+                {
+                    exList.Add(ex);
+                }
+            }
+
+            UserMessageHelper.ConvertImageInMessage(userMessage);
+
+            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+            TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageList.Add(timeTextBlock);
+                MessageList.Add(textBlock);
+            });
+            foreach (Exception ex in exList)
+            {
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
+                TCPMessage errorMessage = new TCPMessage()
+                {
+                    Type = MessageType.Error,
+                    MessageBody = errorContent,
+                };
+                TextBlock errorTextBlock = TextBlockHelper.GetMessageControl(errorMessage);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageList.Add(errorTextBlock);
+                });
+
+                TeamMessageRepository.InsertMessage(errorMessage, nowTeam.ID);
+            }
+            TeamMessageRepository.InsertMessage(userMessage, nowTeam.ID);
+
+            RichTextBoxDocument = new FlowDocument();
         }
 
         private void TeamClick(TeamViewModel teamViewModel)
@@ -159,12 +265,6 @@ namespace Powork.ViewModel
             }
         }
 
-
-
-
-
-
-
         private void ScrollAtTop()
         {
             if (firstMessageID == -1)
@@ -197,6 +297,26 @@ namespace Powork.ViewModel
                     {
                         MessageList.Insert(index++, textBlock);
                     });
+                }
+            }
+        }
+
+        private void Drop(DragEventArgs args)
+        {
+            string[] pathList = (string[])args.Data.GetData(DataFormats.FileDrop, false);
+            foreach (string path in pathList)
+            {
+                if (FileHelper.GetType(path) == FileHelper.Type.Directory)
+                {
+                    InsertFile("Send directory: " + new DirectoryInfo(path).Name, path);
+                }
+                else if (FileHelper.GetType(path) == FileHelper.Type.Image)
+                {
+                    InsertImage(path);
+                }
+                else if (FileHelper.GetType(path) == FileHelper.Type.File)
+                {
+                    InsertFile("Send file: " + Path.GetFileName(path), path);
                 }
             }
         }

@@ -24,13 +24,12 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                SelectTeamMembers(team.ID, team.MemberList);
+                InsertTeamMembers(team.ID, team.MemberList);
             }
         }
 
-        public static List<User> SelectTeamMembers(string teamID, List<User> memberList)
+        public static void InsertTeamMembers(string teamID, List<User> memberList)
         {
-            List<User> userList = new List<User>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
@@ -45,7 +44,6 @@ namespace Powork.Repository
                     }
                 }
             }
-            return userList;
         }
 
         public static List<Team> SelectTeam()
