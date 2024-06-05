@@ -44,6 +44,7 @@ namespace Powork.Model
     public class TCPMessageBody
     {
         public string Content { get; set; }
+        public string ID { get; set; }
         public ContentType Type { get; set; }
     }
 }

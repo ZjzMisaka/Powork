@@ -70,7 +70,8 @@ namespace Powork.Helper
                             string name = new DirectoryInfo(hyperlink.NavigateUri.LocalPath).Name;
                             messages.Add(new TCPMessageBody
                             {
-                                Content = name + " | " + guid,
+                                Content = name,
+                                ID = guid,
                                 Type = ContentType.File
                             });
                             FileRepository.InsertFile(guid, hyperlink.NavigateUri.LocalPath);

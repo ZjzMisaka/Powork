@@ -276,7 +276,7 @@ namespace Powork.ViewModel
 
         private void CreateTeam()
         {
-            if (nowUser == null || UserList.Count == 0)
+            if (UserList.Count == 0)
             {
                 return;
             }

@@ -85,7 +85,7 @@ namespace Powork.Helper
                                     System.Windows.Forms.DialogResult result = fbd.ShowDialog();
                                     if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                                     {
-                                        GlobalVariables.TcpServerClient.RequestFile(body.Content.Split(" | ")[1], userMessage.IP, GlobalVariables.TcpPort, fbd.SelectedPath);
+                                        GlobalVariables.TcpServerClient.RequestFile(body.ID, userMessage.IP, GlobalVariables.TcpPort, fbd.SelectedPath);
                                     }
                                 }
                             })));
@@ -93,7 +93,7 @@ namespace Powork.Helper
 
                             textBlock.Inlines.Add(new LineBreak());
 
-                            string name = body.Content.Split(" | ")[0];
+                            string name = body.Content;
                             Run run = new Run(name);
                             textBlock.Inlines.Add(run);
                         }
