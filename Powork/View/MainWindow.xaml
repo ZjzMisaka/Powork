@@ -64,12 +64,17 @@
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="Team" TargetPageType="{x:Type view:TeamPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="People24" />
+                        <ui:SymbolIcon Symbol="PeopleTeam24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="Share" TargetPageType="{x:Type view:SharePage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Folder24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="Task" TargetPageType="{x:Type view:TaskPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="TaskListAdd24" />
+                        <ui:SymbolIcon Symbol="TaskListRtl24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="Memo" TargetPageType="{x:Type view:MemoPage}">

@@ -24,6 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\SharePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\TeamPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
