@@ -22,6 +22,72 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Side -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto"  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+            <ItemsControl ItemsSource="{Binding Path=TeamList}" x:Name="TeamListControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch" Cursor="Hand" Background="{Binding BackgroundColor}">
+                            <Grid.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding Path=DataContext.TeamClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
+                            </Grid.InputBindings>
+                            <Grid.ContextMenu>
+                                <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference TeamListControl}}">
+                                    <MenuItem Header="Create Team" Command="{Binding CreateTeamCommand}"/>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="White"/>
+                            <TextBlock Text="{Binding GroupName}" Grid.Row="1" Foreground="White" FontSize="9" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding IP}" Grid.Row="2" Foreground="White" FontSize="9"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Right Side -->
+        <Grid Grid.Column="1"  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Grid.Row="0"  helper:ScrollViewerExtensions.ScrollAtTopCommand="{Binding ScrollAtTopCommand}">
+                <ItemsControl ItemsSource="{Binding MessageList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock AllowDrop="True" Grid.Column="0" Text="DROP HERE" Foreground="White" Block.TextAlignment="Center" VerticalAlignment="Center">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Drop">
+                            <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
+                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" Grid.Column="1"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>
