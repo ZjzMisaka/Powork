@@ -107,6 +107,25 @@ namespace Powork.ViewModel
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
             TeamList = new ObservableCollection<TeamViewModel>();
+
+            GlobalVariables.GetMessage += (s, e) =>
+            {
+                if (nowTeam == null)
+                {
+                    return;
+                }
+
+                TCPMessage userMessage = (TCPMessage)s;
+                TeamMessageRepository.InsertMessage(userMessage);
+
+                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+                TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageList.Add(timeTextBlock);
+                    MessageList.Add(textBlock);
+                });
+            };
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -184,6 +203,7 @@ namespace Powork.ViewModel
                 MessageBody = userMessageBodyList,
                 Name = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.UserMessage,
+                TeamID = nowTeam.ID,
             };
 
             string message = JsonConvert.SerializeObject(userMessage);
@@ -214,6 +234,7 @@ namespace Powork.ViewModel
                 {
                     Type = MessageType.Error,
                     MessageBody = errorContent,
+                    TeamID = nowTeam.ID,
                 };
                 TextBlock errorTextBlock = TextBlockHelper.GetMessageControl(errorMessage);
                 Application.Current.Dispatcher.Invoke(() =>
@@ -221,9 +242,9 @@ namespace Powork.ViewModel
                     MessageList.Add(errorTextBlock);
                 });
 
-                TeamMessageRepository.InsertMessage(errorMessage, nowTeam.ID);
+                TeamMessageRepository.InsertMessage(errorMessage);
             }
-            TeamMessageRepository.InsertMessage(userMessage, nowTeam.ID);
+            TeamMessageRepository.InsertMessage(userMessage);
 
             RichTextBoxDocument = new FlowDocument();
         }

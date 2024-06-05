@@ -12,7 +12,7 @@ namespace Powork.Repository
 {
     public class TeamMessageRepository
     {
-        public static void InsertMessage(TCPMessage userMessage, string teamID)
+        public static void InsertMessage(TCPMessage userMessage)
         {
             string body = JsonConvert.SerializeObject(userMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -29,7 +29,7 @@ namespace Powork.Repository
                     command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.IP));
                     command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.Name));
                     command.Parameters.Add(new SQLiteParameter("@toIP", null));
-                    command.Parameters.Add(new SQLiteParameter("@teamID", teamID));
+                    command.Parameters.Add(new SQLiteParameter("@teamID", userMessage.TeamID));
                     command.Parameters.Add(new SQLiteParameter("@toName", null));
                     command.ExecuteNonQuery();
                 }
@@ -64,6 +64,7 @@ namespace Powork.Repository
                                 Type = (MessageType)(int.Parse(reader["type"].ToString())),
                                 Time = reader["time"].ToString(),
                                 ID = int.Parse(reader["id"].ToString()),
+                                TeamID = teamID,
                             });
                         }
                         userMessageList.Reverse();
