@@ -280,6 +280,38 @@ namespace Powork.ViewModel
             {
                 return;
             }
+
+            List<User> teamMemberList = new List<User>();
+
+            foreach (UserViewModel userViewModel in UserList)
+            {
+                if (userViewModel.Selected)
+                {
+                    teamMemberList.Add(new User()
+                    {
+                        IP = userViewModel.IP,
+                        Name = userViewModel.Name
+                    });
+                }
+            }
+
+            if (teamMemberList.Count == 0)
+            {
+                return;
+            }
+
+            teamMemberList.Add(new User()
+            {
+                IP = GlobalVariables.SelfInfo[0].IP,
+                Name = GlobalVariables.SelfInfo[0].Name,
+            });
+
+            Team team = new Team();
+            team.ID = Guid.NewGuid().ToString();
+            team.Name = "TeamName";
+            team.MemberList = teamMemberList;
+
+            TeamRepository.InsertTeam(team);
         }
 
         private void SendMessage()
