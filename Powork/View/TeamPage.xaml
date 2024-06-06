@@ -42,11 +42,6 @@
                                     </StackPanel>
                                 </ToolTip>
                             </Grid.ToolTip>
-                            <Grid.ContextMenu>
-                                <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference TeamListControl}}">
-                                    <MenuItem Header="Create Team" Command="{Binding CreateTeamCommand}"/>
-                                </ContextMenu>
-                            </Grid.ContextMenu>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"></RowDefinition>
                             </Grid.RowDefinitions>

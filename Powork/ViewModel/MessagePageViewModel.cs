@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Powork.ViewModel
 {
@@ -312,8 +313,15 @@ namespace Powork.ViewModel
 
             Team team = new Team();
             team.ID = Guid.NewGuid().ToString();
-            team.Name = "TeamName";
             team.MemberList = teamMemberList;
+
+            InputWindowViewModel dataContext = new InputWindowViewModel("Team name");
+            InputWindow window = new InputWindow
+            {
+                DataContext = dataContext
+            };
+            window.ShowDialog();
+            team.Name = dataContext.Value;
 
             TeamRepository.InsertTeam(team);
         }

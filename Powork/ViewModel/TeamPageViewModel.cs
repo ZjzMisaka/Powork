@@ -113,6 +113,11 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            if (!UserHelper.IsUserLogon())
+            {
+                PageEnabled = false;
+            }
+
             List<Team> teamList = TeamRepository.SelectTeam();
             foreach (Team team in teamList)
             {
