@@ -328,7 +328,7 @@ namespace Powork.ViewModel
             {
                 return;
             }
-            List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
+            List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
             TCPMessage userMessage = new TCPMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
@@ -341,7 +341,7 @@ namespace Powork.ViewModel
 
             Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
 
-            UserMessageHelper.ConvertImageInMessage(userMessage);
+            MessageHelper.ConvertImageInMessage(userMessage);
 
             TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
             TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);

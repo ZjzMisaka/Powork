@@ -43,7 +43,7 @@ namespace Powork.Helper
             obj.SetValue(DocumentProperty, value);
         }
 
-        public static List<TCPMessageBody> ConvertFlowDocumentToUserMessage(FlowDocument document)
+        public static List<TCPMessageBody> ConvertFlowDocumentToMessageBodyList(FlowDocument document)
         {
             List<TCPMessageBody> messages = new List<TCPMessageBody>();
 

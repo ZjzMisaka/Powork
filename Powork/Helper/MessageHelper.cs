@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Powork.Helper
 {
-    internal static class UserMessageHelper
+    internal static class MessageHelper
     {
         internal static void ConvertImageInMessage(TCPMessage userMessage)
         {

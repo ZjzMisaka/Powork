@@ -217,29 +217,29 @@ namespace Powork.ViewModel
             {
                 return;
             }
-            List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
-            TCPMessage userMessage = new TCPMessage
+            List<TCPMessageBody> teamMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
+            TCPMessage teamMessage = new TCPMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
-                MessageBody = userMessageBodyList,
+                MessageBody = teamMessageBodyList,
                 SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.TeamMessage,
                 TeamID = nowTeam.ID,
             };
 
-            string message = JsonConvert.SerializeObject(userMessage);
+            string message = JsonConvert.SerializeObject(teamMessage);
 
-            foreach (User user in TeamRepository.SelectTeamMember(nowTeam.ID))
+            foreach (User member in TeamRepository.SelectTeamMember(nowTeam.ID))
             {
-                if (user.IP == GlobalVariables.SelfInfo[0].IP && user.Name == GlobalVariables.SelfInfo[0].Name)
+                if (member.IP == GlobalVariables.SelfInfo[0].IP && member.Name == GlobalVariables.SelfInfo[0].Name)
                 {
                     continue;
                 }
 
-                Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, user.IP, GlobalVariables.TcpPort);
+                Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, member.IP, GlobalVariables.TcpPort);
                 if(ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {user.Name} not online" }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {member.Name} not online" }];
                     TCPMessage errorMessage = new TCPMessage()
                     {
                         Type = MessageType.Error,
@@ -256,16 +256,16 @@ namespace Powork.ViewModel
                 }
             }
 
-            UserMessageHelper.ConvertImageInMessage(userMessage);
+            MessageHelper.ConvertImageInMessage(teamMessage);
 
-            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage, true);
-            TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
+            TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
-            TeamMessageRepository.InsertMessage(userMessage);
+            TeamMessageRepository.InsertMessage(teamMessage);
 
             RichTextBoxDocument = new FlowDocument();
         }
@@ -322,7 +322,7 @@ namespace Powork.ViewModel
             int index = 0;
             foreach (TCPMessage message in messageList)
             {
-                if (message.Type == MessageType.UserMessage)
+                if (message.Type == MessageType.TeamMessage)
                 {
                     TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message, true);
                     TextBlock textBlock = TextBlockHelper.GetMessageControl(message);

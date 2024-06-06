@@ -90,7 +90,7 @@ namespace Powork.ViewModel
                 TCPMessage userMessage = JsonConvert.DeserializeObject<TCPMessage>(message);
                 if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
                 {
-                    UserMessageHelper.ConvertImageInMessage(userMessage);
+                    MessageHelper.ConvertImageInMessage(userMessage);
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
                 }
                 else if (userMessage.Type == MessageType.FileRequest)
