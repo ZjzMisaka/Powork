@@ -21,6 +21,8 @@ namespace Powork.Model
         Error = 2,
         FileRequest = 3,
         FileInfo = 4,
+        TeamInfoRequest = 5,
+        TeamInfo = 6,
     }
     public class TCPMessage
     {
@@ -31,11 +33,11 @@ namespace Powork.Model
         /// <summary>
         /// Sender IP
         /// </summary>
-        public string IP { get; set; }
+        public string SenderIP { get; set; }
         /// <summary>
         /// Sender name
         /// </summary>
-        public string Name { get; set; }
+        public string SenderName { get; set; }
         /// <summary>
         /// team id
         /// </summary>

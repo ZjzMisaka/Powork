@@ -103,7 +103,7 @@ namespace Powork.ViewModel
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
-                        GlobalVariables.TcpServerClient.SendFile(path, guid, userMessage.IP, GlobalVariables.TcpPort);
+                        GlobalVariables.TcpServerClient.SendFile(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
@@ -111,10 +111,10 @@ namespace Powork.ViewModel
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
-                            GlobalVariables.TcpServerClient.SendFile(file, guid, userMessage.IP, GlobalVariables.TcpPort, relativePath);
+                            GlobalVariables.TcpServerClient.SendFile(file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath);
                         }
                     }
-                    GlobalVariables.TcpServerClient.SendFileFinish(path, guid, userMessage.IP, GlobalVariables.TcpPort);
+                    GlobalVariables.TcpServerClient.SendFileFinish(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
                 }
                 else if (userMessage.Type == MessageType.FileInfo)
                 {
@@ -158,6 +158,39 @@ namespace Powork.ViewModel
                     {
                         MessageBox.Show("No such file: " + fileInfo.Name);
                     }
+                }
+                else if (userMessage.Type == MessageType.TeamInfoRequest)
+                {
+                    string teamID = userMessage.MessageBody[0].Content;
+                    GlobalVariables.TcpServerClient.SendTeamInfo(teamID, TeamRepository.SelectTeam(teamID).Name, TeamRepository.SelectTeamMember(teamID), userMessage.SenderIP);
+                }
+                else if (userMessage.Type == MessageType.TeamInfo)
+                {
+                    string teamID = null;
+                    string teamName = null;
+                    List<User> members = null;
+                    foreach (TCPMessageBody messageBody in userMessage.MessageBody)
+                    {
+                        string json = messageBody.Content;
+                        KeyValuePair<string, object> teamInfoPart = JsonConvert.DeserializeObject<KeyValuePair<string, object>>(json);
+                        if (teamInfoPart.Key == "team id")
+                        {
+                            teamID = (string)teamInfoPart.Value;
+                        }
+                        else if (teamInfoPart.Key == "team name")
+                        {
+                            teamName = (string)teamInfoPart.Value;
+                        }
+                        else if (teamInfoPart.Key == "members")
+                        {
+                            members = (List<User>)teamInfoPart.Value;
+                        }
+                    }
+                    Team team = new Team();
+                    team.ID = teamID;
+                    team.Name = teamName;
+                    team.MemberList = members;
+                    TeamRepository.InsertTeam(team);
                 }
             });
         }

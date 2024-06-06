@@ -26,8 +26,8 @@ namespace Powork.Repository
                     command.Parameters.Add(new SQLiteParameter("@body", body));
                     command.Parameters.Add(new SQLiteParameter("@type", userMessage.Type));
                     command.Parameters.Add(new SQLiteParameter("@time", userMessage.Time));
-                    command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.IP));
-                    command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.Name));
+                    command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.SenderIP));
+                    command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.SenderName));
                     command.Parameters.Add(new SQLiteParameter("@toIP", toIP));
                     command.Parameters.Add(new SQLiteParameter("@teamID", null));
                     command.Parameters.Add(new SQLiteParameter("@toName", toName));
@@ -58,8 +58,8 @@ namespace Powork.Repository
                         {
                             userMessageList.Add(new TCPMessage()
                             {
-                                IP = reader["fromIP"].ToString(),
-                                Name = reader["fromName"].ToString(),
+                                SenderIP = reader["fromIP"].ToString(),
+                                SenderName = reader["fromName"].ToString(),
                                 MessageBody = JsonConvert.DeserializeObject<List<TCPMessageBody>>(reader["body"].ToString()),
                                 Type = (MessageType)(int.Parse(reader["type"].ToString())),
                                 Time = reader["time"].ToString(),

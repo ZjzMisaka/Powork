@@ -142,16 +142,24 @@ namespace Powork.ViewModel
                 }
 
                 TCPMessage userMessage = (TCPMessage)s;
+
+                if (userMessage.Type != MessageType.UserMessage)
+                {
+                    return;
+                }
+
                 UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
 
-                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
-                TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
-                Application.Current.Dispatcher.Invoke(() =>
+                if (userMessage.SenderIP == nowUser.IP && userMessage.SenderName == nowUser.Name)
                 {
-
-                    MessageList.Add(timeTextBlock);
-                    MessageList.Add(textBlock);
-                });
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+                    TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Add(timeTextBlock);
+                        MessageList.Add(textBlock);
+                    });
+                }
             };
         }
 
@@ -323,9 +331,9 @@ namespace Powork.ViewModel
             List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
             TCPMessage userMessage = new TCPMessage
             {
-                IP = GlobalVariables.LocalIP.ToString(),
+                SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = userMessageBodyList,
-                Name = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.UserMessage,
             };
 

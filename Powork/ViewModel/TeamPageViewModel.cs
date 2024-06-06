@@ -115,16 +115,35 @@ namespace Powork.ViewModel
                     return;
                 }
 
-                TCPMessage userMessage = (TCPMessage)s;
-                TeamMessageRepository.InsertMessage(userMessage);
+                TCPMessage teamMessage = (TCPMessage)s;
 
-                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
-                TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
-                Application.Current.Dispatcher.Invoke(() =>
+                if (teamMessage.Type != MessageType.TeamMessage)
                 {
-                    MessageList.Add(timeTextBlock);
-                    MessageList.Add(textBlock);
-                });
+                    return;
+                }
+
+                TeamMessageRepository.InsertMessage(teamMessage);
+
+                if (teamMessage.TeamID == nowTeam.ID)
+                {
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage);
+                    TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Add(timeTextBlock);
+                        MessageList.Add(textBlock);
+                    });
+                }
+
+                // if team not exists, request team info and create team
+                foreach (TeamViewModel teamViewModel in TeamList)
+                {
+                    if (teamMessage.TeamID == teamViewModel.ID)
+                    {
+                        return;
+                    }
+                }
+
             };
         }
 
@@ -199,9 +218,9 @@ namespace Powork.ViewModel
             List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToUserMessage(RichTextBoxDocument);
             TCPMessage userMessage = new TCPMessage
             {
-                IP = GlobalVariables.LocalIP.ToString(),
+                SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = userMessageBodyList,
-                Name = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.UserMessage,
                 TeamID = nowTeam.ID,
             };

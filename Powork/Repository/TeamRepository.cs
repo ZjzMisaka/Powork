@@ -73,6 +73,33 @@ namespace Powork.Repository
             return teamList;
         }
 
+        public static Team SelectTeam(string id)
+        {
+            Team team = null;
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"SELECT * FROM TTeam WHERE id = '{id}'";
+
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            team = new Team()
+                            {
+                                ID = reader["id"].ToString(),
+                                Name = reader["name"].ToString(),
+                            };
+                        }
+                    }
+                }
+            }
+            return team;
+        }
+
         public static List<User> SelectTeamMember(string teamID)
         {
             List<User> teamMemberList = new List<User>();

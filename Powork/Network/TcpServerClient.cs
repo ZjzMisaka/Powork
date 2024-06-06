@@ -109,7 +109,7 @@ namespace Powork.Network
                     TCPMessage getFileMessage = new TCPMessage()
                     {
                         Type = MessageType.FileInfo,
-                        IP = GlobalVariables.SelfInfo[0].IP,
+                        SenderIP = GlobalVariables.SelfInfo[0].IP,
                         MessageBody = messageBody,
                     };
                     byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
@@ -150,7 +150,7 @@ namespace Powork.Network
                 TCPMessage getFileMessage = new TCPMessage()
                 {
                     Type = MessageType.FileInfo,
-                    IP = GlobalVariables.SelfInfo[0].IP,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
                     MessageBody = messageBody,
                 };
                 byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
@@ -177,7 +177,7 @@ namespace Powork.Network
                 TCPMessage getFileMessage = new TCPMessage()
                 {
                     Type = MessageType.FileRequest,
-                    IP = GlobalVariables.SelfInfo[0].IP,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
                     MessageBody = messageBody,
                 };
 
@@ -201,6 +201,74 @@ namespace Powork.Network
                     tcpClient.Dispose();
                 }
             }
+        }
+
+        public void RequestTeamInfo(string teamID, string ipAddress, int port)
+        {
+            TcpClient tcpClient = null;
+            NetworkStream stream = null;
+
+            try
+            {
+                tcpClient = new TcpClient(ipAddress, port);
+                stream = tcpClient.GetStream();
+
+                List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = teamID }];
+                TCPMessage getFileMessage = new TCPMessage()
+                {
+                    Type = MessageType.TeamInfoRequest,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
+
+                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                int length = bytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                stream.Write(lengthPrefix, 0, lengthPrefix.Length);
+                stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+                if (tcpClient != null)
+                {
+                    tcpClient.Dispose();
+                }
+            }
+        }
+
+        internal void SendTeamInfo(string teamID, string teamName, List<User> users, string senderIP)
+        {
+            TCPMessageBody tcpMessageBody;
+            TCPMessage userMessage = new TCPMessage
+            {
+                SenderIP = GlobalVariables.LocalIP.ToString(),
+                MessageBody = new List<TCPMessageBody>(),
+                SenderName = GlobalVariables.SelfInfo[0].Name,
+                Type = MessageType.TeamInfo,
+            };
+
+            tcpMessageBody = new TCPMessageBody();
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>("team id", teamID));
+            userMessage.MessageBody.Add(tcpMessageBody);
+
+            tcpMessageBody = new TCPMessageBody();
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>("team name", teamName));
+            userMessage.MessageBody.Add(tcpMessageBody);
+
+            tcpMessageBody = new TCPMessageBody();
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<User>>("members", users));
+            userMessage.MessageBody.Add(tcpMessageBody);
+
+            string message = JsonConvert.SerializeObject(userMessage);
+
+            GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
         }
     }
 }

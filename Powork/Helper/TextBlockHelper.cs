@@ -19,7 +19,7 @@ namespace Powork.Helper
             Application.Current.Dispatcher.Invoke(() =>
             {
                 timeTextBlock = new TextBlock();
-                if (userMessage.IP == GlobalVariables.SelfInfo[0].IP && userMessage.Name == GlobalVariables.SelfInfo[0].Name)
+                if (userMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && userMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Right;
                 }
@@ -85,7 +85,7 @@ namespace Powork.Helper
                                     System.Windows.Forms.DialogResult result = fbd.ShowDialog();
                                     if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                                     {
-                                        GlobalVariables.TcpServerClient.RequestFile(body.ID, userMessage.IP, GlobalVariables.TcpPort, fbd.SelectedPath);
+                                        GlobalVariables.TcpServerClient.RequestFile(body.ID, userMessage.SenderIP, GlobalVariables.TcpPort, fbd.SelectedPath);
                                     }
                                 }
                             })));
@@ -99,7 +99,7 @@ namespace Powork.Helper
                         }
                     }
 
-                    if (userMessage.IP == GlobalVariables.SelfInfo[0].IP && userMessage.Name == GlobalVariables.SelfInfo[0].Name)
+                    if (userMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && userMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
                     {
                         textBlock.HorizontalAlignment = HorizontalAlignment.Right;
                     }
