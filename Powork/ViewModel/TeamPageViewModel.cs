@@ -229,13 +229,30 @@ namespace Powork.ViewModel
 
             string message = JsonConvert.SerializeObject(userMessage);
 
-            List<Exception> exList = new List<Exception>();
             foreach (User user in TeamRepository.SelectTeamMember(nowTeam.ID))
             {
+                if (user.IP == GlobalVariables.SelfInfo[0].IP && user.Name == GlobalVariables.SelfInfo[0].Name)
+                {
+                    continue;
+                }
+
                 Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, user.IP, GlobalVariables.TcpPort);
                 if(ex != null)
                 {
-                    exList.Add(ex);
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {user.Name} not online" }];
+                    TCPMessage errorMessage = new TCPMessage()
+                    {
+                        Type = MessageType.Error,
+                        MessageBody = errorContent,
+                        TeamID = nowTeam.ID,
+                    };
+                    TextBlock errorTextBlock = TextBlockHelper.GetMessageControl(errorMessage);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageList.Add(errorTextBlock);
+                    });
+
+                    TeamMessageRepository.InsertMessage(errorMessage);
                 }
             }
 
@@ -248,23 +265,6 @@ namespace Powork.ViewModel
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
-            foreach (Exception ex in exList)
-            {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
-                TCPMessage errorMessage = new TCPMessage()
-                {
-                    Type = MessageType.Error,
-                    MessageBody = errorContent,
-                    TeamID = nowTeam.ID,
-                };
-                TextBlock errorTextBlock = TextBlockHelper.GetMessageControl(errorMessage);
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MessageList.Add(errorTextBlock);
-                });
-
-                TeamMessageRepository.InsertMessage(errorMessage);
-            }
             TeamMessageRepository.InsertMessage(userMessage);
 
             RichTextBoxDocument = new FlowDocument();
