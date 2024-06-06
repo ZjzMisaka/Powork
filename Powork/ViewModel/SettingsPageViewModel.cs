@@ -56,15 +56,13 @@ namespace Powork.ViewModel
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
-        public ICommand WindowClosingCommand { get; set; }
-        public ICommand WindowClosedCommand { get; set; }
+        public ICommand WindowUnloadedCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
         public SettingsPageViewModel()
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
-            WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
-            WindowClosedCommand = new RelayCommand(WindowClosed);
+            WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
             OKClickCommand = new RelayCommand(OKClick);
         }
 
@@ -80,14 +78,11 @@ namespace Powork.ViewModel
             }
         }
 
-        private void WindowClosing(CancelEventArgs eventArgs)
+        private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             
         }
 
-        private void WindowClosed()
-        {
-        }
         private void OKClick()
         {
             User user = new User()

@@ -15,11 +15,8 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding WindowLoadedCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
-        <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding WindowClosingCommand}" PassEventArgsToCommand="True" />
-        </i:EventTrigger>
-        <i:EventTrigger EventName="Closed">
-            <i:InvokeCommandAction Command="{Binding WindowClosedCommand}" />
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding WindowUnloadedCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 

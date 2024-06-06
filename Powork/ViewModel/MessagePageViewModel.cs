@@ -85,8 +85,7 @@ namespace Powork.ViewModel
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
-        public ICommand WindowClosingCommand { get; set; }
-        public ICommand WindowClosedCommand { get; set; }
+        public ICommand WindowUnloadedCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand UserClickCommand { get; set; }
         public ICommand CreateTeamCommand { get; set; }
@@ -102,8 +101,7 @@ namespace Powork.ViewModel
             MessageList = new ObservableCollection<TextBlock>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
-            WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
-            WindowClosedCommand = new RelayCommand(WindowClosed);
+            WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
             SendMessageCommand = new RelayCommand(SendMessage);
             UserClickCommand = new RelayCommand<UserViewModel>(UserClick);
             CreateTeamCommand = new RelayCommand(CreateTeam);
@@ -134,33 +132,35 @@ namespace Powork.ViewModel
                 }
             };
 
-            GlobalVariables.GetMessage += (s, e) =>
+            GlobalVariables.GetMessage += OnGetMessage;
+        }
+
+        private void OnGetMessage(object sender, EventArgs e)
+        {
+            if (nowUser == null)
             {
-                if (nowUser == null)
+                return;
+            }
+
+            TCPMessage userMessage = (TCPMessage)sender;
+
+            if (userMessage.Type != MessageType.UserMessage)
+            {
+                return;
+            }
+
+            UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
+
+            if (userMessage.SenderIP == nowUser.IP && userMessage.SenderName == nowUser.Name)
+            {
+                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+                TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    return;
-                }
-
-                TCPMessage userMessage = (TCPMessage)s;
-
-                if (userMessage.Type != MessageType.UserMessage)
-                {
-                    return;
-                }
-
-                UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
-
-                if (userMessage.SenderIP == nowUser.IP && userMessage.SenderName == nowUser.Name)
-                {
-                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
-                    TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MessageList.Add(timeTextBlock);
-                        MessageList.Add(textBlock);
-                    });
-                }
-            };
+                    MessageList.Add(timeTextBlock);
+                    MessageList.Add(textBlock);
+                });
+            }
         }
 
         public void InsertImage(string uri)
@@ -171,7 +171,6 @@ namespace Powork.ViewModel
             var container = new BlockUIContainer(image);
             RichTextBoxDocument.Blocks.Add(container);
         }
-
 
         public void InsertFile(string displayText, string url)
         {
@@ -217,12 +216,9 @@ namespace Powork.ViewModel
             }
         }
 
-        private void WindowClosing(CancelEventArgs eventArgs)
+        private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
-        }
-
-        private void WindowClosed()
-        {
+            GlobalVariables.GetMessage -= OnGetMessage;
         }
 
         private void UserClick(UserViewModel userViewModel)

@@ -18,25 +18,19 @@ namespace Powork.ViewModel
     class TaskPageViewModel : ObservableObject
     {
         public ICommand WindowLoadedCommand { get; set; }
-        public ICommand WindowClosingCommand { get; set; }
-        public ICommand WindowClosedCommand { get; set; }
+        public ICommand WindowUnloadedCommand { get; set; }
 
         public TaskPageViewModel()
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
-            WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
-            WindowClosedCommand = new RelayCommand(WindowClosed);
+            WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
         }
 
-        private void WindowClosing(CancelEventArgs eventArgs)
-        {
-        }
-
-        private void WindowClosed()
+        private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
         }
     }

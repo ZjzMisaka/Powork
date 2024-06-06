@@ -85,8 +85,7 @@ namespace Powork.ViewModel
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
-        public ICommand WindowClosingCommand { get; set; }
-        public ICommand WindowClosedCommand { get; set; }
+        public ICommand WindowUnloadedCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand TeamClickCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
@@ -101,8 +100,7 @@ namespace Powork.ViewModel
             MessageList = new ObservableCollection<TextBlock>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
-            WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
-            WindowClosedCommand = new RelayCommand(WindowClosed);
+            WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
             SendMessageCommand = new RelayCommand(SendMessage);
             TeamClickCommand = new RelayCommand<TeamViewModel>(TeamClick);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
@@ -110,43 +108,7 @@ namespace Powork.ViewModel
 
             TeamList = new ObservableCollection<TeamViewModel>();
 
-            GlobalVariables.GetMessage += (s, e) =>
-            {
-                if (nowTeam == null)
-                {
-                    return;
-                }
-
-                TCPMessage teamMessage = (TCPMessage)s;
-
-                if (teamMessage.Type != MessageType.TeamMessage)
-                {
-                    return;
-                }
-
-                TeamMessageRepository.InsertMessage(teamMessage);
-
-                if (teamMessage.TeamID == nowTeam.ID)
-                {
-                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
-                    TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MessageList.Add(timeTextBlock);
-                        MessageList.Add(textBlock);
-                    });
-                }
-
-                // if team not exists, request team info and create team
-                foreach (TeamViewModel teamViewModel in TeamList)
-                {
-                    if (teamMessage.TeamID == teamViewModel.ID)
-                    {
-                        return;
-                    }
-                }
-                GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, teamMessage.SenderIP, GlobalVariables.TcpPort);
-            };
+            GlobalVariables.GetMessage += OnGetMessage;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -158,12 +120,47 @@ namespace Powork.ViewModel
             }
         }
 
-        private void WindowClosing(CancelEventArgs eventArgs)
+        private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
+            GlobalVariables.GetMessage -= OnGetMessage;
         }
 
-        private void WindowClosed()
+        private void OnGetMessage(object sender, EventArgs e)
         {
+            if (nowTeam == null)
+            {
+                return;
+            }
+
+            TCPMessage teamMessage = (TCPMessage)sender;
+
+            if (teamMessage.Type != MessageType.TeamMessage)
+            {
+                return;
+            }
+
+            TeamMessageRepository.InsertMessage(teamMessage);
+
+            if (teamMessage.TeamID == nowTeam.ID)
+            {
+                TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
+                TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageList.Add(timeTextBlock);
+                    MessageList.Add(textBlock);
+                });
+            }
+
+            // if team not exists, request team info and create team
+            foreach (TeamViewModel teamViewModel in TeamList)
+            {
+                if (teamMessage.TeamID == teamViewModel.ID)
+                {
+                    return;
+                }
+            }
+            GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, teamMessage.SenderIP, GlobalVariables.TcpPort);
         }
 
         public void InsertImage(string uri)
