@@ -85,6 +85,17 @@ namespace Powork.ViewModel
 
         private void OKClick()
         {
+            if (string.IsNullOrEmpty(Name))
+            {
+                System.Windows.MessageBox.Show("Name should not be empty");
+                return;
+            }
+            if (string.IsNullOrEmpty(Group))
+            {
+                System.Windows.MessageBox.Show("Group should not be empty");
+                return;
+            }
+
             User user = new User()
             {
                 IP = IP,

@@ -144,8 +144,6 @@ namespace Powork.ViewModel
                 return;
             }
 
-            TeamMessageRepository.InsertMessage(teamMessage);
-
             if (teamMessage.TeamID == nowTeam.ID)
             {
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);

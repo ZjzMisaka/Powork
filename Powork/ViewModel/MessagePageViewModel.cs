@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Powork.ViewModel
 {
@@ -149,8 +150,6 @@ namespace Powork.ViewModel
             {
                 return;
             }
-
-            UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
 
             if (userMessage.SenderIP == nowUser.IP && userMessage.SenderName == nowUser.Name)
             {
@@ -322,6 +321,12 @@ namespace Powork.ViewModel
             };
             window.ShowDialog();
             team.Name = dataContext.Value;
+
+            if (string.IsNullOrEmpty(team.Name))
+            {
+                System.Windows.MessageBox.Show("Name should not be empty");
+                return;
+            }
 
             TeamRepository.InsertTeam(team);
         }

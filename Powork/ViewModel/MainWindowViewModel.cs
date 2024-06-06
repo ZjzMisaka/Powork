@@ -91,6 +91,14 @@ namespace Powork.ViewModel
                 if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
                 {
                     MessageHelper.ConvertImageInMessage(userMessage);
+                    if (userMessage.Type == MessageType.TeamMessage)
+                    {
+                        TeamMessageRepository.InsertMessage(userMessage);
+                    }
+                    else if (userMessage.Type == MessageType.UserMessage)
+                    {
+                        UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
+                    }
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
                 }
                 else if (userMessage.Type == MessageType.FileRequest)
