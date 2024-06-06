@@ -43,7 +43,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"SELECT * FROM TMessage WHERE teamID = {teamID}";
+                string sql = $"SELECT * FROM TMessage WHERE teamID = '{teamID}'";
                 if (id != -1)
                 {
                     sql = $"{sql}  AND  id < {id}";

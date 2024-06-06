@@ -12,7 +12,7 @@ namespace Powork.Helper
 {
     public static class TextBlockHelper
     {
-        public static TextBlock GetTimeControl(TCPMessage userMessage)
+        public static TextBlock GetTimeControl(TCPMessage userMessage, bool showName = false)
         {
             TextBlock timeTextBlock = null;
 
@@ -28,7 +28,14 @@ namespace Powork.Helper
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                 }
                 timeTextBlock.Foreground = Brushes.LightGreen;
-                timeTextBlock.Text = userMessage.Time;
+                if (showName)
+                {
+                    timeTextBlock.Text = userMessage.SenderName + " - " + userMessage.Time;
+                }
+                else
+                {
+                    timeTextBlock.Text = userMessage.Time;
+                }
             });
             
             return timeTextBlock;
@@ -38,7 +45,7 @@ namespace Powork.Helper
             TextBlock textBlock = null;
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (userMessage.Type == MessageType.UserMessage)
+                if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
                 {
                     List<TCPMessageBody> userMessageBodyList = userMessage.MessageBody;
                     textBlock = new SelectableTextBlock();

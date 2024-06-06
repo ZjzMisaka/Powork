@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using Powork.Helper;
 using Powork.Model;
+using Powork.Network;
 using Powork.Repository;
 using Powork.ViewModel.Inner;
 using System;
@@ -17,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Powork.ViewModel
 {
@@ -126,7 +128,7 @@ namespace Powork.ViewModel
 
                 if (teamMessage.TeamID == nowTeam.ID)
                 {
-                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage);
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
                     TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -143,13 +145,13 @@ namespace Powork.ViewModel
                         return;
                     }
                 }
-
+                GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, teamMessage.SenderIP, GlobalVariables.TcpPort);
             };
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            List<Team> teamList = new List<Team>();
+            List<Team> teamList = TeamRepository.SelectTeam();
             foreach (Team team in teamList)
             {
                 TeamList.Add(new TeamViewModel(team));
@@ -221,7 +223,7 @@ namespace Powork.ViewModel
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = userMessageBodyList,
                 SenderName = GlobalVariables.SelfInfo[0].Name,
-                Type = MessageType.UserMessage,
+                Type = MessageType.TeamMessage,
                 TeamID = nowTeam.ID,
             };
 
@@ -239,7 +241,7 @@ namespace Powork.ViewModel
 
             UserMessageHelper.ConvertImageInMessage(userMessage);
 
-            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
+            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage, true);
             TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -284,9 +286,9 @@ namespace Powork.ViewModel
 
             foreach (TCPMessage message in messageList)
             {
-                if (message.Type == MessageType.UserMessage)
+                if (message.Type == MessageType.TeamMessage)
                 {
-                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message, true);
                     TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -322,7 +324,7 @@ namespace Powork.ViewModel
             {
                 if (message.Type == MessageType.UserMessage)
                 {
-                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message);
+                    TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(message, true);
                     TextBlock textBlock = TextBlockHelper.GetMessageControl(message);
                     Application.Current.Dispatcher.Invoke(() =>
                     {

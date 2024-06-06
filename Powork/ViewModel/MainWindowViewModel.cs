@@ -88,7 +88,7 @@ namespace Powork.ViewModel
                 byte[] messageBytes = reader.ReadBytes(length);
                 string message = Encoding.UTF8.GetString(messageBytes);
                 TCPMessage userMessage = JsonConvert.DeserializeObject<TCPMessage>(message);
-                if (userMessage.Type == MessageType.UserMessage)
+                if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
                 {
                     UserMessageHelper.ConvertImageInMessage(userMessage);
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
@@ -183,7 +183,7 @@ namespace Powork.ViewModel
                         }
                         else if (teamInfoPart.Key == "members")
                         {
-                            members = (List<User>)teamInfoPart.Value;
+                            members = JsonConvert.DeserializeObject<List<User>>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
                         }
                     }
                     Team team = new Team();

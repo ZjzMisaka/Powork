@@ -38,6 +38,13 @@
                             <Grid.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding Path=DataContext.TeamClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
                             </Grid.InputBindings>
+                            <Grid.ToolTip>
+                                <ToolTip DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding MemberList}"/>
+                                    </StackPanel>
+                                </ToolTip>
+                            </Grid.ToolTip>
                             <Grid.ContextMenu>
                                 <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference TeamListControl}}">
                                     <MenuItem Header="Create Team" Command="{Binding CreateTeamCommand}"/>
