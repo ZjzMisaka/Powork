@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -34,6 +35,10 @@ namespace Powork.ViewModel
 
         public MainWindowViewModel()
         {
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+            ci.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
+            Thread.CurrentThread.CurrentCulture = ci;
+
             powerPool = new PowerPool();
 
             CommonRepository.CreateDatabase();

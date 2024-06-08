@@ -19,6 +19,18 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <DatePicker Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" SelectedDateFormat="Short" SelectedDate="{Binding Date}"></DatePicker>
+            <Button Grid.Column="1" Content="Save" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Command="{Binding SaveCommand}"></Button>
+        </Grid>
+        <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" Margin="5" Text="{Binding Memo}"></TextBox>
     </Grid>
 </Page>

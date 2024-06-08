@@ -57,6 +57,12 @@ namespace Powork.Repository
                 {
                     command.ExecuteNonQuery();
                 }
+
+                string sqlTMemo = @"CREATE TABLE IF NOT EXISTS TMemo (date DATE DEFAULT (date('now')) PRIMARY KEY, memo TEXT)";
+                using (var command = new SQLiteCommand(sqlTMemo, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
