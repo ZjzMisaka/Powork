@@ -1,4 +1,5 @@
-﻿using Powork.ViewModel;
+﻿using Powork.Service;
+using Powork.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Powork.View
         public MessagePage()
         {
             InitializeComponent();
-            this.DataContext = new MessagePageViewModel();
+            this.DataContext = new MessagePageViewModel(ServiceLocator.GetService<INavigationService>());
         }
     }
 }

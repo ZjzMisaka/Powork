@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
+using Powork.Service;
+using Powork.View;
 using Powork.ViewModel.Inner;
 using System;
 using System.Collections.ObjectModel;
@@ -27,6 +29,7 @@ namespace Powork.ViewModel
         private int firstMessageID = -1;
         private UserViewModel nowUser = new UserViewModel() { GroupName = "1", IP = "1", Name = "1" };
         private List<UserViewModel> selectedUserList = new List<UserViewModel>();
+        private INavigationService _navigationService;
 
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
@@ -94,8 +97,10 @@ namespace Powork.ViewModel
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
-        public MessagePageViewModel()
+        public MessagePageViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+
             PageEnabled = true;
             SendEnabled = false;
             RichTextBoxDocument = new FlowDocument();
@@ -329,6 +334,8 @@ namespace Powork.ViewModel
             }
 
             TeamRepository.InsertTeam(team);
+
+            _navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel());
         }
 
         private void SendMessage()

@@ -6,6 +6,8 @@ using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
 using Powork.Repository;
+using Powork.Service;
+using Powork.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,13 +30,16 @@ namespace Powork.ViewModel
         private PowerPool powerPool = null;
 
         private UdpBroadcaster udpBroadcaster;
+        private static INavigationService _navigationService;
 
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
             Thread.CurrentThread.CurrentCulture = ci;
@@ -47,6 +52,11 @@ namespace Powork.ViewModel
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
+        }
+
+        public static void Navigate(Type targetType, ObservableObject dataContext)
+        {
+            _navigationService.Navigate(targetType, dataContext);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -206,6 +216,11 @@ namespace Powork.ViewModel
                     TeamRepository.InsertTeam(team);
                 }
             });
+
+            if (!UserHelper.IsUserLogon())
+            {
+                Navigate(typeof(SettingsPage), new SettingsPageViewModel());
+            }
         }
 
         private void WindowClosing(CancelEventArgs eventArgs)
