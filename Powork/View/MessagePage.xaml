@@ -41,6 +41,7 @@
                             <Grid.ContextMenu>
                                 <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference UserListControl}}">
                                     <MenuItem Header="Create Team" Command="{Binding CreateTeamCommand}"/>
+                                    <MenuItem Header="Shared Items" Command="{Binding SharedItemsCommand}"/>
                                 </ContextMenu>
                             </Grid.ContextMenu>
                             <Grid.RowDefinitions>

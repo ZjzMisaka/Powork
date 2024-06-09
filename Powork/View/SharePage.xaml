@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Powork.View"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -19,6 +20,29 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding UserName}"></TextBlock>
+            <Button Grid.Column="3" Content="+" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Command="{Binding ShareCommand}"></Button>
+        </Grid>
+        <ui:ListView ItemsSource="{Binding ShareInfoList}" Grid.Row="1">
+            <ui:ListView.View>
+                <ui:GridView>
+                    <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}" />
+                    <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}" />
+                    <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}" />
+                    <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}" />
+                    <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}" />
+                </ui:GridView>
+            </ui:ListView.View>
+        </ui:ListView>
     </Grid>
 </Page>

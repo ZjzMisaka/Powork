@@ -94,6 +94,7 @@ namespace Powork.ViewModel
         public ICommand SendMessageCommand { get; set; }
         public ICommand UserClickCommand { get; set; }
         public ICommand CreateTeamCommand { get; set; }
+        public ICommand SharedItemsCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
@@ -112,6 +113,7 @@ namespace Powork.ViewModel
             SendMessageCommand = new RelayCommand(SendMessage);
             UserClickCommand = new RelayCommand<UserViewModel>(UserClick);
             CreateTeamCommand = new RelayCommand(CreateTeam);
+            SharedItemsCommand = new RelayCommand(SharedItems);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
@@ -336,6 +338,18 @@ namespace Powork.ViewModel
             TeamRepository.InsertTeam(team);
 
             _navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel());
+        }
+
+        private void SharedItems()
+        {
+            if (UserList.Count != 1)
+            {
+                return;
+            }
+
+            UserViewModel userViewModel = UserList[0];
+
+            _navigationService.Navigate(typeof(SharePage), new SharePageViewModel(userViewModel));
         }
 
         private void SendMessage()

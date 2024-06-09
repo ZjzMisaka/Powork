@@ -24,7 +24,7 @@ namespace Powork.View
         public SharePage()
         {
             InitializeComponent();
-            this.DataContext = new SharePageViewModel();
+            this.DataContext = new SharePageViewModel(GlobalVariables.SelfInfo[0]);
         }
     }
 }
