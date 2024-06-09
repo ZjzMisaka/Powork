@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json.Linq;
 using PowerThreadPool;
 using Powork.Model;
 using Powork.Network;
@@ -49,12 +50,16 @@ namespace Powork.ViewModel
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }
+        public ICommand PreviousDayCommand { get; set; }
+        public ICommand NextDayCommand { get; set; }
         public ICommand SaveCommand { get; set; }
 
         public MemoPageViewModel()
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
+            PreviousDayCommand = new RelayCommand(PreviousDay);
+            NextDayCommand = new RelayCommand(NextDay);
             SaveCommand = new RelayCommand(Save);
         }
 
@@ -65,6 +70,28 @@ namespace Powork.ViewModel
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
+        }
+
+        private void PreviousDay()
+        {
+            if (DateTime.TryParse(Date, out DateTime dateTime))
+            {
+                dateTime = dateTime.AddDays(-1);
+                string formattedDate = dateTime.ToString("yyyy-MM-dd");
+                Date = dateTime.ToString("yyyy-MM-dd");
+                Memo = MemoRepository.SelectMemo(formattedDate);
+            }
+        }
+
+        private void NextDay()
+        {
+            if (DateTime.TryParse(Date, out DateTime dateTime))
+            {
+                dateTime = dateTime.AddDays(1);
+                string formattedDate = dateTime.ToString("yyyy-MM-dd");
+                Date = dateTime.ToString("yyyy-MM-dd");
+                Memo = MemoRepository.SelectMemo(formattedDate);
+            }
         }
 
         private void Save()
