@@ -348,8 +348,11 @@ namespace Powork.ViewModel
             }
 
             UserViewModel userViewModel = UserList[0];
+            User user = new User();
+            user.IP = userViewModel.IP;
+            user.Name = userViewModel.Name;
 
-            _navigationService.Navigate(typeof(SharePage), new SharePageViewModel(userViewModel));
+            _navigationService.Navigate(typeof(SharePage), new SharePageViewModel(user));
         }
 
         private void SendMessage()

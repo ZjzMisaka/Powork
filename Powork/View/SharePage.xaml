@@ -19,7 +19,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
+    <Grid Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -29,20 +29,37 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding UserName}"></TextBlock>
-            <Button Grid.Column="3" Content="+" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Command="{Binding ShareCommand}"></Button>
+            <ui:TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="5" Text="{Binding UserName}"></ui:TextBlock>
         </Grid>
-        <ui:ListView ItemsSource="{Binding ShareInfoList}" Grid.Row="1">
-            <ui:ListView.View>
-                <ui:GridView>
-                    <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}" />
-                    <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}" />
-                    <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}" />
-                    <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}" />
-                    <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}" />
-                </ui:GridView>
-            </ui:ListView.View>
-        </ui:ListView>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ui:ListView ItemsSource="{Binding ShareInfoList}" AllowDrop="{Binding IsSelf}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Drop">
+                        <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ui:ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open File" Command="{Binding OpenCommand}"/>
+                        <MenuItem Header="Download File" Command="{Binding DownloadCommand}"/>
+                    </ContextMenu>
+                </ui:ListView.ContextMenu>
+                <ui:ListView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                    </Style>
+                </ui:ListView.ItemContainerStyle>
+                <ui:ListView.View>
+                    <ui:GridView>
+                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}" />
+                        <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}" />
+                        <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}" />
+                        <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}" />
+                        <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}" />
+                    </ui:GridView>
+                </ui:ListView.View>
+            </ui:ListView>
+        </ScrollViewer>
     </Grid>
 </Page>

@@ -270,5 +270,65 @@ namespace Powork.Network
 
             GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
         }
+
+        public void RequestShareInfo(string ipAddress, int port)
+        {
+            TcpClient tcpClient = null;
+            NetworkStream stream = null;
+
+            try
+            {
+                tcpClient = new TcpClient(ipAddress, port);
+                stream = tcpClient.GetStream();
+
+                List<TCPMessageBody> messageBody = [new TCPMessageBody()];
+                TCPMessage getShareInfoMessage = new TCPMessage()
+                {
+                    Type = MessageType.ShareInfoRequest,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
+
+                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getShareInfoMessage));
+                int length = bytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                stream.Write(lengthPrefix, 0, lengthPrefix.Length);
+                stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+                if (tcpClient != null)
+                {
+                    tcpClient.Dispose();
+                }
+            }
+        }
+
+        internal void SendShareInfo(List<ShareInfo> shareInfos, string senderIP)
+        {
+            TCPMessageBody tcpMessageBody;
+            TCPMessage userMessage = new TCPMessage
+            {
+                SenderIP = GlobalVariables.LocalIP.ToString(),
+                MessageBody = new List<TCPMessageBody>(),
+                SenderName = GlobalVariables.SelfInfo[0].Name,
+                Type = MessageType.ShareInfo,
+            };
+
+            tcpMessageBody = new TCPMessageBody();
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<ShareInfo>>("share infos", shareInfos));
+            userMessage.MessageBody.Add(tcpMessageBody);
+
+            string message = JsonConvert.SerializeObject(userMessage);
+
+            GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
+        }
     }
 }

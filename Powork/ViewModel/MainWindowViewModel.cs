@@ -215,6 +215,30 @@ namespace Powork.ViewModel
                     team.MemberList = members;
                     TeamRepository.InsertTeam(team);
                 }
+                else if (userMessage.Type == MessageType.ShareInfoRequest)
+                {
+                    string teamID = userMessage.MessageBody[0].Content;
+                    GlobalVariables.TcpServerClient.SendShareInfo(ShareRepository.SelectFile(), userMessage.SenderIP);
+                }
+                else if (userMessage.Type == MessageType.ShareInfo)
+                {
+                    List<ShareInfo> shareInfos = null;
+                    foreach (TCPMessageBody messageBody in userMessage.MessageBody)
+                    {
+                        string json = messageBody.Content;
+                        KeyValuePair<string, object> teamInfoPart = JsonConvert.DeserializeObject<KeyValuePair<string, object>>(json);
+                        if (teamInfoPart.Key == "share infos")
+                        {
+                            shareInfos = JsonConvert.DeserializeObject<List<ShareInfo>>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
+                        }
+                    }
+
+                    ShareRepository.ClearRemoteFile();
+                    foreach (ShareInfo shareInfo in shareInfos)
+                    {
+                        ShareRepository.InsertRemoteFile(shareInfo);
+                    }
+                }
             });
 
             if (!UserHelper.IsUserLogon())

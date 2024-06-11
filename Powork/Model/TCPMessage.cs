@@ -23,6 +23,8 @@ namespace Powork.Model
         FileInfo = 4,
         TeamInfoRequest = 5,
         TeamInfo = 6,
+        ShareInfoRequest = 7,
+        ShareInfo = 8,
     }
     public class TCPMessage
     {

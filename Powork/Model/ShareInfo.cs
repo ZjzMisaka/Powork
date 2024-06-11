@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Powork.Model
 {
-    internal class ShareInfo
+    public class ShareInfo
     {
         public string Guid { get; set; }
         public string Path { get; set; }
