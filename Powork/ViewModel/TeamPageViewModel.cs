@@ -320,6 +320,8 @@ namespace Powork.ViewModel
             if (nowTeam != null)
             {
                 TeamRepository.RemoveTeam(nowTeam.ID);
+                TeamList.Remove(nowTeam);
+                nowTeam = null;
             }
         }
 

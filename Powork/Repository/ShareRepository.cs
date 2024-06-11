@@ -78,8 +78,6 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
             }
-
-            FileRepository.InsertFile(shareInfo.Guid, shareInfo.Path);
         }
 
         public static void RemoveFile(string id)
