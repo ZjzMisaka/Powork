@@ -54,6 +54,7 @@
                         <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
                         <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}" />
                         <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}" />
+                        <GridViewColumn Width="auto" Header="Size" DisplayMemberBinding="{Binding Size}" />
                         <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}" />
                         <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}" />
                         <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}" />

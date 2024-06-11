@@ -218,6 +218,7 @@ namespace Powork.ViewModel
                 else if (userMessage.Type == MessageType.ShareInfoRequest)
                 {
                     string teamID = userMessage.MessageBody[0].Content;
+                    ShareRepository.ReCheckFiles();
                     GlobalVariables.TcpServerClient.SendShareInfo(ShareRepository.SelectFile(), userMessage.SenderIP);
                 }
                 else if (userMessage.Type == MessageType.ShareInfo)

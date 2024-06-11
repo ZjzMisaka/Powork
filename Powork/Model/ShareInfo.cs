@@ -13,6 +13,7 @@ namespace Powork.Model
         public string Name { get; set; }
         public string Extension { get; set; }
         public string Type { get; set; }
+        public string Size { get; set; }
         public string ShareTime { get; set; }
         public string CreateTime { get; set; }
         public string LastModifiedTime { get; set; }

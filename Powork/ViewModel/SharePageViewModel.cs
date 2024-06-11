@@ -55,7 +55,7 @@ namespace Powork.ViewModel
         {
             get
             {
-                return userName;
+                return userName + "'s Sharing";
             }
             set
             {
@@ -201,6 +201,7 @@ namespace Powork.ViewModel
                         Name = Path.GetFileNameWithoutExtension(path),
                         Extension = "",
                         Type = "Directory",
+                        Size = "",
                         ShareTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                         CreateTime = dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                         LastModifiedTime = dir.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
@@ -218,6 +219,7 @@ namespace Powork.ViewModel
                         Name = Path.GetFileNameWithoutExtension(path),
                         Extension = Path.GetExtension(path),
                         Type = "File",
+                        Size = FileHelper.GetReadableFileSize(fileInfo.Length),
                         ShareTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                         CreateTime = fileInfo.CreationTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                         LastModifiedTime = fileInfo.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),

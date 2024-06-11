@@ -16,6 +16,7 @@ namespace Powork.ViewModel.Inner
             Name = shareInfo.Name;
             Extension = shareInfo.Extension;
             Type = shareInfo.Type;
+            Size = shareInfo.Size;
             ShareTime = shareInfo.ShareTime;
             CreateTime = shareInfo.CreateTime;
             LastModifiedTime = shareInfo.LastModifiedTime;
@@ -26,6 +27,7 @@ namespace Powork.ViewModel.Inner
         public string Name { get; set; }
         public string Extension { get; set; }
         public string Type { get; set; }
+        public string Size { get; set; }
         public string ShareTime { get; set; }
         public string CreateTime { get; set; }
         public string LastModifiedTime { get; set; }

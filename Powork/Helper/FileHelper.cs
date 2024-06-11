@@ -61,5 +61,22 @@ namespace Powork.Helper
 
             return relativePath;
         }
+
+        public static string GetReadableFileSize(long fileSizeInBytes)
+        {
+            string[] sizeUnits = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+            const int scale = 1024;
+
+            double fileSize = fileSizeInBytes;
+            int unitIndex = 0;
+
+            while (fileSize >= scale && unitIndex < sizeUnits.Length - 1)
+            {
+                fileSize /= scale;
+                unitIndex++;
+            }
+
+            return $"{fileSize:F2} {sizeUnits[unitIndex]}";
+        }
     }
 }

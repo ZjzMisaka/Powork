@@ -47,5 +47,27 @@ namespace Powork.Repository
             }
             return null;
         }
+
+        public static string RemoveFile(string guid)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"DELETE FROM TFile WHERE id = '{guid}'";
+
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return reader["path"].ToString();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

@@ -46,7 +46,7 @@ namespace Powork.Model
         public string TeamID { get; set; }
         public List<TCPMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }
-        public string Time { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        public string Time { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         public int ID { get; set; }
     }
     public class TCPMessageBody
