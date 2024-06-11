@@ -1,4 +1,6 @@
-﻿namespace Powork.Model
+﻿using Powork.Constant;
+
+namespace Powork.Model
 {
     public enum MessageType
     {
@@ -33,7 +35,7 @@
         public string TeamID { get; set; }
         public List<TCPMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }
-        public string Time { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        public string Time { get; set; } = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
         public int ID { get; set; }
     }
 }

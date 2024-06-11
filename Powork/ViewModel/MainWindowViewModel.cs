@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using PowerThreadPool;
+using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
@@ -34,7 +35,7 @@ namespace Powork.ViewModel
             s_navigationService = navigationService;
 
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
-            ci.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
+            ci.DateTimeFormat.ShortDatePattern = Format.DateTimeFormat;
             Thread.CurrentThread.CurrentCulture = ci;
 
             _powerPool = new PowerPool();
@@ -123,7 +124,7 @@ namespace Powork.ViewModel
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
-                        string[] allfiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+                        string[] allfiles = Directory.GetFiles(path, Format.AllFilePattern, SearchOption.AllDirectories);
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
@@ -166,7 +167,6 @@ namespace Powork.ViewModel
                     }
                     else if (fileInfo.Status == Model.Status.SendFileFinish)
                     {
-                        // Check
                         GlobalVariables.TcpServerClient.savePathDict.Remove(fileInfo.Guid);
                         GlobalVariables.InvokeGetFileEvent(fileInfo);
                     }
@@ -189,15 +189,15 @@ namespace Powork.ViewModel
                     {
                         string json = messageBody.Content;
                         KeyValuePair<string, object> teamInfoPart = JsonConvert.DeserializeObject<KeyValuePair<string, object>>(json);
-                        if (teamInfoPart.Key == "team id")
+                        if (teamInfoPart.Key == MessageBodyContentKey.TeamID)
                         {
                             teamID = (string)teamInfoPart.Value;
                         }
-                        else if (teamInfoPart.Key == "team name")
+                        else if (teamInfoPart.Key == MessageBodyContentKey.TeamName)
                         {
                             teamName = (string)teamInfoPart.Value;
                         }
-                        else if (teamInfoPart.Key == "members")
+                        else if (teamInfoPart.Key == MessageBodyContentKey.Members)
                         {
                             members = JsonConvert.DeserializeObject<List<User>>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
                         }
@@ -221,7 +221,7 @@ namespace Powork.ViewModel
                     {
                         string json = messageBody.Content;
                         KeyValuePair<string, object> teamInfoPart = JsonConvert.DeserializeObject<KeyValuePair<string, object>>(json);
-                        if (teamInfoPart.Key == "share infos")
+                        if (teamInfoPart.Key == MessageBodyContentKey.ShareInfos)
                         {
                             shareInfos = JsonConvert.DeserializeObject<List<ShareInfo>>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
                         }

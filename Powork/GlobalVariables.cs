@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using PowerThreadPool;
-using PowerThreadPool.EventArguments;
 using Powork.Model;
 using Powork.Network;
 using Powork.Repository;
@@ -18,22 +10,22 @@ namespace Powork
 {
     public static class GlobalVariables
     {
-        private static IPAddress localIP = GetLocalIPAddress();
-        public static IPAddress LocalIP { get => localIP; }
+        private static IPAddress s_localIP = GetLocalIPAddress();
+        public static IPAddress LocalIP { get => s_localIP; }
         public static int UdpPort { get; } = 1096;
         public static int TcpPort { get; } = 614;
         public static string DbName { get; } = "PoworkDB";
         public static TcpServerClient TcpServerClient { get; set; }
-        private static ObservableCollection<User> userList;
+        private static ObservableCollection<User> s_userList;
         public static ObservableCollection<User> UserList
         {
-            get => userList;
+            get => s_userList;
             set
             {
-                userList = value;
+                s_userList = value;
                 if (UserListChanged != null)
                 {
-                    UserListChanged.Invoke(userList, new EventArgs());
+                    UserListChanged.Invoke(s_userList, new EventArgs());
                 }
             }
         }

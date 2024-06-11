@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Powork.Constant;
 using Powork.Repository;
 
 namespace Powork.ViewModel
@@ -20,7 +21,7 @@ namespace Powork.ViewModel
                 SetProperty<string>(ref _date, value);
                 if (DateTime.TryParse(value, out DateTime dateTime))
                 {
-                    string formattedDate = dateTime.ToString("yyyy-MM-dd");
+                    string formattedDate = dateTime.ToString(Format.DateTimeFormat);
                     Memo = MemoRepository.SelectMemo(formattedDate);
                 }
             }
@@ -54,7 +55,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            Date = DateTime.Now.ToString("yyyy-MM-dd");
+            Date = DateTime.Now.ToString(Format.DateTimeFormat);
         }
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
@@ -66,8 +67,8 @@ namespace Powork.ViewModel
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
                 dateTime = dateTime.AddDays(-1);
-                string formattedDate = dateTime.ToString("yyyy-MM-dd");
-                Date = dateTime.ToString("yyyy-MM-dd");
+                string formattedDate = dateTime.ToString(Format.DateTimeFormat);
+                Date = dateTime.ToString(Format.DateTimeFormat);
                 Memo = MemoRepository.SelectMemo(formattedDate);
             }
         }
@@ -77,8 +78,8 @@ namespace Powork.ViewModel
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
                 dateTime = dateTime.AddDays(1);
-                string formattedDate = dateTime.ToString("yyyy-MM-dd");
-                Date = dateTime.ToString("yyyy-MM-dd");
+                string formattedDate = dateTime.ToString(Format.DateTimeFormat);
+                Date = dateTime.ToString(Format.DateTimeFormat);
                 Memo = MemoRepository.SelectMemo(formattedDate);
             }
         }

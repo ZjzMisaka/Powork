@@ -18,7 +18,7 @@ namespace Powork.ViewModel.Inner
             List<User> memberList = TeamRepository.SelectTeamMember(ID);
             foreach (User user in memberList)
             {
-                if (MemberList != "")
+                if (MemberList.Trim() != string.Empty)
                 {
                     MemberList += "\n";
                 }

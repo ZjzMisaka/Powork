@@ -20,7 +20,7 @@ namespace Powork.ViewModel
     class TeamPageViewModel : ObservableObject
     {
         private int _firstMessageID = -1;
-        private TeamViewModel _nowTeam = new TeamViewModel() { ID = "1", Name = "1" };
+        private TeamViewModel _nowTeam = null;
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
         {

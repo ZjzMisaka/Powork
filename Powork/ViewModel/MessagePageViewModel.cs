@@ -22,7 +22,7 @@ namespace Powork.ViewModel
     class MessagePageViewModel : ObservableObject
     {
         private int _firstMessageID = -1;
-        private UserViewModel _nowUser = new UserViewModel() { GroupName = "1", IP = "1", Name = "1" };
+        private UserViewModel _nowUser = null;
         private List<UserViewModel> _selectedUserList = new List<UserViewModel>();
         private INavigationService _navigationService;
 

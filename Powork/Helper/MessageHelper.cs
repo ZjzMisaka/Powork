@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
+using Powork.Constant;
 using Powork.Model;
 
 namespace Powork.Helper
@@ -25,7 +26,7 @@ namespace Powork.Helper
 
                     bitmapImage.Freeze();
 
-                    string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp", DateTime.Now.ToString("yyyy-MM-dd"));
+                    string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Location.Temp, DateTime.Now.ToString(Format.DateTimeFormat));
                     if (!Directory.Exists(directoryPath))
                     {
                         Directory.CreateDirectory(directoryPath);

@@ -76,7 +76,11 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"/>
+            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+                <ui:RichTextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding SendMessageCommand, Mode=OneWay}" />
+                </ui:RichTextBox.InputBindings>
+            </ui:RichTextBox>
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -145,7 +146,7 @@ namespace Powork.ViewModel
                 }
                 else
                 {
-                    MessageBoxResult messageBoxResult = MessageBox.Show($"All files received successfully. Open?", "", MessageBoxButton.YesNo);
+                    MessageBoxResult messageBoxResult = MessageBox.Show($"All files received successfully. Open?", string.Empty, MessageBoxButton.YesNo);
                     if (messageBoxResult == MessageBoxResult.Yes)
                     {
                         foreach (string path in _downloadedList)
@@ -196,12 +197,12 @@ namespace Powork.ViewModel
                         Guid = Guid.NewGuid().ToString(),
                         Path = path,
                         Name = Path.GetFileNameWithoutExtension(path),
-                        Extension = "",
+                        Extension = string.Empty,
                         Type = "Directory",
-                        Size = "",
-                        ShareTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                        CreateTime = dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                        LastModifiedTime = dir.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                        Size = string.Empty,
+                        ShareTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds),
+                        CreateTime = dir.CreationTime.ToString(Format.DateTimeFormatWithMilliseconds),
+                        LastModifiedTime = dir.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds),
                     };
                     ShareRepository.InsertFile(shareInfo);
                 }
@@ -217,9 +218,9 @@ namespace Powork.ViewModel
                         Extension = Path.GetExtension(path),
                         Type = "File",
                         Size = FileHelper.GetReadableFileSize(fileInfo.Length),
-                        ShareTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                        CreateTime = fileInfo.CreationTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                        LastModifiedTime = fileInfo.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                        ShareTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds),
+                        CreateTime = fileInfo.CreationTime.ToString(Format.DateTimeFormatWithMilliseconds),
+                        LastModifiedTime = fileInfo.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds),
                     };
                     ShareRepository.InsertFile(shareInfo);
                 }

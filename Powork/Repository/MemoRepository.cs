@@ -23,7 +23,7 @@ namespace Powork.Repository
                     }
                 }
             }
-            return "";
+            return string.Empty;
         }
 
         public static void InsertOrUpdateMemo(string date, string memo)

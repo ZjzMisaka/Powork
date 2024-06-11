@@ -6,6 +6,7 @@ using System.Windows;
 using Newtonsoft.Json;
 using PowerThreadPool;
 using PowerThreadPool.Options;
+using Powork.Constant;
 using Powork.Model;
 
 namespace Powork.Network
@@ -97,7 +98,7 @@ namespace Powork.Network
                     Model.FileInfo fileInfo = new Model.FileInfo()
                     {
                         Guid = guid,
-                        Status = Model.Status.Start,
+                        Status = Status.Start,
                         Name = new DirectoryInfo(filePath).Name,
                         RelativePath = relativePath,
                         Size = new System.IO.FileInfo(filePath).Length
@@ -184,9 +185,6 @@ namespace Powork.Network
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
-            catch
-            {
-            }
             finally
             {
                 if (stream != null)
@@ -224,9 +222,6 @@ namespace Powork.Network
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
-            catch
-            {
-            }
             finally
             {
                 if (stream != null)
@@ -252,15 +247,15 @@ namespace Powork.Network
             };
 
             tcpMessageBody = new TCPMessageBody();
-            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>("team id", teamID));
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.TeamID, teamID));
             userMessage.MessageBody.Add(tcpMessageBody);
 
             tcpMessageBody = new TCPMessageBody();
-            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>("team name", teamName));
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.TeamName, teamName));
             userMessage.MessageBody.Add(tcpMessageBody);
 
             tcpMessageBody = new TCPMessageBody();
-            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<User>>("members", users));
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<User>>(MessageBodyContentKey.Members, users));
             userMessage.MessageBody.Add(tcpMessageBody);
 
             string message = JsonConvert.SerializeObject(userMessage);
@@ -292,9 +287,6 @@ namespace Powork.Network
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
-            catch
-            {
-            }
             finally
             {
                 if (stream != null)
@@ -320,7 +312,7 @@ namespace Powork.Network
             };
 
             tcpMessageBody = new TCPMessageBody();
-            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<ShareInfo>>("share infos", shareInfos));
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<ShareInfo>>(MessageBodyContentKey.ShareInfos, shareInfos));
             userMessage.MessageBody.Add(tcpMessageBody);
 
             string message = JsonConvert.SerializeObject(userMessage);

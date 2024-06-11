@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
 
@@ -104,7 +105,7 @@ namespace Powork.Repository
                     }
 
                     System.IO.FileInfo fileInfo = new System.IO.FileInfo(shareInfo.Path);
-                    string lastModifiedTime = fileInfo.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    string lastModifiedTime = fileInfo.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds);
                     string size = FileHelper.GetReadableFileSize(fileInfo.Length);
                     if (shareInfo.LastModifiedTime != lastModifiedTime || shareInfo.Size != size)
                     {
@@ -122,7 +123,7 @@ namespace Powork.Repository
                     }
 
                     System.IO.DirectoryInfo directoryInfo = new System.IO.DirectoryInfo(shareInfo.Path);
-                    string lastModifiedTime = directoryInfo.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    string lastModifiedTime = directoryInfo.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds);
                     if (shareInfo.LastModifiedTime != lastModifiedTime)
                     {
                         shareInfo.LastModifiedTime = lastModifiedTime;
