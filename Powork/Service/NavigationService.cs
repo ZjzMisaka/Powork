@@ -15,8 +15,7 @@ namespace Powork.Service
 
         public void Navigate(Type targetType, ObservableObject dataContext)
         {
-            _navigationView.Navigate(targetType);
-            _navigationView.DataContext = dataContext;
+            _navigationView.Navigate(targetType, dataContext);
         }
     }
 }

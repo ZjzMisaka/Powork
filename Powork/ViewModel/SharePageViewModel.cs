@@ -9,16 +9,18 @@ using Powork.ViewModel.Inner;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Powork.ViewModel
 {
     class SharePageViewModel : ObservableObject
     {
         private User user;
-        private List<string> downloadingList;
+        private Dictionary<string, (string, bool)> downloadingDict;
         private List<Model.FileInfo> downloadedList;
         private bool pageEnabled;
         public bool PageEnabled
@@ -83,11 +85,8 @@ namespace Powork.ViewModel
         public SharePageViewModel(User user)
         {
             this.user = user;
-            downloadingList = new List<string>();
+            downloadingDict = new Dictionary<string, (string, bool)>();
             downloadedList = new List<Model.FileInfo>();
-
-            GlobalVariables.GetShareInfo += SetShareInfo;
-            GlobalVariables.GetFile += OnGetFile;
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
@@ -106,6 +105,9 @@ namespace Powork.ViewModel
             {
                 return;
             }
+
+            GlobalVariables.GetShareInfo += SetShareInfo;
+            GlobalVariables.GetFile += OnGetFile;
 
             UserName = user.Name;
             if (IsSelf)
@@ -128,18 +130,39 @@ namespace Powork.ViewModel
         private void OnGetFile(object sender, EventArgs e)
         {
             Model.FileInfo fileInfo = (Model.FileInfo)sender;
-            downloadingList.Remove(fileInfo.Guid);
+            downloadingDict.Remove(fileInfo.Guid, out (string, bool) openInfo);
             downloadedList.Add(fileInfo);
-            if (downloadingList.Count == 0)
+            if (downloadingDict.Count == 0)
             {
-                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show($"All files received successfully. Open?", "", MessageBoxButton.YesNo);
-                if (messageBoxResult == MessageBoxResult.OK)
+                if (openInfo.Item2)
                 {
                     foreach (Model.FileInfo downloaded in downloadedList)
                     {
-                        System.Diagnostics.Process.Start(downloaded.RelativePath);
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = openInfo.Item1,
+                            UseShellExecute = true
+                        };
+                        Process.Start(startInfo);
                     }
                 }
+                else
+                {
+                    MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show($"All files received successfully. Open?", "", MessageBoxButton.YesNo);
+                    if (messageBoxResult == MessageBoxResult.Yes)
+                    {
+                        foreach (Model.FileInfo downloaded in downloadedList)
+                        {
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = openInfo.Item1,
+                                UseShellExecute = true
+                            };
+                            Process.Start(startInfo);
+                        }
+                    }
+                }
+                
                 downloadedList = new List<Model.FileInfo>();
             }
         }
@@ -149,7 +172,10 @@ namespace Powork.ViewModel
             ShareInfoList = new ObservableCollection<ShareInfoViewModel>();
             foreach (ShareInfo shareInfo in shareInfoList)
             {
-                ShareInfoList.Add(new ShareInfoViewModel(shareInfo));
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    ShareInfoList.Add(new ShareInfoViewModel(shareInfo));
+                });
             }
         }
 
@@ -175,9 +201,9 @@ namespace Powork.ViewModel
                         Name = Path.GetFileNameWithoutExtension(path),
                         Extension = "",
                         Type = "Directory",
-                        ShareTime = DateTime.Now.ToString("yyyy-MM-dd"),
-                        CreateTime = dir.CreationTime.ToString("yyyy-MM-dd"),
-                        LastModifiedTime = dir.LastWriteTime.ToString("yyyy-MM-dd"),
+                        ShareTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                        CreateTime = dir.CreationTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                        LastModifiedTime = dir.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                     };
                     ShareRepository.InsertFile(shareInfo);
                 }
@@ -192,9 +218,9 @@ namespace Powork.ViewModel
                         Name = Path.GetFileNameWithoutExtension(path),
                         Extension = Path.GetExtension(path),
                         Type = "File",
-                        ShareTime = DateTime.Now.ToString("yyyy-MM-dd"),
-                        CreateTime = fileInfo.CreationTime.ToString("yyyy-MM-dd"),
-                        LastModifiedTime = fileInfo.LastWriteTime.ToString("yyyy-MM-dd"),
+                        ShareTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                        CreateTime = fileInfo.CreationTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                        LastModifiedTime = fileInfo.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                     };
                     ShareRepository.InsertFile(shareInfo);
                 }
@@ -213,7 +239,12 @@ namespace Powork.ViewModel
             {
                 foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
                 {
-                    System.Diagnostics.Process.Start(shareInfoViewModel.Path);
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = shareInfoViewModel.Path,
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
                 }
             }
             else
@@ -254,7 +285,7 @@ namespace Powork.ViewModel
             {
                 foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
                 {
-                    downloadingList.Add(shareInfoViewModel.Guid);
+                    downloadingDict.Add(shareInfoViewModel.Guid, (Path.Combine(directoryPath, shareInfoViewModel.Name + shareInfoViewModel.Extension), tempFolder));
                     GlobalVariables.TcpServerClient.RequestFile(shareInfoViewModel.Guid, user.IP, GlobalVariables.TcpPort, directoryPath);
                 }
             }
