@@ -95,6 +95,8 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
             }
+
+            FileRepository.RemoveFile(id);
         }
 
         public static void ReCheckFiles()
@@ -107,7 +109,6 @@ namespace Powork.Repository
                     if (!System.IO.File.Exists(shareInfo.Path))
                     {
                         RemoveFile(shareInfo.Guid);
-                        FileRepository.RemoveFile(shareInfo.Guid);
                         continue;
                     }
 
@@ -126,7 +127,6 @@ namespace Powork.Repository
                     if (!System.IO.Directory.Exists(shareInfo.Path))
                     {
                         RemoveFile(shareInfo.Guid);
-                        FileRepository.RemoveFile(shareInfo.Guid);
                         continue;
                     }
 

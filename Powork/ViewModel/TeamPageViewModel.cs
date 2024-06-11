@@ -87,6 +87,7 @@ namespace Powork.ViewModel
         public ICommand WindowUnloadedCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand TeamClickCommand { get; set; }
+        public ICommand RemoveTeamCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
@@ -102,6 +103,7 @@ namespace Powork.ViewModel
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
             SendMessageCommand = new RelayCommand(SendMessage);
             TeamClickCommand = new RelayCommand<TeamViewModel>(TeamClick);
+            RemoveTeamCommand = new RelayCommand(RemoveTeam);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
@@ -310,6 +312,14 @@ namespace Powork.ViewModel
                         MessageList.Add(textBlock);
                     });
                 }
+            }
+        }
+
+        private void RemoveTeam()
+        {
+            if (nowTeam != null)
+            {
+                TeamRepository.RemoveTeam(nowTeam.ID);
             }
         }
 

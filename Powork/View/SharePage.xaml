@@ -42,6 +42,7 @@
                     <ContextMenu>
                         <MenuItem Header="Open File" Command="{Binding OpenCommand}"/>
                         <MenuItem Header="Download File" Command="{Binding DownloadCommand}"/>
+                        <MenuItem Header="Remove File" Command="{Binding RemoveCommand}"/>
                     </ContextMenu>
                 </ui:ListView.ContextMenu>
                 <ui:ListView.ItemContainerStyle>

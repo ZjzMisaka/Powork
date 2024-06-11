@@ -82,6 +82,7 @@ namespace Powork.ViewModel
         public ICommand DropCommand { get; set; }
         public ICommand OpenCommand { get; set; }
         public ICommand DownloadCommand { get; set; }
+        public ICommand RemoveCommand { get; set; }
         public SharePageViewModel(User user)
         {
             this.user = user;
@@ -93,6 +94,7 @@ namespace Powork.ViewModel
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
             OpenCommand = new RelayCommand(Open);
             DownloadCommand = new RelayCommand(Download);
+            RemoveCommand = new RelayCommand(Remove);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -258,6 +260,18 @@ namespace Powork.ViewModel
         private void Download()
         {
             RequestFile(false);
+        }
+
+        private void Remove()
+        {
+            if (IsSelf)
+            {
+                foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
+                {
+                    ShareRepository.RemoveFile(shareInfoViewModel.Guid);
+                    ShareInfoList.Remove(shareInfoViewModel);
+                }
+            }
         }
 
         private void RequestFile(bool tempFolder)

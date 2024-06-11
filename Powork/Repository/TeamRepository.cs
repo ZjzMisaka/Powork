@@ -28,6 +28,26 @@ namespace Powork.Repository
             }
         }
 
+        public static void RemoveTeam(string id)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sqlTTeam = $"DELETE FROM TTeam WHERE id = '{id}'";
+                string sqlTTeamMember = $"DELETE FROM TTeamMember WHERE teamID = '{id}'";
+
+                using (var command = new SQLiteCommand(sqlTTeam, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+                using (var command = new SQLiteCommand(sqlTTeamMember, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void InsertTeamMembers(string teamID, List<User> memberList)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
