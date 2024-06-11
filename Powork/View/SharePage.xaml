@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:Powork.View"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
+      xmlns:control="clr-namespace:Powork.Control"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SharePage">
     
@@ -52,13 +53,13 @@
                 </ui:ListView.ItemContainerStyle>
                 <ui:ListView.View>
                     <ui:GridView>
-                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}" />
-                        <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}" />
-                        <GridViewColumn Width="auto" Header="Size" DisplayMemberBinding="{Binding Size}" />
-                        <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}" />
-                        <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}" />
-                        <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}" />
+                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}" control:GridViewSort.PropertyName="Name"/>
+                        <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}" control:GridViewSort.PropertyName="Extension"/>
+                        <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}" control:GridViewSort.PropertyName="Type"/>
+                        <GridViewColumn Width="auto" Header="Size" DisplayMemberBinding="{Binding Size}" control:GridViewSort.PropertyName="Size"/>
+                        <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}" control:GridViewSort.PropertyName="ShareTime"/>
+                        <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}" control:GridViewSort.PropertyName="CreateTime"/>
+                        <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}" control:GridViewSort.PropertyName="LastModifiedTime"/>
                     </ui:GridView>
                 </ui:ListView.View>
             </ui:ListView>
