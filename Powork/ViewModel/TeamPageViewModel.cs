@@ -18,7 +18,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Powork.ViewModel
 {
@@ -109,6 +108,7 @@ namespace Powork.ViewModel
             TeamList = new ObservableCollection<TeamViewModel>();
 
             GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetFile += OnGetFile;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -128,6 +128,7 @@ namespace Powork.ViewModel
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             GlobalVariables.GetMessage -= OnGetMessage;
+            GlobalVariables.GetFile -= OnGetFile;
         }
 
         private void OnGetMessage(object sender, EventArgs e)
@@ -164,6 +165,11 @@ namespace Powork.ViewModel
                 }
             }
             GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, teamMessage.SenderIP, GlobalVariables.TcpPort);
+        }
+
+        private void OnGetFile(object sender, EventArgs e)
+        {
+            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} received successfully.");
         }
 
         public void InsertImage(string uri)

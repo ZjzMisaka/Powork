@@ -64,12 +64,6 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTShareRemote = @"CREATE TABLE IF NOT EXISTS TShareRemote (id VARCHAR(36) PRIMARY KEY, path VARCHAR(256), name VARCHAR(256), extension VARCHAR(10), type VARCHAR(10), shareTime DATETIME, createTime DATETIME, lastModifiedTime DATETIME)";
-                using (var command = new SQLiteCommand(TShareRemote, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-
                 string sqlTMemo = @"CREATE TABLE IF NOT EXISTS TMemo (date DATE DEFAULT (date('now')) PRIMARY KEY, memo TEXT)";
                 using (var command = new SQLiteCommand(sqlTMemo, connection))
                 {

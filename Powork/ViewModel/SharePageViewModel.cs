@@ -18,6 +18,8 @@ namespace Powork.ViewModel
     class SharePageViewModel : ObservableObject
     {
         private User user;
+        private List<string> downloadingList;
+        private List<Model.FileInfo> downloadedList;
         private bool pageEnabled;
         public bool PageEnabled
         {
@@ -81,6 +83,11 @@ namespace Powork.ViewModel
         public SharePageViewModel(User user)
         {
             this.user = user;
+            downloadingList = new List<string>();
+            downloadedList = new List<Model.FileInfo>();
+
+            GlobalVariables.GetShareInfo += SetShareInfo;
+            GlobalVariables.GetFile += OnGetFile;
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
@@ -104,11 +111,7 @@ namespace Powork.ViewModel
             if (IsSelf)
             {
                 List<ShareInfo> shareInfoList = ShareRepository.SelectFile();
-                ShareInfoList = new ObservableCollection<ShareInfoViewModel>();
-                foreach (ShareInfo shareInfo in shareInfoList)
-                {
-                    ShareInfoList.Add(new ShareInfoViewModel(shareInfo));
-                }
+                SetShareInfo(shareInfoList);
             }
             else
             {
@@ -116,8 +119,44 @@ namespace Powork.ViewModel
             }
         }
 
+        private void SetShareInfo(object s, EventArgs e)
+        {
+            List<ShareInfo> shareInfoList = (List<ShareInfo>)s;
+            SetShareInfo(shareInfoList);
+        }
+
+        private void OnGetFile(object sender, EventArgs e)
+        {
+            Model.FileInfo fileInfo = (Model.FileInfo)sender;
+            downloadingList.Remove(fileInfo.Guid);
+            downloadedList.Add(fileInfo);
+            if (downloadingList.Count == 0)
+            {
+                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show($"All files received successfully. Open?", "", MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.OK)
+                {
+                    foreach (Model.FileInfo downloaded in downloadedList)
+                    {
+                        System.Diagnostics.Process.Start(downloaded.RelativePath);
+                    }
+                }
+                downloadedList = new List<Model.FileInfo>();
+            }
+        }
+
+        private void SetShareInfo(List<ShareInfo> shareInfoList)
+        {
+            ShareInfoList = new ObservableCollection<ShareInfoViewModel>();
+            foreach (ShareInfo shareInfo in shareInfoList)
+            {
+                ShareInfoList.Add(new ShareInfoViewModel(shareInfo));
+            }
+        }
+
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
+            GlobalVariables.GetShareInfo -= SetShareInfo;
+            GlobalVariables.GetFile -= OnGetFile;
         }
 
         private void Drop(DragEventArgs args)
@@ -179,31 +218,46 @@ namespace Powork.ViewModel
             }
             else
             {
-                List<string> pathList = Download(true);
-                foreach (string path in pathList)
-                {
-                    System.Diagnostics.Process.Start(path);
-                }
+                RequestFile(true);
             }
         }
 
         private void Download()
         {
-            Download(false);
-            MessageBox.Show("Ok");
+            RequestFile(false);
         }
 
-        private List<string> Download(bool tempFolder)
+        private void RequestFile(bool tempFolder)
         {
+            string directoryPath = null;
             if (tempFolder)
             {
-                string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Download");
+                directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Download");
                 if (!Directory.Exists(directoryPath))
                 {
                     Directory.CreateDirectory(directoryPath);
                 }
             }
-            return null;
+            else
+            {
+                using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+                {
+                    fbd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                    System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+                    if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        directoryPath = fbd.SelectedPath;
+                    }
+                }
+            }
+            if (directoryPath != null)
+            {
+                foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
+                {
+                    downloadingList.Add(shareInfoViewModel.Guid);
+                    GlobalVariables.TcpServerClient.RequestFile(shareInfoViewModel.Guid, user.IP, GlobalVariables.TcpPort, directoryPath);
+                }
+            }
         }
     }
 }

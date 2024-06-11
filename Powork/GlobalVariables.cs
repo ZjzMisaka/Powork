@@ -39,8 +39,28 @@ namespace Powork
         }
         public delegate void UserListChangedEventHandler(object sender, EventArgs e);
         public static event UserListChangedEventHandler UserListChanged;
+        public delegate void GetShareInfoEventHandler(object sender, EventArgs e);
+        public static event GetShareInfoEventHandler GetShareInfo;
+        public delegate void GetFileEventHandler(object sender, EventArgs e);
+        public static event GetFileEventHandler GetFile;
         public delegate void GetMessageEventHandler(object sender, EventArgs e);
         public static event GetMessageEventHandler GetMessage;
+
+        public static void InvokeGetShareInfoEvent(List<ShareInfo> shareInfos)
+        {
+            if (GetShareInfo != null)
+            {
+                GetShareInfo.Invoke(shareInfos, new EventArgs());
+            }
+        }
+
+        public static void InvokeGetFileEvent(FileInfo fileInfo)
+        {
+            if (GetFile != null)
+            {
+                GetFile.Invoke(fileInfo, new EventArgs());
+            }
+        }
         public static void InvokeGetMessageEvent(TCPMessage userMessage)
         {
             if (GetMessage != null)

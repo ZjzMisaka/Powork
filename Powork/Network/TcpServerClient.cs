@@ -144,7 +144,7 @@ namespace Powork.Network
                 Model.FileInfo fileInfo = new Model.FileInfo()
                 {
                     Guid = guid,
-                    Status = Model.Status.Finish,
+                    Status = Model.Status.SendFileFinish,
                 };
                 List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
                 TCPMessage getFileMessage = new TCPMessage()

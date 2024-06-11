@@ -9,7 +9,7 @@ namespace Powork.Model
     public enum Status
     { 
         Start = 0,
-        Finish = 1,
+        SendFileFinish = 1,
         NoSuchFile = 2,
     }
     public class FileInfo

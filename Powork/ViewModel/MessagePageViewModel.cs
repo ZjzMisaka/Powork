@@ -122,26 +122,9 @@ namespace Powork.ViewModel
             {
                 UserList.Add(new UserViewModel(user));
             }
-            GlobalVariables.UserListChanged += (s, e) =>
-            {
-                foreach (User user in (ObservableCollection<User>)s)
-                {
-                    bool contain = false;
-                    foreach (UserViewModel userVM in UserList)
-                    {
-                        if (userVM.IP == user.IP && userVM.Name == user.Name)
-                        {
-                            contain = true;
-                        }
-                    }
-                    if (!contain)
-                    {
-                        UserList.Add(new UserViewModel(user));
-                    }
-                }
-            };
-
+            GlobalVariables.UserListChanged += UserListChanged;
             GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetFile += OnGetFile;
         }
 
         private void OnGetMessage(object sender, EventArgs e)
@@ -168,6 +151,30 @@ namespace Powork.ViewModel
                     MessageList.Add(textBlock);
                 });
             }
+        }
+
+        private void UserListChanged(object s, EventArgs e)
+        {
+            foreach (User user in (ObservableCollection<User>)s)
+            {
+                bool contain = false;
+                foreach (UserViewModel userVM in UserList)
+                {
+                    if (userVM.IP == user.IP && userVM.Name == user.Name)
+                    {
+                        contain = true;
+                    }
+                }
+                if (!contain)
+                {
+                    UserList.Add(new UserViewModel(user));
+                }
+            }
+        }
+
+        private void OnGetFile(object sender, EventArgs e)
+        {
+            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} received successfully.");
         }
 
         public void InsertImage(string uri)
@@ -226,6 +233,8 @@ namespace Powork.ViewModel
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             GlobalVariables.GetMessage -= OnGetMessage;
+            GlobalVariables.UserListChanged -= UserListChanged;
+            GlobalVariables.GetFile -= OnGetFile;
         }
 
         private void UserClick(UserViewModel userViewModel)

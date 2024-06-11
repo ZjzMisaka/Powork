@@ -171,11 +171,11 @@ namespace Powork.ViewModel
                             MessageBox.Show(ex.Message);
                         }
                     }
-                    else if (fileInfo.Status == Model.Status.Finish)
+                    else if (fileInfo.Status == Model.Status.SendFileFinish)
                     {
                         // Check
-                        MessageBox.Show("File received successfully.");
                         GlobalVariables.TcpServerClient.savePathDict.Remove(fileInfo.Guid);
+                        GlobalVariables.InvokeGetFileEvent(fileInfo);
                     }
                     else if (fileInfo.Status == Model.Status.NoSuchFile)
                     {
@@ -233,11 +233,7 @@ namespace Powork.ViewModel
                         }
                     }
 
-                    ShareRepository.ClearRemoteFile();
-                    foreach (ShareInfo shareInfo in shareInfos)
-                    {
-                        ShareRepository.InsertRemoteFile(shareInfo);
-                    }
+                    GlobalVariables.InvokeGetShareInfoEvent(shareInfos);
                 }
             });
 

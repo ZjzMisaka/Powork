@@ -25,6 +25,8 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
             }
+
+            FileRepository.InsertFile(shareInfo.Guid, shareInfo.Path);
         }
 
         public static List<ShareInfo> SelectFile()
@@ -58,37 +60,6 @@ namespace Powork.Repository
                 }
             }
             return shareList;
-        }
-
-        public static void InsertRemoteFile(ShareInfo shareInfo)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
-            {
-                connection.Open();
-
-                string sql = $"INSERT INTO TShareRemote (id, path, name, extension, type, shareTime, createTime, lastModifiedTime) " +
-                    $"VALUES ('{shareInfo.Guid}', '{shareInfo.Path}', '{shareInfo.Name}', '{shareInfo.Extension}', '{shareInfo.Type}', '{shareInfo.ShareTime}', '{shareInfo.CreateTime}', '{shareInfo.LastModifiedTime}')";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public static void ClearRemoteFile()
-        {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
-            {
-                connection.Open();
-
-                string sql = $"TRUNCATE TABLE TShareRemote";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-            }
         }
     }
 }
