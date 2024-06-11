@@ -1,58 +1,48 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using PowerThreadPool;
-using Powork.Model;
-using Powork.Network;
-using Powork.Repository;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Xml.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Powork.Model;
+using Powork.Repository;
 
 namespace Powork.ViewModel
 {
     class SettingsPageViewModel : ObservableObject
     {
-        private string ip;
-        public string IP 
+        private string _ip;
+        public string IP
         {
             get
             {
-                return ip;
+                return _ip;
             }
             set
             {
-                SetProperty<string>(ref ip, value);
+                SetProperty<string>(ref _ip, value);
             }
         }
-        private string name;
+        private string _name;
         public string Name
         {
             get
             {
-                return name;
+                return _name;
             }
             set
             {
-                SetProperty<string>(ref name, value);
+                SetProperty<string>(ref _name, value);
             }
         }
-        private string group;
+        private string _group;
         public string Group
         {
             get
             {
-                return group;
+                return _group;
             }
             set
             {
-                SetProperty<string>(ref group, value);
+                SetProperty<string>(ref _group, value);
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
@@ -72,7 +62,7 @@ namespace Powork.ViewModel
 
             List<User> userList = UserRepository.SelectUserByIp(IP);
             if (userList.Count == 1)
-            { 
+            {
                 Name = userList[0].Name;
                 Group = userList[0].GroupName;
             }
@@ -80,7 +70,7 @@ namespace Powork.ViewModel
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
-            
+
         }
 
         private void OKClick()

@@ -30,15 +30,15 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="IP" Foreground="White" VerticalAlignment="Center"></TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Width="200" Text="{Binding IP}"></TextBox>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="IP" Foreground="White" VerticalAlignment="Center" Margin="5"></TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Width="200" Text="{Binding IP}" Margin="5"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Foreground="White" VerticalAlignment="Center"></TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Name}"></TextBox>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Foreground="White" VerticalAlignment="Center" Margin="5"></TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Name}" Margin="5"></TextBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Group" Foreground="White" VerticalAlignment="Center"></TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Group}"></TextBox>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Group" Foreground="White" VerticalAlignment="Center" Margin="5"></TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Group}" Margin="5"></TextBox>
 
-        <Button Grid.Row="3" Grid.Column="1" Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}"></Button>
+        <Button Grid.Row="3" Grid.Column="1" Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
     </Grid>
 </Page>

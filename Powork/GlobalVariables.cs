@@ -1,18 +1,18 @@
-﻿using PowerThreadPool;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Powork.Model;
-using Powork.Repository;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using PowerThreadPool.EventArguments;
-using Powork.Network;
+using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using PowerThreadPool;
+using PowerThreadPool.EventArguments;
+using Powork.Model;
+using Powork.Network;
+using Powork.Repository;
 
 namespace Powork
 {
@@ -25,8 +25,8 @@ namespace Powork
         public static string DbName { get; } = "PoworkDB";
         public static TcpServerClient TcpServerClient { get; set; }
         private static ObservableCollection<User> userList;
-        public static ObservableCollection<User> UserList 
-        { 
+        public static ObservableCollection<User> UserList
+        {
             get => userList;
             set
             {
@@ -68,10 +68,10 @@ namespace Powork
                 GetMessage.Invoke(userMessage, new EventArgs());
             }
         }
-        public static List<User> SelfInfo 
-        { 
+        public static List<User> SelfInfo
+        {
             get
-            { 
+            {
                 return UserRepository.SelectUserByIp(LocalIP.ToString());
             }
         }

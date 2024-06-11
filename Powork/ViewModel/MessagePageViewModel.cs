@@ -1,4 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using Powork.Helper;
@@ -7,28 +15,15 @@ using Powork.Repository;
 using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Powork.ViewModel
 {
     class MessagePageViewModel : ObservableObject
     {
-        private int firstMessageID = -1;
-        private UserViewModel nowUser = new UserViewModel() { GroupName = "1", IP = "1", Name = "1" };
-        private List<UserViewModel> selectedUserList = new List<UserViewModel>();
+        private int _firstMessageID = -1;
+        private UserViewModel _nowUser = new UserViewModel() { GroupName = "1", IP = "1", Name = "1" };
+        private List<UserViewModel> _selectedUserList = new List<UserViewModel>();
         private INavigationService _navigationService;
 
         public ObservableCollection<TextBlock> messageList;
@@ -44,49 +39,49 @@ namespace Powork.ViewModel
             }
         }
 
-        private ObservableCollection<UserViewModel> userList;
+        private ObservableCollection<UserViewModel> _userList;
         public ObservableCollection<UserViewModel> UserList
         {
             get
             {
-                return userList;
+                return _userList;
             }
             set
             {
-                SetProperty<ObservableCollection<UserViewModel>>(ref userList, value);
+                SetProperty<ObservableCollection<UserViewModel>>(ref _userList, value);
             }
         }
-        private bool pageEnabled;
+        private bool _pageEnabled;
         public bool PageEnabled
         {
             get
             {
-                return pageEnabled;
+                return _pageEnabled;
             }
             set
             {
-                SetProperty<bool>(ref pageEnabled, value);
+                SetProperty<bool>(ref _pageEnabled, value);
             }
         }
-        private bool sendEnabled;
+        private bool _sendEnabled;
         public bool SendEnabled
         {
             get
             {
-                return sendEnabled;
+                return _sendEnabled;
             }
             set
             {
-                SetProperty<bool>(ref sendEnabled, value);
+                SetProperty<bool>(ref _sendEnabled, value);
             }
         }
-        private FlowDocument richTextBoxDocument;
+        private FlowDocument _richTextBoxDocument;
         public FlowDocument RichTextBoxDocument
         {
-            get { return richTextBoxDocument; }
+            get { return _richTextBoxDocument; }
             set
             {
-                SetProperty<FlowDocument>(ref richTextBoxDocument, value);
+                SetProperty<FlowDocument>(ref _richTextBoxDocument, value);
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
@@ -129,7 +124,7 @@ namespace Powork.ViewModel
 
         private void OnGetMessage(object sender, EventArgs e)
         {
-            if (nowUser == null)
+            if (_nowUser == null)
             {
                 return;
             }
@@ -141,7 +136,7 @@ namespace Powork.ViewModel
                 return;
             }
 
-            if (userMessage.SenderIP == nowUser.IP && userMessage.SenderName == nowUser.Name)
+            if (userMessage.SenderIP == _nowUser.IP && userMessage.SenderName == _nowUser.Name)
             {
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
@@ -239,38 +234,38 @@ namespace Powork.ViewModel
 
         private void UserClick(UserViewModel userViewModel)
         {
-            if (nowUser == null)
+            if (_nowUser == null)
             {
                 return;
             }
 
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
-                selectedUserList.Add(userViewModel);
+                _selectedUserList.Add(userViewModel);
                 userViewModel.Selected = true;
                 return;
             }
             else
             {
-                foreach (UserViewModel userVM in selectedUserList)
+                foreach (UserViewModel userVM in _selectedUserList)
                 {
                     userVM.Selected = false;
                 }
-                selectedUserList.Clear();
+                _selectedUserList.Clear();
             }
 
             MessageList.Clear();
-            nowUser.Selected = false;
-            nowUser = userViewModel;
-            nowUser.Selected = true;
+            _nowUser.Selected = false;
+            _nowUser = userViewModel;
+            _nowUser.Selected = true;
             SendEnabled = true;
 
-            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name);
+            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(_nowUser.IP, _nowUser.Name);
             if (messageList != null && messageList.Count >= 1)
             {
-                firstMessageID = messageList[0].ID;
+                _firstMessageID = messageList[0].ID;
             }
-            
+
             foreach (TCPMessage message in messageList)
             {
                 if (message.Type == MessageType.UserMessage)
@@ -371,7 +366,7 @@ namespace Powork.ViewModel
 
         private void SendMessage()
         {
-            if (nowUser == null)
+            if (_nowUser == null)
             {
                 return;
             }
@@ -386,7 +381,7 @@ namespace Powork.ViewModel
 
             string message = JsonConvert.SerializeObject(userMessage);
 
-            Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, nowUser.IP, GlobalVariables.TcpPort);
+            Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, _nowUser.IP, GlobalVariables.TcpPort);
 
             MessageHelper.ConvertImageInMessage(userMessage);
 
@@ -411,24 +406,24 @@ namespace Powork.ViewModel
                     MessageList.Add(errorTextBlock);
                 });
 
-                UserMessageRepository.InsertMessage(errorMessage, nowUser.IP, nowUser.Name);
+                UserMessageRepository.InsertMessage(errorMessage, _nowUser.IP, _nowUser.Name);
             }
-            UserMessageRepository.InsertMessage(userMessage, nowUser.IP, nowUser.Name);
+            UserMessageRepository.InsertMessage(userMessage, _nowUser.IP, _nowUser.Name);
 
             RichTextBoxDocument = new FlowDocument();
         }
 
         private void ScrollAtTop()
         {
-            if (firstMessageID == -1)
+            if (_firstMessageID == -1)
             {
                 return;
             }
 
-            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(nowUser.IP, nowUser.Name, firstMessageID);
+            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(_nowUser.IP, _nowUser.Name, _firstMessageID);
             if (messageList != null && messageList.Count >= 1)
             {
-                firstMessageID = messageList[0].ID;
+                _firstMessageID = messageList[0].ID;
             }
             int index = 0;
             foreach (TCPMessage message in messageList)
@@ -457,7 +452,7 @@ namespace Powork.ViewModel
         private void Drop(DragEventArgs args)
         {
             string[] pathList = (string[])args.Data.GetData(DataFormats.FileDrop, false);
-            foreach (string path in pathList) 
+            foreach (string path in pathList)
             {
                 if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                 {

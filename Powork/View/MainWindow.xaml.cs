@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Powork.Service;
 using Powork.ViewModel;
-using System;
-using System.Windows.Navigation;
 using Wpf.Ui.Controls;
 
 namespace Powork
@@ -12,7 +10,7 @@ namespace Powork
     /// </summary>
     public partial class MainWindow : FluentWindow
     {
-        private IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
         public NavigationView NavigationView => RootNavigation;
 
         public MainWindow()

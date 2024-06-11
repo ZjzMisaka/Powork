@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
+﻿using System.IO;
 using System.Windows;
-using Wpf.Ui.Controls;
-using Powork.Model;
-using System.IO;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Powork.Model;
 using Powork.Repository;
+using Wpf.Ui.Controls;
 
 namespace Powork.Helper
 {
@@ -82,9 +76,8 @@ namespace Powork.Helper
                             if (uiContainer.Child is System.Windows.Controls.Image)
                             {
                                 System.Windows.Controls.Image imageControl = uiContainer.Child as System.Windows.Controls.Image;
-                                BitmapSource image = imageControl.Source as BitmapSource;
 
-                                if (image != null)
+                                if (imageControl.Source is BitmapSource image)
                                 {
                                     string imageContent = ConvertImageToBase64(image);
                                     messages.Add(new TCPMessageBody
@@ -99,12 +92,11 @@ namespace Powork.Helper
                 }
                 else if (block is BlockUIContainer)
                 {
-                    if ((block as BlockUIContainer).Child is Wpf.Ui.Controls.Image)
+                    if ((block as BlockUIContainer).Child is Image)
                     {
-                        Wpf.Ui.Controls.Image imageControl = (block as BlockUIContainer).Child as Wpf.Ui.Controls.Image;
-                        BitmapSource image = imageControl.Source as BitmapSource;
+                        Image imageControl = (block as BlockUIContainer).Child as Image;
 
-                        if (image != null)
+                        if (imageControl.Source is BitmapSource image)
                         {
                             string imageContent = ConvertImageToBase64(image);
                             messages.Add(new TCPMessageBody
@@ -117,9 +109,8 @@ namespace Powork.Helper
                     else if ((block as BlockUIContainer).Child is System.Windows.Controls.Image)
                     {
                         System.Windows.Controls.Image imageControl = (block as BlockUIContainer).Child as System.Windows.Controls.Image;
-                        BitmapSource image = imageControl.Source as BitmapSource;
 
-                        if (image != null)
+                        if (imageControl.Source is BitmapSource image)
                         {
                             string imageContent = ConvertImageToBase64(image);
                             messages.Add(new TCPMessageBody

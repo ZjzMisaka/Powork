@@ -1,23 +1,23 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Powork.ViewModel
 {
     class InputWindowViewModel : ObservableObject
     {
-        private string title;
+        private string _title;
         public string Title
         {
             get
             {
-                return title;
+                return _title;
             }
             set
             {
-                SetProperty<string>(ref title, value);
+                SetProperty<string>(ref _title, value);
             }
         }
         private string _value;

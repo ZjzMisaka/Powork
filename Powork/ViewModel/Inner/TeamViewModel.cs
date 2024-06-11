@@ -1,8 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Powork.Model;
 using Powork.Repository;
-using System.Windows.Forms;
-using System.Windows.Media;
 
 namespace Powork.ViewModel.Inner
 {
@@ -13,8 +12,8 @@ namespace Powork.ViewModel.Inner
         }
         public TeamViewModel(Team team)
         {
-            this.ID = team.ID;
-            this.Name = team.Name;
+            ID = team.ID;
+            Name = team.Name;
 
             List<User> memberList = TeamRepository.SelectTeamMember(ID);
             foreach (User user in memberList)
@@ -29,17 +28,17 @@ namespace Powork.ViewModel.Inner
         public string ID { get; set; }
         public string Name { get; set; }
 
-        private bool selected;
+        private bool _selected;
         public bool Selected
-        { 
+        {
             get
             {
-                return selected;
+                return _selected;
             }
             set
             {
-                selected = value;
-                if (selected)
+                _selected = value;
+                if (_selected)
                 {
                     BackgroundColor = new SolidColorBrush(Color.FromRgb(100, 100, 100));
                 }
@@ -49,29 +48,29 @@ namespace Powork.ViewModel.Inner
                 }
             }
         }
-        private Brush backgroundColor = new SolidColorBrush(Color.FromRgb(39, 39, 39));
+        private Brush _backgroundColor = new SolidColorBrush(Color.FromRgb(39, 39, 39));
         public Brush BackgroundColor
-        { 
+        {
             get
-            { 
-                return backgroundColor;
+            {
+                return _backgroundColor;
             }
             set
             {
-                SetProperty<Brush>(ref backgroundColor, value);
+                SetProperty<Brush>(ref _backgroundColor, value);
             }
         }
 
-        private string memberList;
+        private string _memberList;
         public string MemberList
         {
             get
             {
-                return memberList;
+                return _memberList;
             }
             set
             {
-                SetProperty<string>(ref memberList, value);
+                SetProperty<string>(ref _memberList, value);
             }
         }
     }

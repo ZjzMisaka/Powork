@@ -1,13 +1,6 @@
-﻿using Powork.Helper;
+﻿using System.Data.SQLite;
+using Powork.Helper;
 using Powork.Model;
-using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Powork.Repository
 {

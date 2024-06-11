@@ -1,11 +1,6 @@
-﻿using Powork.Model;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows.Media.Imaging;
+using Powork.Model;
 
 namespace Powork.Helper
 {
@@ -40,7 +35,7 @@ namespace Powork.Helper
 
                     using (var fileStream = new FileStream(localFilePath, FileMode.Create))
                     {
-                        BitmapEncoder encoder = new PngBitmapEncoder();
+                        PngBitmapEncoder encoder = new PngBitmapEncoder();
                         encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
                         encoder.Save(fileStream);
                     }

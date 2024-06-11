@@ -1,12 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Data.SQLite;
+using Newtonsoft.Json;
 using Powork.Model;
-using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Powork.Repository
 {

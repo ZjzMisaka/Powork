@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Powork.Model
+﻿namespace Powork.Model
 {
     public enum Status
-    { 
+    {
         Start = 0,
         SendFileFinish = 1,
         NoSuchFile = 2,

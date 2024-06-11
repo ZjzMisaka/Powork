@@ -1,12 +1,10 @@
-﻿using Powork.Control;
-using Powork.Model;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Powork.Control;
+using Powork.Model;
 using Wpf.Ui.Controls;
-using System.Windows.Shapes;
 
 namespace Powork.Helper
 {
@@ -37,10 +35,10 @@ namespace Powork.Helper
                     timeTextBlock.Text = userMessage.Time;
                 }
             });
-            
+
             return timeTextBlock;
         }
-        public static TextBlock GetMessageControl (TCPMessage userMessage)
+        public static TextBlock GetMessageControl(TCPMessage userMessage)
         {
             TextBlock textBlock = null;
             Application.Current.Dispatcher.Invoke(() =>
@@ -84,7 +82,7 @@ namespace Powork.Helper
                         }
                         else if (body.Type == ContentType.File)
                         {
-                            InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) => 
+                            InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) =>
                             {
                                 using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
                                 {
@@ -136,7 +134,7 @@ namespace Powork.Helper
                     textBlock.HorizontalAlignment = HorizontalAlignment.Center;
                 }
             });
-            
+
 
             return textBlock;
         }

@@ -1,51 +1,48 @@
-﻿using System;
-using System.Text;
+﻿using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
-using PowerThreadPool;
+using System.Text;
 using System.Windows;
-using Powork.Model;
 using Newtonsoft.Json;
-using System.Windows.Controls;
-using System.Windows.Shapes;
+using PowerThreadPool;
 using PowerThreadPool.Options;
+using Powork.Model;
 
 namespace Powork.Network
 {
 
     public class TcpServerClient
     {
-        private TcpListener tcpListener;
-        private PowerPool powerPool;
+        private readonly TcpListener _tcpListener;
+        private readonly PowerPool _powerPool;
 
         public Dictionary<string, string> savePathDict = new Dictionary<string, string>();
 
         public TcpServerClient(int port, PowerPool powerPool)
         {
-            tcpListener = new TcpListener(IPAddress.Any, port);
-            this.powerPool = powerPool;
+            _tcpListener = new TcpListener(IPAddress.Any, port);
+            _powerPool = powerPool;
         }
 
         public void StartListening(Action<NetworkStream, string> onReceive)
         {
-            tcpListener.Start();
-            powerPool.QueueWorkItem(() =>
+            _tcpListener.Start();
+            _powerPool.QueueWorkItem(() =>
             {
                 while (true)
                 {
-                    while (!tcpListener.Pending())
+                    while (!_tcpListener.Pending())
                     {
                         Thread.Sleep(100);
-                        powerPool.StopIfRequested();
+                        _powerPool.StopIfRequested();
                     }
-                    TcpClient client = tcpListener.AcceptTcpClient();
+                    TcpClient client = _tcpListener.AcceptTcpClient();
                     onReceive(client.GetStream(), ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
                     client.Dispose();
 
-                    if (powerPool.CheckIfRequestedStop())
+                    if (_powerPool.CheckIfRequestedStop())
                     {
-                        tcpListener.Dispose();
+                        _tcpListener.Dispose();
                         return;
                     }
                 }

@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="CustomizableMessageBox" Version="2.3.4" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
@@ -43,6 +39,14 @@
     <None Update="Image\no_image.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="F:\_programming\c#\Powork\Powork\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="F:\_programming\c#\Powork\Powork\.editorconfig" />
   </ItemGroup>
 
 </Project>

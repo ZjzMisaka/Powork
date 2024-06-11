@@ -1,4 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using PowerThreadPool;
@@ -8,29 +15,15 @@ using Powork.Network;
 using Powork.Repository;
 using Powork.Service;
 using Powork.View;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace Powork.ViewModel
 {
     class MainWindowViewModel : ObservableObject
     {
-        private PowerPool powerPool = null;
+        private readonly PowerPool _powerPool = null;
 
-        private UdpBroadcaster udpBroadcaster;
-        private static INavigationService _navigationService;
+        private UdpBroadcaster _udpBroadcaster;
+        private static INavigationService s_navigationService;
 
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -38,13 +31,13 @@ namespace Powork.ViewModel
 
         public MainWindowViewModel(INavigationService navigationService)
         {
-            _navigationService = navigationService;
+            s_navigationService = navigationService;
 
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = "yyyy-MM-dd";
             Thread.CurrentThread.CurrentCulture = ci;
 
-            powerPool = new PowerPool();
+            _powerPool = new PowerPool();
 
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
@@ -56,16 +49,16 @@ namespace Powork.ViewModel
 
         public static void Navigate(Type targetType, ObservableObject dataContext)
         {
-            _navigationService.Navigate(targetType, dataContext);
+            s_navigationService.Navigate(targetType, dataContext);
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort, powerPool);
+            _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort, _powerPool);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
 
-            udpBroadcaster.StartBroadcasting();
-            udpBroadcaster.ListenForBroadcasts((user) =>
+            _udpBroadcaster.StartBroadcasting();
+            _udpBroadcaster.ListenForBroadcasts((user) =>
             {
                 if (user.IP == GlobalVariables.LocalIP.ToString())
                 {
@@ -88,7 +81,7 @@ namespace Powork.ViewModel
                 }
             });
 
-            GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort, powerPool);
+            GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort, _powerPool);
             GlobalVariables.TcpServerClient.StartListening((stream, ip) =>
             {
                 if (ip == GlobalVariables.SelfInfo[0].IP)
@@ -246,7 +239,7 @@ namespace Powork.ViewModel
 
         private void WindowClosing(CancelEventArgs eventArgs)
         {
-            powerPool.Dispose();
+            _powerPool.Dispose();
         }
 
         private void WindowClosed()

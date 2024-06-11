@@ -1,40 +1,35 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using PowerThreadPool;
-using Powork.Helper;
-using Powork.Model;
-using Powork.Network;
-using Powork.Repository;
-using Powork.ViewModel.Inner;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Powork.Helper;
+using Powork.Model;
+using Powork.Repository;
+using Powork.ViewModel.Inner;
 
 namespace Powork.ViewModel
 {
     class SharePageViewModel : ObservableObject
     {
-        private User user;
-        private Dictionary<string, (string, bool)> downloadingDict;
-        private List<Model.FileInfo> downloadedList;
-        private bool pageEnabled;
+        private readonly User _user;
+        private readonly Dictionary<string, (string, bool)> _downloadingDict;
+        private List<string> _downloadedList;
+        private bool _pageEnabled;
         public bool PageEnabled
         {
             get
             {
-                return pageEnabled;
+                return _pageEnabled;
             }
             set
             {
-                SetProperty<bool>(ref pageEnabled, value);
+                SetProperty<bool>(ref _pageEnabled, value);
             }
         }
-        private bool isSelf;
+        private bool _isSelf;
         public bool IsSelf
         {
             get
@@ -43,37 +38,37 @@ namespace Powork.ViewModel
                 {
                     return false;
                 }
-                return user.IP == GlobalVariables.SelfInfo[0].IP && user.Name == GlobalVariables.SelfInfo[0].Name;
+                return _user.IP == GlobalVariables.SelfInfo[0].IP && _user.Name == GlobalVariables.SelfInfo[0].Name;
             }
             set
             {
-                SetProperty<bool>(ref isSelf, value);
+                SetProperty<bool>(ref _isSelf, value);
             }
         }
-        private string userName;
+        private string _userName;
         public string UserName
         {
             get
             {
-                return userName + "'s Sharing";
+                return _userName + "'s Sharing";
             }
             set
             {
-                SetProperty<string>(ref userName, value);
+                SetProperty<string>(ref _userName, value);
             }
         }
         public List<ShareInfoViewModel> SelectedItems => ShareInfoList.Where(x => x.IsSelected).ToList();
 
-        private ObservableCollection<ShareInfoViewModel> shareInfoList;
+        private ObservableCollection<ShareInfoViewModel> _shareInfoList;
         public ObservableCollection<ShareInfoViewModel> ShareInfoList
         {
             get
             {
-                return shareInfoList;
+                return _shareInfoList;
             }
             set
             {
-                SetProperty<ObservableCollection<ShareInfoViewModel>>(ref shareInfoList, value);
+                SetProperty<ObservableCollection<ShareInfoViewModel>>(ref _shareInfoList, value);
             }
         }
 
@@ -85,9 +80,9 @@ namespace Powork.ViewModel
         public ICommand RemoveCommand { get; set; }
         public SharePageViewModel(User user)
         {
-            this.user = user;
-            downloadingDict = new Dictionary<string, (string, bool)>();
-            downloadedList = new List<Model.FileInfo>();
+            this._user = user;
+            _downloadingDict = new Dictionary<string, (string, bool)>();
+            _downloadedList = new List<string>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
@@ -103,7 +98,7 @@ namespace Powork.ViewModel
             {
                 PageEnabled = false;
             }
-            if (user == null)
+            if (_user == null)
             {
                 return;
             }
@@ -111,7 +106,7 @@ namespace Powork.ViewModel
             GlobalVariables.GetShareInfo += SetShareInfo;
             GlobalVariables.GetFile += OnGetFile;
 
-            UserName = user.Name;
+            UserName = _user.Name;
             if (IsSelf)
             {
                 List<ShareInfo> shareInfoList = ShareRepository.SelectFile();
@@ -119,7 +114,7 @@ namespace Powork.ViewModel
             }
             else
             {
-                GlobalVariables.TcpServerClient.RequestShareInfo(user.IP, GlobalVariables.TcpPort); 
+                GlobalVariables.TcpServerClient.RequestShareInfo(_user.IP, GlobalVariables.TcpPort);
             }
         }
 
@@ -132,17 +127,17 @@ namespace Powork.ViewModel
         private void OnGetFile(object sender, EventArgs e)
         {
             Model.FileInfo fileInfo = (Model.FileInfo)sender;
-            downloadingDict.Remove(fileInfo.Guid, out (string, bool) openInfo);
-            downloadedList.Add(fileInfo);
-            if (downloadingDict.Count == 0)
+            _downloadingDict.Remove(fileInfo.Guid, out (string, bool) openInfo);
+            _downloadedList.Add(openInfo.Item1);
+            if (_downloadingDict.Count == 0)
             {
                 if (openInfo.Item2)
                 {
-                    foreach (Model.FileInfo downloaded in downloadedList)
+                    foreach (string path in _downloadedList)
                     {
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            FileName = openInfo.Item1,
+                            FileName = path,
                             UseShellExecute = true
                         };
                         Process.Start(startInfo);
@@ -150,22 +145,22 @@ namespace Powork.ViewModel
                 }
                 else
                 {
-                    MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show($"All files received successfully. Open?", "", MessageBoxButton.YesNo);
+                    MessageBoxResult messageBoxResult = MessageBox.Show($"All files received successfully. Open?", "", MessageBoxButton.YesNo);
                     if (messageBoxResult == MessageBoxResult.Yes)
                     {
-                        foreach (Model.FileInfo downloaded in downloadedList)
+                        foreach (string path in _downloadedList)
                         {
                             ProcessStartInfo startInfo = new ProcessStartInfo
                             {
-                                FileName = openInfo.Item1,
+                                FileName = path,
                                 UseShellExecute = true
                             };
                             Process.Start(startInfo);
                         }
                     }
                 }
-                
-                downloadedList = new List<Model.FileInfo>();
+
+                _downloadedList = new List<string>();
             }
         }
 
@@ -301,8 +296,8 @@ namespace Powork.ViewModel
             {
                 foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
                 {
-                    downloadingDict.Add(shareInfoViewModel.Guid, (Path.Combine(directoryPath, shareInfoViewModel.Name + shareInfoViewModel.Extension), tempFolder));
-                    GlobalVariables.TcpServerClient.RequestFile(shareInfoViewModel.Guid, user.IP, GlobalVariables.TcpPort, directoryPath);
+                    _downloadingDict.Add(shareInfoViewModel.Guid, (Path.Combine(directoryPath, shareInfoViewModel.Name + shareInfoViewModel.Extension), tempFolder));
+                    GlobalVariables.TcpServerClient.RequestFile(shareInfoViewModel.Guid, _user.IP, GlobalVariables.TcpPort, directoryPath);
                 }
             }
         }

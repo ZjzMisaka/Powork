@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace Powork.Model
+﻿namespace Powork.Model
 {
     public enum MessageType
     {
@@ -23,7 +15,7 @@ namespace Powork.Model
 
     public class TCPMessage
     {
-        public TCPMessage() 
+        public TCPMessage()
         {
             MessageBody = new List<TCPMessageBody>();
         }

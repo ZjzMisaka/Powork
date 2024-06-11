@@ -1,7 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Powork.Model;
-using System.Windows.Forms;
-using System.Windows.Media;
 
 namespace Powork.ViewModel.Inner
 {
@@ -12,25 +11,25 @@ namespace Powork.ViewModel.Inner
         }
         public UserViewModel(User user)
         {
-            this.IP = user.IP;
-            this.Name = user.Name;
-            this.GroupName = user.GroupName;
+            IP = user.IP;
+            Name = user.Name;
+            GroupName = user.GroupName;
         }
         public string IP { get; set; }
         public string Name { get; set; }
         public string GroupName { get; set; }
 
-        private bool selected;
+        private bool _selected;
         public bool Selected
-        { 
+        {
             get
             {
-                return selected;
+                return _selected;
             }
             set
             {
-                selected = value;
-                if (selected)
+                _selected = value;
+                if (_selected)
                 {
                     BackgroundColor = new SolidColorBrush(Color.FromRgb(100, 100, 100));
                 }
@@ -40,16 +39,16 @@ namespace Powork.ViewModel.Inner
                 }
             }
         }
-        private Brush backgroundColor = new SolidColorBrush(Color.FromRgb(39, 39, 39));
+        private Brush _backgroundColor = new SolidColorBrush(Color.FromRgb(39, 39, 39));
         public Brush BackgroundColor
-        { 
+        {
             get
-            { 
-                return backgroundColor;
+            {
+                return _backgroundColor;
             }
             set
             {
-                SetProperty<Brush>(ref backgroundColor, value);
+                SetProperty<Brush>(ref _backgroundColor, value);
             }
         }
     }

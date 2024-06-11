@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.IO;
 
 namespace Powork.Helper
 {
     public static class FileHelper
     {
         public enum Type
-        { 
+        {
             File,
             Image,
             Directory,

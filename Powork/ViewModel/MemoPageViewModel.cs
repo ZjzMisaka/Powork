@@ -1,34 +1,23 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Newtonsoft.Json.Linq;
-using PowerThreadPool;
-using Powork.Model;
-using Powork.Network;
-using Powork.Repository;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Powork.Repository;
 
 namespace Powork.ViewModel
 {
     class MemoPageViewModel : ObservableObject
     {
-        private string date;
+        private string _date;
         public string Date
         {
             get
             {
-                return date;
+                return _date;
             }
             set
             {
-                SetProperty<string>(ref date, value);
+                SetProperty<string>(ref _date, value);
                 if (DateTime.TryParse(value, out DateTime dateTime))
                 {
                     string formattedDate = dateTime.ToString("yyyy-MM-dd");
@@ -36,16 +25,16 @@ namespace Powork.ViewModel
                 }
             }
         }
-        private string memo;
+        private string _memo;
         public string Memo
         {
             get
             {
-                return memo;
+                return _memo;
             }
             set
             {
-                SetProperty<string>(ref memo, value);
+                SetProperty<string>(ref _memo, value);
             }
         }
         public ICommand WindowLoadedCommand { get; set; }

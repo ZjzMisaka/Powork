@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Powork.Service
+﻿namespace Powork.Service
 {
     public static class ServiceLocator
     {
-        private static IServiceProvider _serviceProvider;
+        private static IServiceProvider s_serviceProvider;
 
         public static void SetLocatorProvider(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            s_serviceProvider = serviceProvider;
         }
 
         public static object GetService(Type serviceType)
         {
-            return _serviceProvider.GetService(serviceType);
+            return s_serviceProvider.GetService(serviceType);
         }
 
         public static T GetService<T>()

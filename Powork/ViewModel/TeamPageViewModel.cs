@@ -1,30 +1,26 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Newtonsoft.Json;
-using Powork.Helper;
-using Powork.Model;
-using Powork.Network;
-using Powork.Repository;
-using Powork.ViewModel.Inner;
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
+using Powork.Helper;
+using Powork.Model;
+using Powork.Repository;
+using Powork.ViewModel.Inner;
 using Wpf.Ui.Controls;
 
 namespace Powork.ViewModel
 {
     class TeamPageViewModel : ObservableObject
     {
-        private int firstMessageID = -1;
-        private TeamViewModel nowTeam = new TeamViewModel() { ID = "1", Name = "1" };
+        private int _firstMessageID = -1;
+        private TeamViewModel _nowTeam = new TeamViewModel() { ID = "1", Name = "1" };
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
         {
@@ -38,49 +34,49 @@ namespace Powork.ViewModel
             }
         }
 
-        private ObservableCollection<TeamViewModel> teamList;
+        private ObservableCollection<TeamViewModel> _teamList;
         public ObservableCollection<TeamViewModel> TeamList
         {
             get
             {
-                return teamList;
+                return _teamList;
             }
             set
             {
-                SetProperty<ObservableCollection<TeamViewModel>>(ref teamList, value);
+                SetProperty<ObservableCollection<TeamViewModel>>(ref _teamList, value);
             }
         }
-        private bool pageEnabled;
+        private bool _pageEnabled;
         public bool PageEnabled
         {
             get
             {
-                return pageEnabled;
+                return _pageEnabled;
             }
             set
             {
-                SetProperty<bool>(ref pageEnabled, value);
+                SetProperty<bool>(ref _pageEnabled, value);
             }
         }
-        private bool sendEnabled;
+        private bool _sendEnabled;
         public bool SendEnabled
         {
             get
             {
-                return sendEnabled;
+                return _sendEnabled;
             }
             set
             {
-                SetProperty<bool>(ref sendEnabled, value);
+                SetProperty<bool>(ref _sendEnabled, value);
             }
         }
-        private FlowDocument richTextBoxDocument;
+        private FlowDocument _richTextBoxDocument;
         public FlowDocument RichTextBoxDocument
         {
-            get { return richTextBoxDocument; }
+            get { return _richTextBoxDocument; }
             set
             {
-                SetProperty<FlowDocument>(ref richTextBoxDocument, value);
+                SetProperty<FlowDocument>(ref _richTextBoxDocument, value);
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
@@ -135,7 +131,7 @@ namespace Powork.ViewModel
 
         private void OnGetMessage(object sender, EventArgs e)
         {
-            if (nowTeam == null)
+            if (_nowTeam == null)
             {
                 return;
             }
@@ -147,7 +143,7 @@ namespace Powork.ViewModel
                 return;
             }
 
-            if (teamMessage.TeamID == nowTeam.ID)
+            if (teamMessage.TeamID == _nowTeam.ID)
             {
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
@@ -221,7 +217,7 @@ namespace Powork.ViewModel
 
         private void SendMessage()
         {
-            if (nowTeam == null)
+            if (_nowTeam == null)
             {
                 return;
             }
@@ -232,12 +228,12 @@ namespace Powork.ViewModel
                 MessageBody = teamMessageBodyList,
                 SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.TeamMessage,
-                TeamID = nowTeam.ID,
+                TeamID = _nowTeam.ID,
             };
 
             string message = JsonConvert.SerializeObject(teamMessage);
 
-            foreach (User member in TeamRepository.SelectTeamMember(nowTeam.ID))
+            foreach (User member in TeamRepository.SelectTeamMember(_nowTeam.ID))
             {
                 if (member.IP == GlobalVariables.SelfInfo[0].IP && member.Name == GlobalVariables.SelfInfo[0].Name)
                 {
@@ -245,14 +241,14 @@ namespace Powork.ViewModel
                 }
 
                 Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, member.IP, GlobalVariables.TcpPort);
-                if(ex != null)
+                if (ex != null)
                 {
                     List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {member.Name} not online" }];
                     TCPMessage errorMessage = new TCPMessage()
                     {
                         Type = MessageType.Error,
                         MessageBody = errorContent,
-                        TeamID = nowTeam.ID,
+                        TeamID = _nowTeam.ID,
                     };
                     TextBlock errorTextBlock = TextBlockHelper.GetMessageControl(errorMessage);
                     Application.Current.Dispatcher.Invoke(() =>
@@ -281,15 +277,15 @@ namespace Powork.ViewModel
         private void TeamClick(TeamViewModel teamViewModel)
         {
             MessageList.Clear();
-            nowTeam.Selected = false;
-            nowTeam = teamViewModel;
-            nowTeam.Selected = true;
+            _nowTeam.Selected = false;
+            _nowTeam = teamViewModel;
+            _nowTeam.Selected = true;
             SendEnabled = true;
 
-            List<TCPMessage> messageList = TeamMessageRepository.SelectMessgae(nowTeam.ID);
+            List<TCPMessage> messageList = TeamMessageRepository.SelectMessgae(_nowTeam.ID);
             if (messageList != null && messageList.Count >= 1)
             {
-                firstMessageID = messageList[0].ID;
+                _firstMessageID = messageList[0].ID;
             }
 
             foreach (TCPMessage message in messageList)
@@ -317,25 +313,25 @@ namespace Powork.ViewModel
 
         private void RemoveTeam()
         {
-            if (nowTeam != null)
+            if (_nowTeam != null)
             {
-                TeamRepository.RemoveTeam(nowTeam.ID);
-                TeamList.Remove(nowTeam);
-                nowTeam = null;
+                TeamRepository.RemoveTeam(_nowTeam.ID);
+                TeamList.Remove(_nowTeam);
+                _nowTeam = null;
             }
         }
 
         private void ScrollAtTop()
         {
-            if (firstMessageID == -1)
+            if (_firstMessageID == -1)
             {
                 return;
             }
 
-            List<TCPMessage> messageList = TeamMessageRepository.SelectMessgae(nowTeam.ID, firstMessageID);
+            List<TCPMessage> messageList = TeamMessageRepository.SelectMessgae(_nowTeam.ID, _firstMessageID);
             if (messageList != null && messageList.Count >= 1)
             {
-                firstMessageID = messageList[0].ID;
+                _firstMessageID = messageList[0].ID;
             }
             int index = 0;
             foreach (TCPMessage message in messageList)
