@@ -8,12 +8,6 @@ using System.Xml.Linq;
 
 namespace Powork.Model
 {
-    public enum ContentType
-    {
-        Text = 0,
-        File = 1,
-        Picture = 2,
-    }
     public enum MessageType
     {
         UserMessage = 0,
@@ -26,6 +20,7 @@ namespace Powork.Model
         ShareInfoRequest = 7,
         ShareInfo = 8,
     }
+
     public class TCPMessage
     {
         public TCPMessage() 
@@ -48,11 +43,5 @@ namespace Powork.Model
         public MessageType Type { get; set; }
         public string Time { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         public int ID { get; set; }
-    }
-    public class TCPMessageBody
-    {
-        public string Content { get; set; }
-        public string ID { get; set; }
-        public ContentType Type { get; set; }
     }
 }

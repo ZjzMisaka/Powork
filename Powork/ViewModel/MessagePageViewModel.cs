@@ -336,6 +336,11 @@ namespace Powork.ViewModel
                 DataContext = dataContext
             };
             window.ShowDialog();
+            if (!(bool)window.DialogResult)
+            {
+                return;
+            }
+
             team.Name = dataContext.Value;
 
             if (string.IsNullOrEmpty(team.Name))

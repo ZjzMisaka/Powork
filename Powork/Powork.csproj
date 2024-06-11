@@ -34,9 +34,6 @@
     <Compile Update="View\MemoPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\TaskPage.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

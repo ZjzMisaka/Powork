@@ -35,6 +35,7 @@ namespace Powork.ViewModel
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
+        public ICommand CancelClickCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
         public InputWindowViewModel()
@@ -45,6 +46,7 @@ namespace Powork.ViewModel
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
+            CancelClickCommand = new RelayCommand(CancelClick);
             OKClickCommand = new RelayCommand(OKClick);
 
             Title = title;
@@ -60,6 +62,19 @@ namespace Powork.ViewModel
 
         private void WindowClosed()
         {
+        }
+
+        private void CancelClick()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.DataContext == this)
+                {
+                    window.DialogResult = false;
+                    window.Close();
+                    break;
+                }
+            }
         }
 
         private void OKClick()
