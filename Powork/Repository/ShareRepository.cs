@@ -48,9 +48,9 @@ namespace Powork.Repository
                                 Extension = reader["extension"].ToString(),
                                 Type = reader["type"].ToString(),
                                 Size = reader["size"].ToString(),
-                                ShareTime = reader["shareTime"].ToString(),
-                                CreateTime = reader["createTime"].ToString(),
-                                LastModifiedTime = reader["lastModifiedTime"].ToString(),
+                                ShareTime = DateTime.Parse(reader["shareTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
+                                CreateTime = DateTime.Parse(reader["createTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
+                                LastModifiedTime = DateTime.Parse(reader["lastModifiedTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
                             });
                         }
                     }

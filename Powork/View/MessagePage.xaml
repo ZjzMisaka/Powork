@@ -35,6 +35,7 @@
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch" Cursor="Hand" Background="{Binding BackgroundColor}">
                             <Grid.InputBindings>
+                                <MouseBinding MouseAction="RightClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
                                 <MouseBinding Gesture="CTRL+LeftClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
                             </Grid.InputBindings>
