@@ -109,6 +109,19 @@ namespace Powork.ViewModel
                         UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
                     }
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
+
+                    if (userMessage.Type == MessageType.TeamMessage)
+                    {
+                        List<Team> teamList = TeamRepository.SelectTeam();
+                        foreach (Team teaml in teamList)
+                        {
+                            if (userMessage.TeamID == teaml.ID)
+                            {
+                                return;
+                            }
+                        }
+                        GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
+                    }
                 }
                 else if (userMessage.Type == MessageType.FileRequest)
                 {

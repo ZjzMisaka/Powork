@@ -131,11 +131,6 @@ namespace Powork.ViewModel
 
         private void OnGetMessage(object sender, EventArgs e)
         {
-            if (_nowTeam == null)
-            {
-                return;
-            }
-
             TCPMessage teamMessage = (TCPMessage)sender;
 
             if (teamMessage.Type != MessageType.TeamMessage)
@@ -143,7 +138,7 @@ namespace Powork.ViewModel
                 return;
             }
 
-            if (teamMessage.TeamID == _nowTeam.ID)
+            if (_nowTeam != null && teamMessage.TeamID == _nowTeam.ID)
             {
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
@@ -153,16 +148,6 @@ namespace Powork.ViewModel
                     MessageList.Add(textBlock);
                 });
             }
-
-            // if team not exists, request team info and create team
-            foreach (TeamViewModel teamViewModel in TeamList)
-            {
-                if (teamMessage.TeamID == teamViewModel.ID)
-                {
-                    return;
-                }
-            }
-            GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, teamMessage.SenderIP, GlobalVariables.TcpPort);
         }
 
         private void OnGetFile(object sender, EventArgs e)
