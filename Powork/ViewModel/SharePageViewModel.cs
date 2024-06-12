@@ -1,10 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PowerThreadPool.Options;
 using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
@@ -16,9 +20,11 @@ namespace Powork.ViewModel
     class SharePageViewModel : ObservableObject
     {
         private readonly User _user;
-        private readonly Dictionary<string, (string, bool)> _downloadingDict;
+        private readonly ConcurrentDictionary<string, (string, bool)> _waitDownloadingDict;
+        private readonly ConcurrentDictionary<string, (string, bool)> _downloadingDict;
         private List<string> _downloadedList;
         private bool _pageEnabled;
+        private int _downloadCount = 0;
         public bool PageEnabled
         {
             get
@@ -81,8 +87,9 @@ namespace Powork.ViewModel
         public ICommand RemoveCommand { get; set; }
         public SharePageViewModel(User user)
         {
-            this._user = user;
-            _downloadingDict = new Dictionary<string, (string, bool)>();
+            _user = user;
+            _waitDownloadingDict = new ConcurrentDictionary<string, (string, bool)>();
+            _downloadingDict = new ConcurrentDictionary<string, (string, bool)>();
             _downloadedList = new List<string>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
@@ -106,6 +113,7 @@ namespace Powork.ViewModel
 
             GlobalVariables.GetShareInfo += SetShareInfo;
             GlobalVariables.GetFile += OnGetFile;
+            GlobalVariables.GetFile += OnStartGetFile;
 
             UserName = _user.Name;
             if (IsSelf)
@@ -125,12 +133,33 @@ namespace Powork.ViewModel
             SetShareInfo(shareInfoList);
         }
 
+        private void OnStartGetFile(object sender, EventArgs e)
+        {
+            Model.FileInfo fileInfo = (Model.FileInfo)sender;
+            if (_waitDownloadingDict.Remove(fileInfo.Guid, out (string, bool) value))
+            {
+                GlobalVariables.PowerPool.Stop(fileInfo.Guid, true);
+                lock (_downloadingDict)
+                {
+                    if (!_downloadedList.Contains(fileInfo.Guid))
+                    {
+                        _downloadingDict.TryAdd(fileInfo.Guid, value);
+                    }
+                }
+            }
+        }
+
         private void OnGetFile(object sender, EventArgs e)
         {
             Model.FileInfo fileInfo = (Model.FileInfo)sender;
-            _downloadingDict.Remove(fileInfo.Guid, out (string, bool) openInfo);
-            _downloadedList.Add(openInfo.Item1);
-            if (_downloadingDict.Count == 0)
+            (string, bool) openInfo;
+            lock (_downloadingDict)
+            {
+                _downloadingDict.Remove(fileInfo.Guid, out openInfo);
+                _downloadedList.Add(openInfo.Item1);
+            }
+            Interlocked.Decrement(ref _downloadCount);
+            if (_downloadCount == 0)
             {
                 if (openInfo.Item2)
                 {
@@ -181,6 +210,7 @@ namespace Powork.ViewModel
         {
             GlobalVariables.GetShareInfo -= SetShareInfo;
             GlobalVariables.GetFile -= OnGetFile;
+            GlobalVariables.GetFile -= OnStartGetFile;
         }
 
         private void Drop(DragEventArgs args)
@@ -301,8 +331,27 @@ namespace Powork.ViewModel
             {
                 foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
                 {
-                    _downloadingDict.Add(shareInfoViewModel.Guid, (Path.Combine(directoryPath, shareInfoViewModel.Name + shareInfoViewModel.Extension), tempFolder));
+                    if (_waitDownloadingDict.ContainsKey(shareInfoViewModel.Guid))
+                    {
+                        MessageBox.Show(shareInfoViewModel.Name + shareInfoViewModel.Extension + " is already downloading now.");
+                        continue;
+                    }
+                    Interlocked.Increment(ref _downloadCount);
+                    _waitDownloadingDict.TryAdd(shareInfoViewModel.Guid, (Path.Combine(directoryPath, shareInfoViewModel.Name + shareInfoViewModel.Extension), tempFolder));
                     GlobalVariables.TcpServerClient.RequestFile(shareInfoViewModel.Guid, _user.IP, GlobalVariables.TcpPort, directoryPath);
+
+                    GlobalVariables.PowerPool.QueueWorkItem(() =>
+                    {
+                        Thread.Sleep(10000);
+                        if (_waitDownloadingDict.Remove(shareInfoViewModel.Guid, out (string, bool) value))
+                        {
+                            Interlocked.Decrement(ref _downloadCount);
+                            MessageBox.Show($"File: {shareInfoViewModel.Name + shareInfoViewModel.Extension} download did not start.");
+                        }
+                    }, new WorkOption()
+                    {
+                        CustomWorkID = shareInfoViewModel.Guid,
+                    });
                 }
             }
         }

@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
-using PowerThreadPool;
 using PowerThreadPool.Options;
 using Powork.Model;
 
@@ -12,19 +11,16 @@ namespace Powork.Network
     {
         private readonly UdpClient _udpClient;
         private IPEndPoint _endPoint;
-        private readonly PowerPool _powerPool;
 
-        public UdpBroadcaster(int port, PowerPool powerPool)
+        public UdpBroadcaster(int port)
         {
             _udpClient = new UdpClient(port);
             _endPoint = new IPEndPoint(IPAddress.Broadcast, port);
-
-            _powerPool = powerPool;
         }
 
         public void StartBroadcasting()
         {
-            _powerPool.QueueWorkItem(() =>
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 while (true)
                 {
@@ -38,7 +34,7 @@ namespace Powork.Network
 
                     Thread.Sleep(1000);
 
-                    _powerPool.StopIfRequested();
+                    GlobalVariables.PowerPool.StopIfRequested();
                 }
             }, new WorkOption<object>()
             {
@@ -48,7 +44,7 @@ namespace Powork.Network
 
         public void ListenForBroadcasts(Action<User> onReceive)
         {
-            _powerPool.QueueWorkItem(() =>
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 while (true)
                 {
@@ -63,7 +59,7 @@ namespace Powork.Network
                     catch
                     {
                     }
-                    _powerPool.StopIfRequested();
+                    GlobalVariables.PowerPool.StopIfRequested();
                 }
             }, new WorkOption<object>()
             {

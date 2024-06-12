@@ -2,7 +2,7 @@
 {
     public enum Status
     {
-        Start = 0,
+        SendFileStart = 0,
         SendFileFinish = 1,
         NoSuchFile = 2,
     }

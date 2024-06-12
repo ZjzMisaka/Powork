@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using Newtonsoft.Json;
-using PowerThreadPool;
 using PowerThreadPool.Options;
 using PowerThreadPool.Results;
 using Powork.Constant;
@@ -16,33 +15,31 @@ namespace Powork.Network
     public class TcpServerClient
     {
         private readonly TcpListener _tcpListener;
-        private readonly PowerPool _powerPool;
 
         public Dictionary<string, string> savePathDict = new Dictionary<string, string>();
 
-        public TcpServerClient(int port, PowerPool powerPool)
+        public TcpServerClient(int port)
         {
             _tcpListener = new TcpListener(IPAddress.Any, port);
-            _powerPool = powerPool;
         }
 
         public void StartListening(Action<NetworkStream, string> onReceive)
         {
             _tcpListener.Start();
-            _powerPool.QueueWorkItem(() =>
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 while (true)
                 {
                     while (!_tcpListener.Pending())
                     {
                         Thread.Sleep(100);
-                        _powerPool.StopIfRequested();
+                        GlobalVariables.PowerPool.StopIfRequested();
                     }
                     TcpClient client = _tcpListener.AcceptTcpClient();
                     onReceive(client.GetStream(), ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
                     client.Dispose();
 
-                    if (_powerPool.CheckIfRequestedStop())
+                    if (GlobalVariables.PowerPool.CheckIfRequestedStop())
                     {
                         _tcpListener.Dispose();
                         return;
@@ -56,7 +53,7 @@ namespace Powork.Network
 
         public async Task<ExecuteResult<Exception>> SendMessage(string message, string ipAddress, int port)
         {
-            string id = _powerPool.QueueWorkItem<Exception>(() =>
+            string id = GlobalVariables.PowerPool.QueueWorkItem<Exception>(() =>
             {
                 TcpClient tcpClient = null;
                 NetworkStream stream = null;
@@ -91,12 +88,12 @@ namespace Powork.Network
                 ShouldStoreResult = true,
             });
 
-            return await _powerPool.FetchAsync<Exception>(id);
+            return await GlobalVariables.PowerPool.FetchAsync<Exception>(id);
         }
 
         public string SendFile(string filePath, string guid, string ipAddress, int port, string relativePath = "")
         {
-            string sendFileWorkID = _powerPool.QueueWorkItem(() =>
+            string sendFileWorkID = GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 try
                 {
@@ -109,7 +106,7 @@ namespace Powork.Network
                         Model.FileInfo fileInfo = new Model.FileInfo()
                         {
                             Guid = guid,
-                            Status = Model.Status.Start,
+                            Status = Model.Status.SendFileStart,
                             Name = new DirectoryInfo(filePath).Name,
                             RelativePath = relativePath,
                             Size = new System.IO.FileInfo(filePath).Length
@@ -147,8 +144,8 @@ namespace Powork.Network
 
         public async void SendFileFinish(string filePath, string guid, string ipAddress, int port, List<string> sendFileWorkIDList)
         {
-            await _powerPool.WaitAsync(sendFileWorkIDList);
-            _powerPool.QueueWorkItem(() =>
+            await GlobalVariables.PowerPool.WaitAsync(sendFileWorkIDList);
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 TcpClient tcpClient = new TcpClient();
                 tcpClient.Connect(ipAddress, port);
@@ -178,7 +175,7 @@ namespace Powork.Network
 
         public void RequestFile(string guid, string ipAddress, int port, string savePath)
         {
-            _powerPool.QueueWorkItem(() =>
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 TcpClient tcpClient = null;
                 NetworkStream stream = null;
@@ -223,7 +220,7 @@ namespace Powork.Network
 
         public void RequestTeamInfo(string teamID, string ipAddress, int port)
         {
-            _powerPool.QueueWorkItem(() =>
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 TcpClient tcpClient = null;
                 NetworkStream stream = null;
@@ -294,7 +291,7 @@ namespace Powork.Network
 
         public void RequestShareInfo(string ipAddress, int port, string name)
         {
-            _powerPool.QueueWorkItem(() =>
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 TcpClient tcpClient = null;
                 NetworkStream stream = null;

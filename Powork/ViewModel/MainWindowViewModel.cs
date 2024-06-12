@@ -21,8 +21,6 @@ namespace Powork.ViewModel
 {
     class MainWindowViewModel : ObservableObject
     {
-        private readonly PowerPool _powerPool = null;
-
         private UdpBroadcaster _udpBroadcaster;
         private static INavigationService s_navigationService;
 
@@ -38,7 +36,7 @@ namespace Powork.ViewModel
             ci.DateTimeFormat.ShortDatePattern = Format.DateTimeFormat;
             Thread.CurrentThread.CurrentCulture = ci;
 
-            _powerPool = new PowerPool();
+            GlobalVariables.PowerPool = new PowerPool();
 
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
@@ -55,7 +53,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort, _powerPool);
+            _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
 
             _udpBroadcaster.StartBroadcasting();
@@ -82,7 +80,7 @@ namespace Powork.ViewModel
                 }
             });
 
-            GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort, _powerPool);
+            GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort);
             GlobalVariables.TcpServerClient.StartListening((stream, ip) =>
             {
                 if (ip == GlobalVariables.SelfInfo[0].IP)
@@ -154,8 +152,9 @@ namespace Powork.ViewModel
                     string json = userMessage.MessageBody[0].Content;
                     Model.FileInfo fileInfo = JsonConvert.DeserializeObject<Model.FileInfo>(json);
 
-                    if (fileInfo.Status == Model.Status.Start)
+                    if (fileInfo.Status == Model.Status.SendFileStart)
                     {
+                        GlobalVariables.InvokeStartGetFileEvent(fileInfo);
                         string path = Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], fileInfo.RelativePath);
                         if (!Directory.Exists(path))
                         {
@@ -255,7 +254,7 @@ namespace Powork.ViewModel
 
         private void WindowClosing(CancelEventArgs eventArgs)
         {
-            _powerPool.Dispose();
+            GlobalVariables.PowerPool.Dispose();
         }
 
         private void WindowClosed()

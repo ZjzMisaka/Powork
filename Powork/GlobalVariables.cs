@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using PowerThreadPool;
 using Powork.Model;
 using Powork.Network;
 using Powork.Repository;
@@ -10,6 +11,7 @@ namespace Powork
 {
     public static class GlobalVariables
     {
+        public static PowerPool PowerPool {  get; set; }
         private static IPAddress s_localIP = GetLocalIPAddress();
         public static IPAddress LocalIP { get => s_localIP; }
         public static int UdpPort { get; } = 1096;
@@ -35,6 +37,8 @@ namespace Powork
         public static event GetShareInfoEventHandler GetShareInfo;
         public delegate void GetFileEventHandler(object sender, EventArgs e);
         public static event GetFileEventHandler GetFile;
+        public delegate void StartGetFileEventHandler(object sender, EventArgs e);
+        public static event StartGetFileEventHandler StartGetFile;
         public delegate void GetMessageEventHandler(object sender, EventArgs e);
         public static event GetMessageEventHandler GetMessage;
 
@@ -45,7 +49,13 @@ namespace Powork
                 GetShareInfo.Invoke(shareInfos, new EventArgs());
             }
         }
-
+        public static void InvokeStartGetFileEvent(FileInfo fileInfo)
+        {
+            if (StartGetFile != null)
+            {
+                StartGetFile.Invoke(fileInfo, new EventArgs());
+            }
+        }
         public static void InvokeGetFileEvent(FileInfo fileInfo)
         {
             if (GetFile != null)
