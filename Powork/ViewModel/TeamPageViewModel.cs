@@ -281,7 +281,7 @@ namespace Powork.ViewModel
             {
                 _nowTeam.Selected = false;
             }
-            
+
             _nowTeam = teamViewModel;
             _nowTeam.Selected = true;
             SendEnabled = true;
