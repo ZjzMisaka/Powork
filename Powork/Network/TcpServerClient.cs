@@ -88,7 +88,7 @@ namespace Powork.Network
                 ShouldStoreResult = true,
             });
 
-            return await GlobalVariables.PowerPool.FetchAsync<Exception>(id);
+            return await GlobalVariables.PowerPool.FetchAsync<Exception>(id, true);
         }
 
         public string SendFile(string filePath, string guid, string ipAddress, int port, string relativePath = "")
