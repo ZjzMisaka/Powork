@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -9,6 +10,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using PowerThreadPool.Results;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -200,7 +202,7 @@ namespace Powork.ViewModel
             RichTextBoxDocument.Blocks.Add(paragraph);
         }
 
-        private void SendMessage()
+        private async void SendMessage()
         {
             if (_nowTeam == null)
             {
@@ -225,7 +227,8 @@ namespace Powork.ViewModel
                     continue;
                 }
 
-                Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, member.IP, GlobalVariables.TcpPort);
+                Task<ExecuteResult<Exception>> task = GlobalVariables.TcpServerClient.SendMessage(message, member.IP, GlobalVariables.TcpPort);
+                Exception ex = (await task).Result;
                 if (ex != null)
                 {
                     List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {member.Name} not online" }];

@@ -291,6 +291,10 @@ namespace Powork.ViewModel
                     {
                         directoryPath = fbd.SelectedPath;
                     }
+                    else
+                    {
+                        return;
+                    }
                 }
             }
             if (directoryPath != null)

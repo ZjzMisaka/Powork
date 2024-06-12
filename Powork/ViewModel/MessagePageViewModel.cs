@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using PowerThreadPool.Results;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -372,7 +373,7 @@ namespace Powork.ViewModel
             }
         }
 
-        private void SendMessage()
+        private async void SendMessage()
         {
             if (_nowUser == null)
             {
@@ -389,7 +390,8 @@ namespace Powork.ViewModel
 
             string message = JsonConvert.SerializeObject(userMessage);
 
-            Exception ex = GlobalVariables.TcpServerClient.SendMessage(message, _nowUser.IP, GlobalVariables.TcpPort);
+            Task<ExecuteResult<Exception>> task = GlobalVariables.TcpServerClient.SendMessage(message, _nowUser.IP, GlobalVariables.TcpPort);
+            Exception ex = (await task).Result;
 
             MessageHelper.ConvertImageInMessage(userMessage);
 

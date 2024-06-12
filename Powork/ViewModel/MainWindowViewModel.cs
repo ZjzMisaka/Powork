@@ -127,13 +127,15 @@ namespace Powork.ViewModel
                 {
                     string guid = userMessage.MessageBody[0].Content;
                     string path = FileRepository.SelectFile(guid);
+                    List<string> sendFileWorkIDList = new List<string>();
                     if (FileHelper.GetType(path) == FileHelper.Type.None)
                     {
                         MessageBox.Show("No such file: " + path);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
-                        GlobalVariables.TcpServerClient.SendFile(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
+                        string id = GlobalVariables.TcpServerClient.SendFile(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
+                        sendFileWorkIDList.Add(id);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
@@ -141,10 +143,11 @@ namespace Powork.ViewModel
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
-                            GlobalVariables.TcpServerClient.SendFile(file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath);
+                            string id = GlobalVariables.TcpServerClient.SendFile(file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath);
+                            sendFileWorkIDList.Add(id);
                         }
                     }
-                    GlobalVariables.TcpServerClient.SendFileFinish(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
+                    GlobalVariables.TcpServerClient.SendFileFinish(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort, sendFileWorkIDList);
                 }
                 else if (userMessage.Type == MessageType.FileInfo)
                 {
