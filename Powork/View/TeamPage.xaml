@@ -28,7 +28,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Left Side -->
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto"  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
             <ItemsControl ItemsSource="{Binding Path=TeamList}" x:Name="TeamListControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -59,14 +59,14 @@
         </ScrollViewer>
 
         <!-- Right Side -->
-        <Grid Grid.Column="1"  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+        <Grid Grid.Column="1" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <ScrollViewer Grid.Row="0"  helper:ScrollViewerExtensions.ScrollAtTopCommand="{Binding ScrollAtTopCommand}">
+            <ScrollViewer Grid.Row="0"  helper:ScrollViewerExtensions.ScrollAtTopCommand="{Binding ScrollAtTopCommand}" Margin="5, 5, 5, 0">
                 <ItemsControl ItemsSource="{Binding MessageList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -76,7 +76,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="5, 5, 5, 0">
                 <ui:RichTextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding SendMessageCommand, Mode=OneWay}" />
                 </ui:RichTextBox.InputBindings>
@@ -93,7 +93,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBlock>
-                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" Grid.Column="1"/>
+                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Margin="5"/>
             </Grid>
         </Grid>
     </Grid>
