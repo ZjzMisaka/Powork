@@ -1,9 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -138,7 +136,7 @@ namespace Powork.ViewModel
             Model.FileInfo fileInfo = (Model.FileInfo)sender;
             if (_waitDownloadingDict.Remove(fileInfo.Guid, out (string, bool) value))
             {
-                GlobalVariables.PowerPool.Stop(fileInfo.Guid, true);
+                GlobalVariables.PowerPool.Stop("ShareFileDownload-" + fileInfo.Guid, true);
                 lock (_downloadingDict)
                 {
                     if (!_downloadedList.Contains(fileInfo.Guid))
@@ -350,7 +348,7 @@ namespace Powork.ViewModel
                         }
                     }, new WorkOption()
                     {
-                        CustomWorkID = shareInfoViewModel.Guid,
+                        CustomWorkID = "ShareFileDownload-" + shareInfoViewModel.Guid,
                     });
                 }
             }

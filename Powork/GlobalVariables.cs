@@ -11,7 +11,7 @@ namespace Powork
 {
     public static class GlobalVariables
     {
-        public static PowerPool PowerPool {  get; set; }
+        public static PowerPool PowerPool { get; set; }
         private static IPAddress s_localIP = GetLocalIPAddress();
         public static IPAddress LocalIP { get => s_localIP; }
         public static int UdpPort { get; } = 1096;
