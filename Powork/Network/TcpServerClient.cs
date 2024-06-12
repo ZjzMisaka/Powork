@@ -185,6 +185,9 @@ namespace Powork.Network
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
+            catch
+            {
+            }
             finally
             {
                 if (stream != null)
@@ -221,6 +224,9 @@ namespace Powork.Network
                 byte[] lengthPrefix = BitConverter.GetBytes(length);
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
             }
             finally
             {
@@ -263,7 +269,7 @@ namespace Powork.Network
             GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
         }
 
-        public void RequestShareInfo(string ipAddress, int port)
+        public void RequestShareInfo(string ipAddress, int port, string name)
         {
             TcpClient tcpClient = null;
             NetworkStream stream = null;
@@ -286,6 +292,10 @@ namespace Powork.Network
                 byte[] lengthPrefix = BitConverter.GetBytes(length);
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);
                 stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
+                MessageBox.Show($"User {name} not online");
             }
             finally
             {

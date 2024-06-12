@@ -115,7 +115,7 @@ namespace Powork.ViewModel
             }
             else
             {
-                GlobalVariables.TcpServerClient.RequestShareInfo(_user.IP, GlobalVariables.TcpPort);
+                GlobalVariables.TcpServerClient.RequestShareInfo(_user.IP, GlobalVariables.TcpPort, _user.Name);
             }
         }
 
