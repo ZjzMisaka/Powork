@@ -233,7 +233,7 @@ namespace Powork.ViewModel
 
             if (!UserHelper.IsUserLogon())
             {
-                Navigate(typeof(SettingsPage), new SettingsPageViewModel());
+                Navigate(typeof(SettingsPage), new SettingsPageViewModel(ServiceLocator.GetService<INavigationService>()));
             }
         }
 

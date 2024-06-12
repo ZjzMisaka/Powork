@@ -209,14 +209,14 @@ namespace Powork.Network
                 stream = tcpClient.GetStream();
 
                 List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = teamID }];
-                TCPMessage getFileMessage = new TCPMessage()
+                TCPMessage tcpMessage = new TCPMessage()
                 {
                     Type = MessageType.TeamInfoRequest,
                     SenderIP = GlobalVariables.SelfInfo[0].IP,
                     MessageBody = messageBody,
                 };
 
-                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(tcpMessage));
                 int length = bytes.Length;
                 byte[] lengthPrefix = BitConverter.GetBytes(length);
                 stream.Write(lengthPrefix, 0, lengthPrefix.Length);

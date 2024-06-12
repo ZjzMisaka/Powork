@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Powork.Service;
 using Powork.ViewModel;
 
 namespace Powork.View
@@ -11,7 +12,7 @@ namespace Powork.View
         public SettingsPage()
         {
             InitializeComponent();
-            this.DataContext = new SettingsPageViewModel();
+            this.DataContext = new SettingsPageViewModel(ServiceLocator.GetService<INavigationService>());
         }
     }
 }

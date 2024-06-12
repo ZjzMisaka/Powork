@@ -142,5 +142,20 @@ namespace Powork.Repository
                 }
             }
         }
+
+        public static void RemoveUser(string ip, string name)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"DELETE FROM TUser WHERE ip = '{ip}' AND  name = '{name}'";
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

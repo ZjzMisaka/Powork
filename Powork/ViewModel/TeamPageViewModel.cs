@@ -277,7 +277,11 @@ namespace Powork.ViewModel
         private void TeamClick(TeamViewModel teamViewModel)
         {
             MessageList.Clear();
-            _nowTeam.Selected = false;
+            if (_nowTeam != null)
+            {
+                _nowTeam.Selected = false;
+            }
+            
             _nowTeam = teamViewModel;
             _nowTeam.Selected = true;
             SendEnabled = true;

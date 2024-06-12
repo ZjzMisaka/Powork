@@ -66,7 +66,7 @@ namespace Powork.ViewModel.Inner
         {
             get
             {
-                return _memberList;
+                return _memberList == null ? string.Empty : _memberList;
             }
             set
             {

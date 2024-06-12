@@ -23,8 +23,9 @@ namespace Powork.ViewModel
     {
         private int _firstMessageID = -1;
         private UserViewModel _nowUser = null;
-        private List<UserViewModel> _selectedUserList = new List<UserViewModel>();
         private INavigationService _navigationService;
+
+        private List<UserViewModel> SelectedUserList => UserList.Where(x => x.Selected).ToList();
 
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
@@ -90,6 +91,7 @@ namespace Powork.ViewModel
         public ICommand UserClickCommand { get; set; }
         public ICommand CreateTeamCommand { get; set; }
         public ICommand SharedItemsCommand { get; set; }
+        public ICommand RemoveUserCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
@@ -109,6 +111,7 @@ namespace Powork.ViewModel
             UserClickCommand = new RelayCommand<UserViewModel>(UserClick);
             CreateTeamCommand = new RelayCommand(CreateTeam);
             SharedItemsCommand = new RelayCommand(SharedItems);
+            RemoveUserCommand = new RelayCommand(RemoveUser);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
@@ -234,28 +237,24 @@ namespace Powork.ViewModel
 
         private void UserClick(UserViewModel userViewModel)
         {
-            if (_nowUser == null)
-            {
-                return;
-            }
-
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
-                _selectedUserList.Add(userViewModel);
                 userViewModel.Selected = true;
                 return;
             }
             else
             {
-                foreach (UserViewModel userVM in _selectedUserList)
+                foreach (UserViewModel userVM in SelectedUserList)
                 {
                     userVM.Selected = false;
                 }
-                _selectedUserList.Clear();
             }
 
             MessageList.Clear();
-            _nowUser.Selected = false;
+            if (_nowUser != null)
+            {
+                _nowUser.Selected = false;
+            }
             _nowUser = userViewModel;
             _nowUser.Selected = true;
             SendEnabled = true;
@@ -362,6 +361,15 @@ namespace Powork.ViewModel
             user.Name = userViewModel.Name;
 
             _navigationService.Navigate(typeof(SharePage), new SharePageViewModel(user));
+        }
+
+        private void RemoveUser()
+        {
+            foreach (UserViewModel user in SelectedUserList)
+            {
+                UserRepository.RemoveUser(user.IP, user.Name);
+                UserList.Remove(user);
+            }
         }
 
         private void SendMessage()

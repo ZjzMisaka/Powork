@@ -4,11 +4,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Powork.Model;
 using Powork.Repository;
+using Powork.Service;
+using Powork.View;
 
 namespace Powork.ViewModel
 {
     class SettingsPageViewModel : ObservableObject
     {
+        private INavigationService _navigationService;
+
         private string _ip;
         public string IP
         {
@@ -49,8 +53,10 @@ namespace Powork.ViewModel
         public ICommand WindowUnloadedCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
-        public SettingsPageViewModel()
+        public SettingsPageViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
             OKClickCommand = new RelayCommand(OKClick);
@@ -94,6 +100,8 @@ namespace Powork.ViewModel
             };
             UserRepository.RemoveUserByIp(IP);
             UserRepository.InsertUser(user);
+
+            _navigationService.Navigate(typeof(MessagePage), new MessagePageViewModel(ServiceLocator.GetService<INavigationService>()));
         }
     }
 }

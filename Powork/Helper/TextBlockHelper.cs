@@ -2,9 +2,12 @@
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Powork.Constant;
 using Powork.Control;
 using Powork.Model;
+using Powork.Repository;
 using Wpf.Ui.Controls;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Powork.Helper
 {
@@ -26,13 +29,18 @@ namespace Powork.Helper
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                 }
                 timeTextBlock.Foreground = Brushes.LightGreen;
+                string timeStr = null;
+                if (DateTime.TryParse(userMessage.Time, out DateTime dateTime))
+                {
+                    timeStr = dateTime.ToString(Format.DateTimeFormatWithSeconds);
+                }
                 if (showName)
                 {
-                    timeTextBlock.Text = userMessage.SenderName + " - " + userMessage.Time;
+                    timeTextBlock.Text = userMessage.SenderName + " - " + timeStr;
                 }
                 else
                 {
-                    timeTextBlock.Text = userMessage.Time;
+                    timeTextBlock.Text = timeStr;
                 }
             });
 
