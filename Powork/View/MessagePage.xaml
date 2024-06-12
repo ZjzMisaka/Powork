@@ -11,6 +11,7 @@
       d:DataContext="{d:DesignInstance viewmodel:MessagePageViewModel,
                                  IsDesignTimeCreatable=True}"
       d:DesignHeight="450" d:DesignWidth="800"
+      ScrollViewer.CanContentScroll="False"
       Title="MessagePage" IsEnabled="{Binding PageEnabled}">
 
     <i:Interaction.Triggers>
@@ -22,14 +23,14 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Left Side -->
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Path=UserList}" x:Name="UserListControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -60,7 +61,7 @@
         </ScrollViewer>
 
         <!-- Right Side -->
-        <Grid Grid.Column="1" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*"/>
                 <RowDefinition Height="*"/>
