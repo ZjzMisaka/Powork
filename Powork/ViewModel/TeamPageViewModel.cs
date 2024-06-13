@@ -21,6 +21,7 @@ namespace Powork.ViewModel
 {
     class TeamPageViewModel : ObservableObject
     {
+        private string _needSelectTeamID = null;
         private int _firstMessageID = -1;
         private TeamViewModel _nowTeam = null;
         private bool _isScrollAtBottom;
@@ -128,8 +129,9 @@ namespace Powork.ViewModel
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
-        public TeamPageViewModel()
+        public TeamPageViewModel(string needSelectTeamID = null)
         {
+            _needSelectTeamID = needSelectTeamID;
             PageEnabled = true;
             SendEnabled = false;
             RichTextBoxDocument = new FlowDocument();
@@ -160,9 +162,20 @@ namespace Powork.ViewModel
             }
 
             List<Team> teamList = TeamRepository.SelectTeam();
+            TeamViewModel needSelectTeamViewModel = null;
             foreach (Team team in teamList)
             {
-                TeamList.Add(new TeamViewModel(team));
+                TeamViewModel teamViewModel = new TeamViewModel(team);
+                if (_needSelectTeamID != null && teamViewModel.ID == _needSelectTeamID)
+                {
+                    needSelectTeamViewModel = teamViewModel;
+                }
+                TeamList.Add(teamViewModel);
+            }
+
+            if (needSelectTeamViewModel != null)
+            {
+                TeamClick(needSelectTeamViewModel);
             }
         }
 

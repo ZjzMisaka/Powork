@@ -385,7 +385,7 @@ namespace Powork.ViewModel
 
             TeamRepository.InsertOrUpdateTeam(team);
 
-            _navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel());
+            _navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel(team.ID));
         }
 
         private void SharedItems()

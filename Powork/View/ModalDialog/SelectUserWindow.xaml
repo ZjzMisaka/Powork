@@ -45,7 +45,7 @@
         </Grid.ColumnDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5" Width="250">
-            <ui:ListView ItemsSource="{Binding UserList}" BorderThickness="0" Margin="5">
+            <ui:ListView ItemsSource="{Binding UserList}" Margin="5">
                 <ui:ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected}" />
