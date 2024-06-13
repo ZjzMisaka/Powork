@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using PowerThreadPool.Results;
+using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -360,7 +361,7 @@ namespace Powork.ViewModel
             Team team = new Team();
             team.ID = Guid.NewGuid().ToString();
             team.MemberList = teamMemberList;
-            team.LastModifiedTime = DateTime.Now;
+            team.LastModifiedTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
 
             InputWindowViewModel dataContext = new InputWindowViewModel("Team name");
             InputWindow window = new InputWindow

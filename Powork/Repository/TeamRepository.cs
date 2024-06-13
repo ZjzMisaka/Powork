@@ -79,6 +79,7 @@ namespace Powork.Repository
                             {
                                 ID = reader["id"].ToString(),
                                 Name = reader["name"].ToString(),
+                                LastModifiedTime = reader["lastModifiedTime"].ToString(),
                             });
                         }
                     }
@@ -106,7 +107,7 @@ namespace Powork.Repository
                             {
                                 ID = reader["id"].ToString(),
                                 Name = reader["name"].ToString(),
-                                LastModifiedTime = (DateTime)reader["lastModifiedTime"],
+                                LastModifiedTime = reader["lastModifiedTime"].ToString(),
                             };
                         }
                     }

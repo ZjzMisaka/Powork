@@ -36,7 +36,7 @@ namespace Powork.Helper
                 }
                 if (showName)
                 {
-                    timeTextBlock.Text = userMessage.SenderName + " - " + timeStr;
+                    timeTextBlock.Text = userMessage.SenderName + " [" + timeStr + "]";
                 }
                 else
                 {

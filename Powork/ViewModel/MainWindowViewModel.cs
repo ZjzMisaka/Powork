@@ -115,7 +115,7 @@ namespace Powork.ViewModel
                         {
                             if (userMessage.TeamID == team.ID)
                             {
-                                if (team.LastModifiedTime < userMessage.LastModifiedTime)
+                                if (DateTime.Parse(team.LastModifiedTime) < userMessage.LastModifiedTime)
                                 {
                                     GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
                                 }
@@ -203,7 +203,7 @@ namespace Powork.ViewModel
                 {
                     string teamID = null;
                     string teamName = null;
-                    DateTime lastModifiedTime = DateTime.Now;
+                    string lastModifiedTime = null;
                     List<User> members = null;
                     foreach (TCPMessageBody messageBody in userMessage.MessageBody)
                     {
@@ -219,7 +219,7 @@ namespace Powork.ViewModel
                         }
                         else if (teamInfoPart.Key == MessageBodyContentKey.LastModifiedTime)
                         {
-                            lastModifiedTime = JsonConvert.DeserializeObject<DateTime>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
+                            lastModifiedTime = (string)teamInfoPart.Value;
                         }
                         else if (teamInfoPart.Key == MessageBodyContentKey.Members)
                         {

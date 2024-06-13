@@ -276,7 +276,7 @@ namespace Powork.ViewModel
                     Name = newTeamMembe.Name,
                 });
             }
-            nowTeam.LastModifiedTime = DateTime.Now;
+            nowTeam.LastModifiedTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
             TeamRepository.InsertOrUpdateTeam(nowTeam);
 
             TextboxScrollToEnd = true;
@@ -325,7 +325,7 @@ namespace Powork.ViewModel
                 SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.TeamMessage,
                 TeamID = _nowTeam.ID,
-                LastModifiedTime = TeamRepository.SelectTeam(_nowTeam.ID).LastModifiedTime
+                LastModifiedTime = DateTime.Parse(TeamRepository.SelectTeam(_nowTeam.ID).LastModifiedTime)
             };
 
             string message = JsonConvert.SerializeObject(teamMessage);
