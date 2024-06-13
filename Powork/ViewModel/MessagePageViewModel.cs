@@ -26,6 +26,32 @@ namespace Powork.ViewModel
         private UserViewModel _nowUser = null;
         private INavigationService _navigationService;
 
+        public bool isScrollAtBottom;
+        public bool IsScrollAtBottom
+        {
+            get
+            {
+                return isScrollAtBottom;
+            }
+            set
+            {
+                SetProperty<bool>(ref isScrollAtBottom, value);
+            }
+        }
+
+        public bool scrollToEnd;
+        public bool ScrollToEnd
+        {
+            get
+            {
+                return scrollToEnd;
+            }
+            set
+            {
+                SetProperty<bool>(ref scrollToEnd, value);
+            }
+        }
+
         private List<UserViewModel> SelectedUserList => UserList.Where(x => x.Selected).ToList();
 
         public ObservableCollection<TextBlock> messageList;
@@ -142,6 +168,8 @@ namespace Powork.ViewModel
 
             if (userMessage.SenderIP == _nowUser.IP && userMessage.SenderName == _nowUser.Name)
             {
+                bool isScrollAtBottom = IsScrollAtBottom;
+
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(userMessage);
                 Application.Current.Dispatcher.Invoke(() =>
@@ -149,6 +177,11 @@ namespace Powork.ViewModel
                     MessageList.Add(timeTextBlock);
                     MessageList.Add(textBlock);
                 });
+
+                if (isScrollAtBottom)
+                {
+                    ScrollToEnd = true;
+                }
             }
         }
 

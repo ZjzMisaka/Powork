@@ -24,6 +24,31 @@ namespace Powork.ViewModel
     {
         private int _firstMessageID = -1;
         private TeamViewModel _nowTeam = null;
+        public bool isScrollAtBottom;
+        public bool IsScrollAtBottom
+        {
+            get
+            {
+                return isScrollAtBottom;
+            }
+            set
+            {
+                SetProperty<bool>(ref isScrollAtBottom, value);
+            }
+        }
+        public bool scrollToEnd;
+        public bool ScrollToEnd
+        {
+            get
+            {
+                return scrollToEnd;
+            }
+            set
+            {
+                SetProperty<bool>(ref scrollToEnd, value);
+            }
+        }
+
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
         {
@@ -147,6 +172,8 @@ namespace Powork.ViewModel
 
             if (_nowTeam != null && teamMessage.TeamID == _nowTeam.ID)
             {
+                bool isScrollAtBottom = IsScrollAtBottom;
+
                 TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
                 TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
                 Application.Current.Dispatcher.Invoke(() =>
@@ -154,6 +181,11 @@ namespace Powork.ViewModel
                     MessageList.Add(timeTextBlock);
                     MessageList.Add(textBlock);
                 });
+
+                if (isScrollAtBottom)
+                {
+                    ScrollToEnd = true;
+                }
             }
         }
 
