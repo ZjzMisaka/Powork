@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using PowerThreadPool.Results;
+using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -324,6 +325,7 @@ namespace Powork.ViewModel
                 SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.TeamMessage,
                 TeamID = _nowTeam.ID,
+                LastModifiedTime = TeamRepository.SelectTeam(_nowTeam.ID).LastModifiedTime
             };
 
             string message = JsonConvert.SerializeObject(teamMessage);

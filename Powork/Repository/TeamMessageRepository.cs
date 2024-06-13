@@ -13,7 +13,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO TTeamMessage (body, type, time, fromIP, fromName, teamID, lastModifiedTime) VALUES (@body, @type, @time, @fromIP, @fromName, @teamID, @lastModifiedTime)";
+                string sql = $"INSERT INTO TTeamMessage (body, type, time, fromIP, fromName, teamID) VALUES (@body, @type, @time, @fromIP, @fromName, @teamID)";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
@@ -23,7 +23,6 @@ namespace Powork.Repository
                     command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.SenderIP));
                     command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.SenderName));
                     command.Parameters.Add(new SQLiteParameter("@teamID", userMessage.TeamID));
-                    command.Parameters.Add(new SQLiteParameter("@lastModifiedTime", userMessage.LastModifiedTime));
                     command.ExecuteNonQuery();
                 }
             }
@@ -56,7 +55,6 @@ namespace Powork.Repository
                                 MessageBody = JsonConvert.DeserializeObject<List<TCPMessageBody>>(reader["body"].ToString()),
                                 Type = (MessageType)(int.Parse(reader["type"].ToString())),
                                 Time = reader["time"].ToString(),
-                                LastModifiedTime = reader["lastModifiedTime"].ToString(),
                                 ID = int.Parse(reader["id"].ToString()),
                                 TeamID = teamID,
                             });

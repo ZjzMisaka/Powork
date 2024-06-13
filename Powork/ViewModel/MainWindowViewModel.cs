@@ -115,7 +115,7 @@ namespace Powork.ViewModel
                         {
                             if (userMessage.TeamID == team.ID)
                             {
-                                if (team.LastModifiedTime < DateTime.Parse(userMessage.LastModifiedTime))
+                                if (team.LastModifiedTime < userMessage.LastModifiedTime)
                                 {
                                     GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
                                 }
@@ -203,6 +203,7 @@ namespace Powork.ViewModel
                 {
                     string teamID = null;
                     string teamName = null;
+                    DateTime lastModifiedTime = DateTime.Now;
                     List<User> members = null;
                     foreach (TCPMessageBody messageBody in userMessage.MessageBody)
                     {
@@ -216,6 +217,10 @@ namespace Powork.ViewModel
                         {
                             teamName = (string)teamInfoPart.Value;
                         }
+                        else if (teamInfoPart.Key == MessageBodyContentKey.LastModifiedTime)
+                        {
+                            lastModifiedTime = JsonConvert.DeserializeObject<DateTime>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
+                        }
                         else if (teamInfoPart.Key == MessageBodyContentKey.Members)
                         {
                             members = JsonConvert.DeserializeObject<List<User>>(((Newtonsoft.Json.Linq.JArray)teamInfoPart.Value).ToString());
@@ -224,6 +229,7 @@ namespace Powork.ViewModel
                     Team team = new Team();
                     team.ID = teamID;
                     team.Name = teamName;
+                    team.LastModifiedTime = lastModifiedTime;
                     team.MemberList = members;
                     TeamRepository.InsertOrUpdateTeam(team);
                 }

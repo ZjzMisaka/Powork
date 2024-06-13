@@ -11,7 +11,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"INSERT OR REPLACE INTO TTeam (id, name) VALUES ('{team.ID}', '{team.Name}')";
+                string sql = $"INSERT OR REPLACE INTO TTeam (id, name, lastModifiedTime) VALUES ('{team.ID}', '{team.Name}', '{team.LastModifiedTime}')";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
@@ -50,7 +50,7 @@ namespace Powork.Repository
 
                 foreach (User user in memberList)
                 {
-                    string sql = $"INSERT OR REPLACE INTO TTeamMember (teamID, userIP, userName) VALUES ('{teamID}', '{user.IP}', '{user.Name}')";
+                    string sql = $"INSERT OR REPLACE INTO TTeamMember (teamID, userIP, userName, groupName) VALUES ('{teamID}', '{user.IP}', '{user.Name}', '{user.GroupName}')";
 
                     using (var command = new SQLiteCommand(sql, connection))
                     {
@@ -106,6 +106,7 @@ namespace Powork.Repository
                             {
                                 ID = reader["id"].ToString(),
                                 Name = reader["name"].ToString(),
+                                LastModifiedTime = (DateTime)reader["lastModifiedTime"],
                             };
                         }
                     }
@@ -133,6 +134,7 @@ namespace Powork.Repository
                             {
                                 IP = reader["userIP"].ToString(),
                                 Name = reader["userName"].ToString(),
+                                GroupName = reader["groupName"].ToString(),
                             });
                         }
                     }

@@ -25,13 +25,13 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTTeam = @"CREATE TABLE IF NOT EXISTS TTeam (id VARCHAR(36), name VARCHAR(20), primary key (id))";
+                string sqlTTeam = @"CREATE TABLE IF NOT EXISTS TTeam (id VARCHAR(36), name VARCHAR(20), lastModifiedTime DATETIME, primary key (id))";
                 using (var command = new SQLiteCommand(sqlTTeam, connection))
                 {
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTTeamMember = @"CREATE TABLE IF NOT EXISTS TTeamMember (teamID VARCHAR(36), userIP VARCHAR(15), userName VARCHAR(20))";
+                string sqlTTeamMember = @"CREATE TABLE IF NOT EXISTS TTeamMember (teamID VARCHAR(36), userIP VARCHAR(15), userName VARCHAR(20), groupName VARCHAR(20))";
                 using (var command = new SQLiteCommand(sqlTTeamMember, connection))
                 {
                     command.ExecuteNonQuery();
@@ -43,7 +43,7 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTTeamMessage = @"CREATE TABLE IF NOT EXISTS TTeamMessage (body VARCHAR(5000), type INTEGER, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fromIP VARCHAR(36), fromName VARCHAR(20), teamID VARCHAR(36), lastModifiedTime DATETIME, id INTEGER PRIMARY KEY AUTOINCREMENT)";
+                string sqlTTeamMessage = @"CREATE TABLE IF NOT EXISTS TTeamMessage (body VARCHAR(5000), type INTEGER, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fromIP VARCHAR(36), fromName VARCHAR(20), teamID VARCHAR(36), id INTEGER PRIMARY KEY AUTOINCREMENT)";
                 using (var command = new SQLiteCommand(sqlTTeamMessage, connection))
                 {
                     command.ExecuteNonQuery();

@@ -36,7 +36,7 @@ namespace Powork.Model
         public List<TCPMessageBody> MessageBody { get; set; }
         public MessageType Type { get; set; }
         public string Time { get; set; } = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
-        public string LastModifiedTime { get; set; }
+        public DateTime LastModifiedTime { get; set; }
         public int ID { get; set; }
     }
 }
