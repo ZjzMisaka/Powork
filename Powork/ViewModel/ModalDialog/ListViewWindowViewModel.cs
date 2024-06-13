@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Powork.ViewModel
 {
-    class ListViewWindowViewModel : ObservableObject
+    class InputWindowViewModel : ObservableObject
     {
         private string _title;
         public string Title
@@ -38,10 +38,10 @@ namespace Powork.ViewModel
         public ICommand CancelClickCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
-        public ListViewWindowViewModel()
+        public InputWindowViewModel()
         {
         }
-        public ListViewWindowViewModel(string title)
+        public InputWindowViewModel(string title)
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);

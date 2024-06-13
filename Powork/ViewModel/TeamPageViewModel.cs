@@ -83,6 +83,8 @@ namespace Powork.ViewModel
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }
+        public ICommand ManageTeamMemberCommand { get; set; }
+        public ICommand GetTeamMemberCommand { get; set; }
         public ICommand SendMessageCommand { get; set; }
         public ICommand TeamClickCommand { get; set; }
         public ICommand RemoveTeamCommand { get; set; }
@@ -99,6 +101,8 @@ namespace Powork.ViewModel
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
+            ManageTeamMemberCommand = new RelayCommand(ManageTeamMember);
+            GetTeamMemberCommand = new RelayCommand(GetTeamMember);
             SendMessageCommand = new RelayCommand(SendMessage);
             TeamClickCommand = new RelayCommand<TeamViewModel>(TeamClick);
             RemoveTeamCommand = new RelayCommand(RemoveTeam);
@@ -200,6 +204,16 @@ namespace Powork.ViewModel
             Run run = new Run(text);
             Paragraph paragraph = new Paragraph(run);
             RichTextBoxDocument.Blocks.Add(paragraph);
+        }
+
+        private void ManageTeamMember()
+        {
+
+        }
+
+        private void GetTeamMember()
+        {
+
         }
 
         private async void SendMessage()

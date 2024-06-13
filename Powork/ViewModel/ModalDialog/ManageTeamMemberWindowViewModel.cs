@@ -6,20 +6,8 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Powork.ViewModel
 {
-    class ListViewWindowViewModel : ObservableObject
+    class ManageTeamMemberWindowViewModel : ObservableObject
     {
-        private string _title;
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-            set
-            {
-                SetProperty<string>(ref _title, value);
-            }
-        }
         private string _value;
         public string Value
         {
@@ -38,18 +26,13 @@ namespace Powork.ViewModel
         public ICommand CancelClickCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
-        public ListViewWindowViewModel()
-        {
-        }
-        public ListViewWindowViewModel(string title)
+        public ManageTeamMemberWindowViewModel()
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
             CancelClickCommand = new RelayCommand(CancelClick);
             OKClickCommand = new RelayCommand(OKClick);
-
-            Title = title;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
