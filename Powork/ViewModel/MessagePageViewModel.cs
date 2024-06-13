@@ -305,7 +305,8 @@ namespace Powork.ViewModel
                     teamMemberList.Add(new User()
                     {
                         IP = userViewModel.IP,
-                        Name = userViewModel.Name
+                        Name = userViewModel.Name,
+                        GroupName = userViewModel.GroupName,
                     });
                 }
             }
@@ -319,6 +320,7 @@ namespace Powork.ViewModel
             {
                 IP = GlobalVariables.SelfInfo[0].IP,
                 Name = GlobalVariables.SelfInfo[0].Name,
+                GroupName = GlobalVariables.SelfInfo[0].GroupName,
             });
 
             Team team = new Team();

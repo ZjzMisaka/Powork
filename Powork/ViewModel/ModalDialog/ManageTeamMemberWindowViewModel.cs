@@ -48,6 +48,9 @@ namespace Powork.ViewModel
         public ICommand CancelClickCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
+        public ManageTeamMemberWindowViewModel()
+        {
+        }
         public ManageTeamMemberWindowViewModel(List<User> allUserList, List<User> memberList)
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
@@ -57,6 +60,9 @@ namespace Powork.ViewModel
             ToOtherCommand = new RelayCommand(ToOther);
             CancelClickCommand = new RelayCommand(CancelClick);
             OKClickCommand = new RelayCommand(OKClick);
+
+            TeamUserList = new ObservableCollection<UserViewModel>();
+            OtherUserList = new ObservableCollection<UserViewModel>();
 
             foreach (User user in memberList)
             {

@@ -209,7 +209,7 @@ namespace Powork.ViewModel
         private void ManageTeamMember()
         {
             ManageTeamMemberWindowViewModel dataContext = new ManageTeamMemberWindowViewModel(UserRepository.SelectUser(), TeamRepository.SelectTeamMember(_nowTeam.ID));
-            InputWindow window = new InputWindow
+            ManageTeamMemberWindow window = new ManageTeamMemberWindow
             {
                 DataContext = dataContext
             };
