@@ -31,7 +31,7 @@ namespace Powork.Repository
                     command.ExecuteNonQuery();
                 }
 
-                string sqlTTeamMember = @"CREATE TABLE IF NOT EXISTS TTeamMember (teamID VARCHAR(36), userIP VARCHAR(15), userName VARCHAR(20), groupName VARCHAR(20))";
+                string sqlTTeamMember = @"CREATE TABLE IF NOT EXISTS TTeamMember (teamID VARCHAR(36), userIP VARCHAR(15), userName VARCHAR(20), groupName VARCHAR(20), primary key (teamID, userIP, userName))";
                 using (var command = new SQLiteCommand(sqlTTeamMember, connection))
                 {
                     command.ExecuteNonQuery();

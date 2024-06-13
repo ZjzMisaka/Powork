@@ -147,13 +147,13 @@ namespace Powork.ViewModel
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
             TeamList = new ObservableCollection<TeamViewModel>();
-
-            GlobalVariables.GetMessage += OnGetMessage;
-            GlobalVariables.GetFile += OnGetFile;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetFile += OnGetFile;
+
             if (!UserHelper.IsUserLogon())
             {
                 PageEnabled = false;
@@ -253,7 +253,9 @@ namespace Powork.ViewModel
 
         private void ManageTeamMember()
         {
-            ManageTeamMemberWindowViewModel dataContext = new ManageTeamMemberWindowViewModel(UserRepository.SelectUser(), TeamRepository.SelectTeamMember(_nowTeam.ID));
+            List<User> allUserIncludeSelf = UserRepository.SelectUser();
+            allUserIncludeSelf.Add(GlobalVariables.SelfInfo[0]);
+            ManageTeamMemberWindowViewModel dataContext = new ManageTeamMemberWindowViewModel(allUserIncludeSelf, TeamRepository.SelectTeamMember(_nowTeam.ID));
             ManageTeamMemberWindow window = new ManageTeamMemberWindow
             {
                 DataContext = dataContext
@@ -277,10 +279,8 @@ namespace Powork.ViewModel
                 });
             }
             nowTeam.LastModifiedTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
+            TeamRepository.RemoveTeam(nowTeam.ID);
             TeamRepository.InsertOrUpdateTeam(nowTeam);
-
-            TextboxScrollToEnd = true;
-            TextboxScrollToEnd = false;
         }
 
         private void GetTeamMember()
@@ -309,6 +309,9 @@ namespace Powork.ViewModel
                     RichTextBoxDocument.Blocks.Add(paragraph);
                 }
             }
+
+            TextboxScrollToEnd = true;
+            TextboxScrollToEnd = false;
         }
 
         private async void SendMessage()

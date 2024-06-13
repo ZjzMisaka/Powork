@@ -148,13 +148,14 @@ namespace Powork.ViewModel
             {
                 UserList.Add(new UserViewModel(user));
             }
-            GlobalVariables.UserListChanged += UserListChanged;
-            GlobalVariables.GetMessage += OnGetMessage;
-            GlobalVariables.GetFile += OnGetFile;
         }
 
         private void OnGetMessage(object sender, EventArgs e)
         {
+            GlobalVariables.UserListChanged += UserListChanged;
+            GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetFile += OnGetFile;
+
             if (_nowUser == null)
             {
                 return;

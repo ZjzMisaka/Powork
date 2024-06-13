@@ -40,6 +40,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -47,8 +48,11 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5, 5, 0, 5" Width="250">
-            <ui:ListView ItemsSource="{Binding OtherUserList}" BorderThickness="0" Margin="5">
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Other User" Margin="5"/>
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="Team Member" Margin="5"/>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5, 5, 0, 5" Width="250">
+            <ui:ListView ItemsSource="{Binding OtherUserList}" Margin="5">
                 <ui:ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected}" />
@@ -64,13 +68,13 @@
             </ui:ListView>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
             <Button Content=">" Command="{Binding ToTeamCommand}" Margin="5"></Button>
             <Button Content="&lt;" Command="{Binding ToOtherCommand}" Margin="5"></Button>
         </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="2" MinHeight="100" MaxHeight="400" Margin="0, 5, 5, 5" Width="250">
-            <ui:ListView ItemsSource="{Binding TeamUserList}" BorderThickness="0" Margin="5">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="2" MinHeight="100" MaxHeight="400" Margin="0, 5, 5, 5" Width="250">
+            <ui:ListView ItemsSource="{Binding TeamUserList}" Margin="5">
                 <ui:ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected}" />
@@ -86,9 +90,9 @@
             </ui:ListView>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Grid.Row="1" Grid.Column="1" Content="Cancel" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
-            <Button Grid.Row="1" Grid.Column="1" Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancel" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
+            <Button Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
         </StackPanel>
     </Grid>
 </ui:FluentWindow>

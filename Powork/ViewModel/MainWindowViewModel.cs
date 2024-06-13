@@ -100,6 +100,33 @@ namespace Powork.ViewModel
                     MessageHelper.ConvertImageInMessage(userMessage);
                     if (userMessage.Type == MessageType.TeamMessage)
                     {
+                        Team team = TeamRepository.SelectTeam(userMessage.TeamID);
+                        if (team != null)
+                        {
+                            if (DateTime.Parse(team.LastModifiedTime) < userMessage.LastModifiedTime)
+                            {
+                                GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
+                            }
+
+                            bool containThisUser = false;
+                            foreach (User user in TeamRepository.SelectTeamMember(userMessage.TeamID))
+                            {
+                                if (user.IP == userMessage.SenderIP && user.Name == userMessage.SenderName)
+                                {
+                                    containThisUser = true;
+                                    break;
+                                }
+                            }
+                            if (!containThisUser)
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
+                        }
+                        
                         TeamMessageRepository.InsertMessage(userMessage);
                     }
                     else if (userMessage.Type == MessageType.UserMessage)
@@ -107,23 +134,6 @@ namespace Powork.ViewModel
                         UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
                     }
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
-
-                    if (userMessage.Type == MessageType.TeamMessage)
-                    {
-                        List<Team> teamList = TeamRepository.SelectTeam();
-                        foreach (Team team in teamList)
-                        {
-                            if (userMessage.TeamID == team.ID)
-                            {
-                                if (DateTime.Parse(team.LastModifiedTime) < userMessage.LastModifiedTime)
-                                {
-                                    GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
-                                }
-                                return;
-                            }
-                        }
-                        GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
-                    }
                 }
                 else if (userMessage.Type == MessageType.FileRequest)
                 {
@@ -231,6 +241,7 @@ namespace Powork.ViewModel
                     team.Name = teamName;
                     team.LastModifiedTime = lastModifiedTime;
                     team.MemberList = members;
+                    TeamRepository.RemoveTeam(team.ID);
                     TeamRepository.InsertOrUpdateTeam(team);
                 }
                 else if (userMessage.Type == MessageType.ShareInfoRequest)
