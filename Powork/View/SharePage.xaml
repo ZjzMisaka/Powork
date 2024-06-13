@@ -41,8 +41,8 @@
                 <ui:ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Open File" Command="{Binding OpenCommand}"/>
-                        <MenuItem Header="Download File" Command="{Binding DownloadCommand}"/>
-                        <MenuItem Header="Remove File" Command="{Binding RemoveCommand}"/>
+                        <MenuItem Header="Download File" Command="{Binding DownloadCommand}" IsEnabled="{Binding DownloadMenuItemEnabled}"/>
+                        <MenuItem Header="Remove File" Command="{Binding RemoveCommand}" IsEnabled="{Binding RemoveMenuItemEnabled}"/>
                     </ContextMenu>
                 </ui:ListView.ContextMenu>
                 <ui:ListView.ItemContainerStyle>

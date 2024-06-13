@@ -35,7 +35,6 @@ namespace Powork.ViewModel
                 SetProperty<bool>(ref _pageEnabled, value);
             }
         }
-        private bool _isSelf;
         public bool IsSelf
         {
             get
@@ -46,11 +45,9 @@ namespace Powork.ViewModel
                 }
                 return _user.IP == GlobalVariables.SelfInfo[0].IP && _user.Name == GlobalVariables.SelfInfo[0].Name;
             }
-            set
-            {
-                SetProperty<bool>(ref _isSelf, value);
-            }
         }
+        public bool DownloadMenuItemEnabled => IsSelf ? false : true;
+        public bool RemoveMenuItemEnabled => IsSelf ? true : false;
         private string _userName;
         public string UserName
         {
@@ -289,13 +286,10 @@ namespace Powork.ViewModel
 
         private void Remove()
         {
-            if (IsSelf)
+            foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
             {
-                foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
-                {
-                    ShareRepository.RemoveFile(shareInfoViewModel.Guid);
-                    ShareInfoList.Remove(shareInfoViewModel);
-                }
+                ShareRepository.RemoveFile(shareInfoViewModel.Guid);
+                ShareInfoList.Remove(shareInfoViewModel);
             }
         }
 
