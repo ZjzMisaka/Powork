@@ -52,7 +52,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="White"/>
+                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="White" Margin="5, 2"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
