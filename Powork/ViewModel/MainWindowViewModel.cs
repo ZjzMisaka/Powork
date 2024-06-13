@@ -126,12 +126,14 @@ namespace Powork.ViewModel
                         {
                             GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
                         }
-                        
+
                         TeamMessageRepository.InsertMessage(userMessage);
+                        FlashHelper.FlashTaskbarIcon();
                     }
                     else if (userMessage.Type == MessageType.UserMessage)
                     {
                         UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
+                        FlashHelper.FlashTaskbarIcon();
                     }
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
                 }
