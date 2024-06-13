@@ -1,35 +1,28 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Powork.Model;
+using Powork.ViewModel.Inner;
 
 namespace Powork.ViewModel
 {
-    class InputWindowViewModel : ObservableObject
+    class SelectUserWindowViewModel : ObservableObject
     {
-        private string _title;
-        public string Title
+        public List<UserViewModel> SelectedUserList => UserList.Where(x => x.Selected).ToList();
+
+        private ObservableCollection<UserViewModel> _userList;
+        public ObservableCollection<UserViewModel> UserList
         {
             get
             {
-                return _title;
+                return _userList;
             }
             set
             {
-                SetProperty<string>(ref _title, value);
-            }
-        }
-        private string _value;
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                SetProperty<string>(ref _value, value);
+                SetProperty<ObservableCollection<UserViewModel>>(ref _userList, value);
             }
         }
         public ICommand WindowLoadedCommand { get; set; }
@@ -38,10 +31,10 @@ namespace Powork.ViewModel
         public ICommand CancelClickCommand { get; set; }
         public ICommand OKClickCommand { get; set; }
 
-        public InputWindowViewModel()
+        public SelectUserWindowViewModel()
         {
         }
-        public InputWindowViewModel(string title)
+        public SelectUserWindowViewModel(List<User> memberList)
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
@@ -49,7 +42,12 @@ namespace Powork.ViewModel
             CancelClickCommand = new RelayCommand(CancelClick);
             OKClickCommand = new RelayCommand(OKClick);
 
-            Title = title;
+            UserList = new ObservableCollection<UserViewModel>();
+
+            foreach (User user in memberList)
+            {
+                UserList.Add(new UserViewModel(user));
+            }
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)

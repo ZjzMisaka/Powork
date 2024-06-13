@@ -6,12 +6,12 @@ namespace Powork
     /// <summary>
     /// Interaction logic for InputWindow.xaml
     /// </summary>
-    public partial class ListViewWindow : FluentWindow
+    public partial class SelectUserWindow : FluentWindow
     {
-        public ListViewWindow()
+        public SelectUserWindow()
         {
             InitializeComponent();
-            this.DataContext = new ListViewWindowViewModel();
+            this.DataContext = new SelectUserWindowViewModel();
         }
     }
 }

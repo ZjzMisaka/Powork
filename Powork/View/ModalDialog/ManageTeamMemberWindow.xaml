@@ -48,7 +48,7 @@
         </Grid.ColumnDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5, 5, 0, 5" Width="250">
-            <ui:ListView ItemsSource="{Binding OtherUserList}" AllowDrop="{Binding IsSelf}" BorderThickness="0" Margin="5">
+            <ui:ListView ItemsSource="{Binding OtherUserList}" BorderThickness="0" Margin="5">
                 <ui:ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected}" />
@@ -70,7 +70,7 @@
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="2" MinHeight="100" MaxHeight="400" Margin="0, 5, 5, 5" Width="250">
-            <ui:ListView ItemsSource="{Binding TeamUserList}" AllowDrop="{Binding IsSelf}" BorderThickness="0" Margin="5">
+            <ui:ListView ItemsSource="{Binding TeamUserList}" BorderThickness="0" Margin="5">
                 <ui:ListView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected}" />

@@ -16,6 +16,7 @@ using Powork.Model;
 using Powork.Repository;
 using Powork.ViewModel.Inner;
 using Wpf.Ui.Controls;
+using static System.Windows.Forms.LinkLabel;
 
 namespace Powork.ViewModel
 {
@@ -163,7 +164,7 @@ namespace Powork.ViewModel
 
         public void InsertImage(string uri)
         {
-            var image = new Wpf.Ui.Controls.Image();
+            var image = new Image();
             image.Source = new BitmapImage(new Uri(uri));
             image.Width = image.Height = 64;
             var container = new BlockUIContainer(image);
@@ -237,7 +238,30 @@ namespace Powork.ViewModel
 
         private void GetTeamMember()
         {
+            SelectUserWindowViewModel dataContext = new SelectUserWindowViewModel(TeamRepository.SelectTeamMember(_nowTeam.ID));
+            SelectUserWindow window = new SelectUserWindow
+            {
+                DataContext = dataContext
+            };
+            window.ShowDialog();
+            if (!(bool)window.DialogResult)
+            {
+                return;
+            }
 
+            foreach (UserViewModel selectedUser in dataContext.SelectedUserList)
+            {
+                if (RichTextBoxDocument.Blocks.LastBlock is Paragraph)
+                {
+                    (RichTextBoxDocument.Blocks.LastBlock as Paragraph).Inlines.Add(new Run($"@{selectedUser.Name}"));
+                }
+                else
+                {
+                    Paragraph paragraph = new Paragraph();
+                    paragraph.Inlines.Add(new Run($"@{selectedUser.Name}"));
+                    RichTextBoxDocument.Blocks.Add(paragraph);
+                }
+            }
         }
 
         private async void SendMessage()
