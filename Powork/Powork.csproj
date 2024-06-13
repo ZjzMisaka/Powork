@@ -13,11 +13,12 @@
     <PackageReference Include="CustomizableMessageBox" Version="2.3.4" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PowerThreadPool" Version="4.5.1" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
     <PackageReference Include="WPF-UI" Version="3.0.4" />
+    <PackageReference Include="WPF-UI.Tray" Version="3.0.4" />
   </ItemGroup>
 
   <ItemGroup>

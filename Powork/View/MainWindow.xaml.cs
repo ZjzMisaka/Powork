@@ -24,6 +24,8 @@ namespace Powork
             ServiceLocator.SetLocatorProvider(_serviceProvider);
 
             this.DataContext = new MainWindowViewModel(ServiceLocator.GetService<INavigationService>());
+
+            notifyIcon.Menu.DataContext = this.DataContext;
         }
 
         private void ConfigureServices(IServiceCollection services)

@@ -16,6 +16,7 @@ using Powork.Network;
 using Powork.Repository;
 using Powork.Service;
 using Powork.View;
+using Wpf.Ui.Controls;
 
 namespace Powork.ViewModel
 {
@@ -24,6 +25,20 @@ namespace Powork.ViewModel
         private UdpBroadcaster _udpBroadcaster;
         private static INavigationService s_navigationService;
 
+        private string _applicationTitle;
+        public string ApplicationTitle
+        {
+            get
+            {
+                return _applicationTitle;
+            }
+            set
+            {
+                SetProperty<string>(ref _applicationTitle, value);
+            }
+        }
+
+        public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
@@ -41,6 +56,7 @@ namespace Powork.ViewModel
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
 
+            ExitCommand = new RelayCommand(Exit);
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
@@ -51,8 +67,15 @@ namespace Powork.ViewModel
             s_navigationService.Navigate(targetType, dataContext);
         }
 
+        private void Exit()
+        {
+            Application.Current.Shutdown();
+        }
+
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            ApplicationTitle = "Powork";
+
             _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
 
@@ -144,7 +167,7 @@ namespace Powork.ViewModel
                     List<string> sendFileWorkIDList = new List<string>();
                     if (FileHelper.GetType(path) == FileHelper.Type.None)
                     {
-                        MessageBox.Show("No such file: " + path);
+                        System.Windows.MessageBox.Show("No such file: " + path);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
@@ -193,7 +216,7 @@ namespace Powork.ViewModel
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message);
+                            System.Windows.MessageBox.Show(ex.Message);
                         }
                     }
                     else if (fileInfo.Status == Model.Status.SendFileFinish)
@@ -203,7 +226,7 @@ namespace Powork.ViewModel
                     }
                     else if (fileInfo.Status == Model.Status.NoSuchFile)
                     {
-                        MessageBox.Show("No such file: " + fileInfo.Name);
+                        System.Windows.MessageBox.Show("No such file: " + fileInfo.Name);
                     }
                 }
                 else if (userMessage.Type == MessageType.TeamInfoRequest)
@@ -277,11 +300,13 @@ namespace Powork.ViewModel
 
         private void WindowClosing(CancelEventArgs eventArgs)
         {
-            GlobalVariables.PowerPool.Dispose();
+            eventArgs.Cancel = true;
+            Application.Current.MainWindow.Hide();
         }
 
         private void WindowClosed()
         {
+            GlobalVariables.PowerPool.Dispose();
         }
     }
 }

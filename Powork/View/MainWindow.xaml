@@ -6,9 +6,10 @@
     xmlns:local="clr-namespace:Powork"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:view="clr-namespace:Powork.View"
-    Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+    Title="{Binding ApplicationTitle, Mode=OneWay}"
     Width="1280"
     Height="720"
     d:DataContext="{d:DesignInstance local:MainWindow,
@@ -50,9 +51,22 @@
         </Grid.RowDefinitions>
 
         <ui:TitleBar
-            Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+            Title="{Binding ApplicationTitle, Mode=OneWay}"
             Grid.Row="0"
             Icon="Icon.png" />
+
+        <tray:NotifyIcon
+            x:Name="notifyIcon"
+            Grid.Row="0"
+            FocusOnLeftClick="True"
+            MenuOnRightClick="True"
+            TooltipText="Powork" Cursor="">
+            <tray:NotifyIcon.Menu>
+                <ContextMenu>
+                    <MenuItem Header="Exit" Tag="exit" Command="{Binding ExitCommand}"/>
+                </ContextMenu>
+            </tray:NotifyIcon.Menu>
+        </tray:NotifyIcon>
 
         <ui:NavigationView x:Name="RootNavigation" Grid.Row="1" PaneDisplayMode="LeftFluent">
             <ui:NavigationView.MenuItems>
