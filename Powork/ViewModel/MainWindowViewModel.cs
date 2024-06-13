@@ -5,8 +5,10 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using PowerThreadPool;
 using Powork.Constant;
@@ -77,6 +79,30 @@ namespace Powork.ViewModel
 
             _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
+
+            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            {
+                Application.Current.Dispatcher.Invoke(delegate
+                {
+                    ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+                    if (args.Get("action") == "Send")
+                    {
+                        toastArgs.UserInput.TryGetValue("input", out object obj);
+                        string input = (string)obj;
+
+                        // Send
+                    }
+                    else
+                    {
+                        Application.Current.MainWindow.Show();
+                        string userIP = args.Get("userIP");
+                        string userName = args.Get("userName");
+                        string teamID = args.Get("teamID");
+
+                        // Navigate
+                    }
+                });
+            };
 
             _udpBroadcaster.StartBroadcasting();
             _udpBroadcaster.ListenForBroadcasts((user) =>
@@ -150,12 +176,55 @@ namespace Powork.ViewModel
                         }
 
                         TeamMessageRepository.InsertMessage(userMessage);
+
                         FlashHelper.FlashTaskbarIcon();
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            Window mainWindow = Application.Current.MainWindow;
+                            if (!WindowHelper.IsWindowActive(mainWindow))
+                            {
+                                if (team == null)
+                                {
+                                    team = TeamRepository.SelectTeam(userMessage.TeamID);
+                                }
+                                string teamName = team == null ? "Unknown" : TeamRepository.SelectTeam(userMessage.TeamID).Name;
+                                new ToastContentBuilder()
+                                    .AddArgument("teamID", userMessage.TeamID)
+                                    .AddText($"New message")
+                                    .AddText($"Team: {teamName}")
+                                    .AddText($"User: {userMessage.SenderName}")
+                                    .AddText($"{userMessage.MessageBody}")
+                                    .AddInputTextBox("input")
+                                    .AddButton(new ToastButton()
+                                        .SetContent("Send")
+                                        .AddArgument("action", "Send"))
+                                    .Show();
+                            }
+                        }, DispatcherPriority.Normal);
                     }
                     else if (userMessage.Type == MessageType.UserMessage)
                     {
                         UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
                         FlashHelper.FlashTaskbarIcon();
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            Window mainWindow = Application.Current.MainWindow;
+                            if (!WindowHelper.IsWindowActive(mainWindow))
+                            {
+                                new ToastContentBuilder()
+                                    .AddArgument("userIP", userMessage.SenderIP)
+                                    .AddArgument("userName", userMessage.SenderName)
+                                    .AddText($"New message")
+                                    .AddText($"User: {userMessage.SenderName}")
+                                    .AddText($"{userMessage.MessageBody}")
+                                    .AddInputTextBox("input")
+                                    .AddButton(new ToastButton()
+                                        .SetContent("Send")
+                                        .AddArgument("action", "Send"))
+                                    .Show();
+                            }
+                        }, DispatcherPriority.Normal);
+
                     }
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
                 }

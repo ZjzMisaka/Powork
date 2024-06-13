@@ -37,17 +37,14 @@ namespace Powork.Helper
             FlashWindowEx(ref fw);
         }
 
-        private static bool IsWindowActive(Window window)
-        {
-            return window.WindowState != WindowState.Minimized && window.Visibility == Visibility.Visible;
-        }
+
 
         public static void FlashTaskbarIcon()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Window mainWindow = Application.Current.MainWindow;
-                if (!IsWindowActive(mainWindow))
+                if (!WindowHelper.IsWindowActive(mainWindow))
                 {
                     IntPtr hWnd = new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle;
                     FlashWindow(hWnd, uint.MaxValue);
