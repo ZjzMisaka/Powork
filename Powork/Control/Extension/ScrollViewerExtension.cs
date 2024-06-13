@@ -2,16 +2,16 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Powork.Helper
+namespace Powork.Control.Extension
 {
-    public static class ScrollViewerExtensions
+    public static class ScrollViewerExtension
     {
         #region ScrollAtTopCommand
         public static readonly DependencyProperty ScrollAtTopCommandProperty =
             DependencyProperty.RegisterAttached(
                 "ScrollAtTopCommand",
                 typeof(ICommand),
-                typeof(ScrollViewerExtensions),
+                typeof(ScrollViewerExtension),
                 new PropertyMetadata(null, OnScrollAtTopCommandChanged));
 
         public static void SetScrollAtTopCommand(DependencyObject d, ICommand value)
@@ -59,7 +59,7 @@ namespace Powork.Helper
             DependencyProperty.RegisterAttached(
                 "ScrollToEnd",
                 typeof(bool),
-                typeof(ScrollViewerExtensions),
+                typeof(ScrollViewerExtension),
                 new PropertyMetadata(false, OnScrollToEndChanged));
 
         public static bool GetScrollToEnd(DependencyObject obj)
@@ -86,7 +86,7 @@ namespace Powork.Helper
             DependencyProperty.RegisterAttached(
                 "IsAtBottom",
                 typeof(bool),
-                typeof(ScrollViewerExtensions),
+                typeof(ScrollViewerExtension),
                 new PropertyMetadata(false));
 
         public static bool GetIsAtBottom(DependencyObject obj)
@@ -103,7 +103,7 @@ namespace Powork.Helper
             DependencyProperty.RegisterAttached(
                 "MonitorScroll",
                 typeof(bool),
-                typeof(ScrollViewerExtensions),
+                typeof(ScrollViewerExtension),
                 new PropertyMetadata(false, OnMonitorScrollChanged));
 
         public static bool GetMonitorScroll(DependencyObject obj)

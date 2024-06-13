@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using Powork.Model;
@@ -10,33 +9,6 @@ namespace Powork.Helper
 {
     public static class RichTextBoxHelper
     {
-        public static readonly DependencyProperty DocumentProperty =
-            DependencyProperty.RegisterAttached(
-                "Document",
-                typeof(FlowDocument),
-                typeof(RichTextBoxHelper),
-                new FrameworkPropertyMetadata(
-                    null,
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    OnDocumentChanged));
-
-        private static void OnDocumentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var richTextBox = (RichTextBox)d;
-
-            richTextBox.Document = (FlowDocument)e.NewValue;
-        }
-
-        public static FlowDocument GetDocument(DependencyObject obj)
-        {
-            return (FlowDocument)obj.GetValue(DocumentProperty);
-        }
-
-        public static void SetDocument(DependencyObject obj, FlowDocument value)
-        {
-            obj.SetValue(DocumentProperty, value);
-        }
-
         public static List<TCPMessageBody> ConvertFlowDocumentToMessageBodyList(FlowDocument document)
         {
             List<TCPMessageBody> messages = new List<TCPMessageBody>();

@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:helper="clr-namespace:Powork.Helper"
+      xmlns:extension="clr-namespace:Powork.Control.Extension"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d" 
@@ -67,7 +67,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <ScrollViewer Grid.Row="0"  helper:ScrollViewerExtensions.ScrollAtTopCommand="{Binding ScrollAtTopCommand}" Margin="5, 5, 5, 0">
+            <ScrollViewer Grid.Row="0"  extension:ScrollViewerExtension.ScrollAtTopCommand="{Binding ScrollAtTopCommand}" Margin="5, 5, 5, 0">
                 <ItemsControl ItemsSource="{Binding MessageList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -78,7 +78,7 @@
             </ScrollViewer>
 
             <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="Transparent" ShowsPreview="True"></GridSplitter>
-            <ui:RichTextBox IsDocumentEnabled="True" helper:RichTextBoxHelper.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="5, 5, 5, 0">
+            <ui:RichTextBox IsDocumentEnabled="True" extension:RichTextBoxExtension.Document="{Binding RichTextBoxDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Margin="5, 5, 5, 0">
                 <ui:RichTextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding SendMessageCommand, Mode=OneWay}" />
                 </ui:RichTextBox.InputBindings>
