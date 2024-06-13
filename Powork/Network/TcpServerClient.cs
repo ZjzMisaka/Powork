@@ -261,7 +261,7 @@ namespace Powork.Network
             });
         }
 
-        internal void SendTeamInfo(string teamID, string teamName, List<User> users, string senderIP)
+        internal void SendTeamInfo(string teamID, string teamName, DateTime lastModifiedTime, List<User> users, string senderIP)
         {
             TCPMessageBody tcpMessageBody;
             TCPMessage userMessage = new TCPMessage
@@ -278,6 +278,10 @@ namespace Powork.Network
 
             tcpMessageBody = new TCPMessageBody();
             tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.TeamName, teamName));
+            userMessage.MessageBody.Add(tcpMessageBody);
+
+            tcpMessageBody = new TCPMessageBody();
+            tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.LastModifiedTime, lastModifiedTime.ToString(Format.DateTimeFormatWithMilliseconds)));
             userMessage.MessageBody.Add(tcpMessageBody);
 
             tcpMessageBody = new TCPMessageBody();

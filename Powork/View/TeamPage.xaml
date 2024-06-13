@@ -87,6 +87,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock AllowDrop="True" Grid.Column="0" Text="DROP HERE" Foreground="White" Block.TextAlignment="Center" VerticalAlignment="Center">
                     <i:Interaction.Triggers>
@@ -95,7 +96,12 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBlock>
-                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Margin="5"/>
+                <Button Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Margin="5">
+                    <ui:SymbolIcon Symbol="PeopleSearch24" />
+                </Button>
+                <Button Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Margin="5">
+                    <ui:SymbolIcon Symbol="Send24" />
+                </Button>
             </Grid>
         </Grid>
     </Grid>

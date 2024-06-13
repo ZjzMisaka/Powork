@@ -96,7 +96,9 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TextBlock>
-                <Button Content="Send" Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                <Button Command="{Binding SendMessageCommand}" IsEnabled="{Binding SendEnabled}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                    <ui:SymbolIcon Symbol="Send24" />
+                </Button>
             </Grid>
         </Grid>
     </Grid>

@@ -111,10 +111,14 @@ namespace Powork.ViewModel
                     if (userMessage.Type == MessageType.TeamMessage)
                     {
                         List<Team> teamList = TeamRepository.SelectTeam();
-                        foreach (Team teaml in teamList)
+                        foreach (Team team in teamList)
                         {
-                            if (userMessage.TeamID == teaml.ID)
+                            if (userMessage.TeamID == team.ID)
                             {
+                                if (team.LastModifiedTime < DateTime.Parse(userMessage.LastModifiedTime))
+                                {
+                                    GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
+                                }
                                 return;
                             }
                         }
@@ -193,7 +197,7 @@ namespace Powork.ViewModel
                 else if (userMessage.Type == MessageType.TeamInfoRequest)
                 {
                     string teamID = userMessage.MessageBody[0].Content;
-                    GlobalVariables.TcpServerClient.SendTeamInfo(teamID, TeamRepository.SelectTeam(teamID).Name, TeamRepository.SelectTeamMember(teamID), userMessage.SenderIP);
+                    GlobalVariables.TcpServerClient.SendTeamInfo(teamID, TeamRepository.SelectTeam(teamID).Name, TeamRepository.SelectTeam(teamID).LastModifiedTime, TeamRepository.SelectTeamMember(teamID), userMessage.SenderIP);
                 }
                 else if (userMessage.Type == MessageType.TeamInfo)
                 {
@@ -221,7 +225,7 @@ namespace Powork.ViewModel
                     team.ID = teamID;
                     team.Name = teamName;
                     team.MemberList = members;
-                    TeamRepository.InsertTeam(team);
+                    TeamRepository.InsertOrUpdateTeam(team);
                 }
                 else if (userMessage.Type == MessageType.ShareInfoRequest)
                 {

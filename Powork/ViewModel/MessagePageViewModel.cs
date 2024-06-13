@@ -324,6 +324,7 @@ namespace Powork.ViewModel
             Team team = new Team();
             team.ID = Guid.NewGuid().ToString();
             team.MemberList = teamMemberList;
+            team.LastModifiedTime = DateTime.Now;
 
             InputWindowViewModel dataContext = new InputWindowViewModel("Team name");
             InputWindow window = new InputWindow
@@ -344,7 +345,7 @@ namespace Powork.ViewModel
                 return;
             }
 
-            TeamRepository.InsertTeam(team);
+            TeamRepository.InsertOrUpdateTeam(team);
 
             _navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel());
         }

@@ -13,7 +13,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO TMessage (body, type, time, fromIP, fromName, toIP, teamID, toName) VALUES (@body, @type, @time, @fromIP, @fromName, @toIP, @teamID, @toName)";
+                string sql = $"INSERT INTO TTeamMessage (body, type, time, fromIP, fromName, teamID, lastModifiedTime) VALUES (@body, @type, @time, @fromIP, @fromName, @teamID, @lastModifiedTime)";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
@@ -22,9 +22,8 @@ namespace Powork.Repository
                     command.Parameters.Add(new SQLiteParameter("@time", userMessage.Time));
                     command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.SenderIP));
                     command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.SenderName));
-                    command.Parameters.Add(new SQLiteParameter("@toIP", null));
                     command.Parameters.Add(new SQLiteParameter("@teamID", userMessage.TeamID));
-                    command.Parameters.Add(new SQLiteParameter("@toName", null));
+                    command.Parameters.Add(new SQLiteParameter("@lastModifiedTime", userMessage.LastModifiedTime));
                     command.ExecuteNonQuery();
                 }
             }
@@ -37,7 +36,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"SELECT * FROM TMessage WHERE teamID = '{teamID}'";
+                string sql = $"SELECT * FROM TTeamMessage WHERE teamID = '{teamID}'";
                 if (id != -1)
                 {
                     sql = $"{sql}  AND  id < {id}";
@@ -57,6 +56,7 @@ namespace Powork.Repository
                                 MessageBody = JsonConvert.DeserializeObject<List<TCPMessageBody>>(reader["body"].ToString()),
                                 Type = (MessageType)(int.Parse(reader["type"].ToString())),
                                 Time = reader["time"].ToString(),
+                                LastModifiedTime = reader["lastModifiedTime"].ToString(),
                                 ID = int.Parse(reader["id"].ToString()),
                                 TeamID = teamID,
                             });

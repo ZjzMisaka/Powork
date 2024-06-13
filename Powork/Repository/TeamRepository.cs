@@ -5,20 +5,20 @@ namespace Powork.Repository
 {
     public static class TeamRepository
     {
-        public static void InsertTeam(Team team)
+        public static void InsertOrUpdateTeam(Team team)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO TTeam (id, name) VALUES ('{team.ID}', '{team.Name}')";
+                string sql = $"INSERT OR REPLACE INTO TTeam (id, name) VALUES ('{team.ID}', '{team.Name}')";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
                 }
 
-                InsertTeamMembers(team.ID, team.MemberList);
+                InsertOrUpdateTeamMembers(team.ID, team.MemberList);
             }
         }
 
@@ -42,7 +42,7 @@ namespace Powork.Repository
             }
         }
 
-        public static void InsertTeamMembers(string teamID, List<User> memberList)
+        public static void InsertOrUpdateTeamMembers(string teamID, List<User> memberList)
         {
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
@@ -50,7 +50,7 @@ namespace Powork.Repository
 
                 foreach (User user in memberList)
                 {
-                    string sql = $"INSERT INTO TTeamMember (teamID, userIP, userName) VALUES ('{teamID}', '{user.IP}', '{user.Name}')";
+                    string sql = $"INSERT OR REPLACE INTO TTeamMember (teamID, userIP, userName) VALUES ('{teamID}', '{user.IP}', '{user.Name}')";
 
                     using (var command = new SQLiteCommand(sql, connection))
                     {
