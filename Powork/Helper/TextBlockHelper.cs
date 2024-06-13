@@ -5,9 +5,7 @@ using System.Windows.Media;
 using Powork.Constant;
 using Powork.Control;
 using Powork.Model;
-using Powork.Repository;
 using Wpf.Ui.Controls;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Powork.Helper
 {
