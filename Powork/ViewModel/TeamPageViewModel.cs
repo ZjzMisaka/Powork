@@ -281,6 +281,8 @@ namespace Powork.ViewModel
                 return;
             }
 
+            bool isScrollAtBottom = IsScrollAtBottom;
+
             foreach (UserViewModel selectedUser in dataContext.SelectedUserList)
             {
                 if (RichTextBoxDocument.Blocks.LastBlock is Paragraph)
@@ -293,6 +295,11 @@ namespace Powork.ViewModel
                     paragraph.Inlines.Add(new Run($"@{selectedUser.Name}"));
                     RichTextBoxDocument.Blocks.Add(paragraph);
                 }
+            }
+
+            if (isScrollAtBottom)
+            {
+                ScrollToEnd = true;
             }
         }
 
