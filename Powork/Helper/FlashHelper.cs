@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Threading;
-using static System.Windows.Forms.AxHost;
 
 namespace Powork.Helper
 {
