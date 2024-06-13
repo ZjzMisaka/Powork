@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -16,7 +15,6 @@ using Powork.Model;
 using Powork.Repository;
 using Powork.ViewModel.Inner;
 using Wpf.Ui.Controls;
-using static System.Windows.Forms.LinkLabel;
 
 namespace Powork.ViewModel
 {
@@ -24,31 +22,31 @@ namespace Powork.ViewModel
     {
         private int _firstMessageID = -1;
         private TeamViewModel _nowTeam = null;
-        public bool isScrollAtBottom;
+        private bool _isScrollAtBottom;
         public bool IsScrollAtBottom
         {
             get
             {
-                return isScrollAtBottom;
+                return _isScrollAtBottom;
             }
             set
             {
-                SetProperty<bool>(ref isScrollAtBottom, value);
+                SetProperty<bool>(ref _isScrollAtBottom, value);
             }
         }
-        public bool scrollToEnd;
+        private bool _scrollToEnd;
         public bool ScrollToEnd
         {
             get
             {
-                return scrollToEnd;
+                return _scrollToEnd;
             }
             set
             {
-                SetProperty<bool>(ref scrollToEnd, value);
+                SetProperty<bool>(ref _scrollToEnd, value);
             }
         }
-        public bool _textboxScrollToEnd;
+        private bool _textboxScrollToEnd;
         public bool TextboxScrollToEnd
         {
             get
@@ -61,16 +59,16 @@ namespace Powork.ViewModel
             }
         }
 
-        public ObservableCollection<TextBlock> messageList;
+        private ObservableCollection<TextBlock> _messageList;
         public ObservableCollection<TextBlock> MessageList
         {
             get
             {
-                return messageList;
+                return _messageList;
             }
             set
             {
-                SetProperty<ObservableCollection<TextBlock>>(ref messageList, value);
+                SetProperty<ObservableCollection<TextBlock>>(ref _messageList, value);
             }
         }
 

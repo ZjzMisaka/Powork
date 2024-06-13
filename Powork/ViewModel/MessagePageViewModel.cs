@@ -26,44 +26,44 @@ namespace Powork.ViewModel
         private UserViewModel _nowUser = null;
         private INavigationService _navigationService;
 
-        public bool isScrollAtBottom;
+        private bool _isScrollAtBottom;
         public bool IsScrollAtBottom
         {
             get
             {
-                return isScrollAtBottom;
+                return _isScrollAtBottom;
             }
             set
             {
-                SetProperty<bool>(ref isScrollAtBottom, value);
+                SetProperty<bool>(ref _isScrollAtBottom, value);
             }
         }
 
-        public bool scrollToEnd;
+        private bool _scrollToEnd;
         public bool ScrollToEnd
         {
             get
             {
-                return scrollToEnd;
+                return _scrollToEnd;
             }
             set
             {
-                SetProperty<bool>(ref scrollToEnd, value);
+                SetProperty<bool>(ref _scrollToEnd, value);
             }
         }
 
         private List<UserViewModel> SelectedUserList => UserList.Where(x => x.Selected).ToList();
 
-        public ObservableCollection<TextBlock> messageList;
+        private ObservableCollection<TextBlock> _messageList;
         public ObservableCollection<TextBlock> MessageList
         {
             get
             {
-                return messageList;
+                return _messageList;
             }
             set
             {
-                SetProperty<ObservableCollection<TextBlock>>(ref messageList, value);
+                SetProperty<ObservableCollection<TextBlock>>(ref _messageList, value);
             }
         }
 
