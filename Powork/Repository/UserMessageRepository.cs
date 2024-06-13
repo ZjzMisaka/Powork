@@ -13,7 +13,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO TMessage (body, type, time, fromIP, fromName, toIP, teamID, toName) VALUES (@body, @type, @time, @fromIP, @fromName, @toIP, @teamID, @toName)";
+                string sql = $"INSERT INTO TUserMessage (body, type, time, fromIP, fromName, toIP, toName) VALUES (@body, @type, @time, @fromIP, @fromName, @toIP, @toName)";
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
@@ -23,7 +23,6 @@ namespace Powork.Repository
                     command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.SenderIP));
                     command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.SenderName));
                     command.Parameters.Add(new SQLiteParameter("@toIP", toIP));
-                    command.Parameters.Add(new SQLiteParameter("@teamID", null));
                     command.Parameters.Add(new SQLiteParameter("@toName", toName));
                     command.ExecuteNonQuery();
                 }
@@ -37,7 +36,7 @@ namespace Powork.Repository
             {
                 connection.Open();
 
-                string sql = $"SELECT * FROM TMessage WHERE teamID IS NULL AND ((fromIP='{ip}' AND fromName='{name}') OR (toIP='{ip}' AND toName='{name}'))";
+                string sql = $"SELECT * FROM TUserMessage WHERE (fromIP='{ip}' AND fromName='{name}') OR (toIP='{ip}' AND toName='{name}')";
                 if (id != -1)
                 {
                     sql = $"{sql}  AND  id < {id}";

@@ -48,6 +48,18 @@ namespace Powork.ViewModel
                 SetProperty<bool>(ref scrollToEnd, value);
             }
         }
+        public bool _textboxScrollToEnd;
+        public bool TextboxScrollToEnd
+        {
+            get
+            {
+                return _textboxScrollToEnd;
+            }
+            set
+            {
+                SetProperty<bool>(ref _textboxScrollToEnd, value);
+            }
+        }
 
         public ObservableCollection<TextBlock> messageList;
         public ObservableCollection<TextBlock> MessageList
@@ -185,6 +197,7 @@ namespace Powork.ViewModel
                 if (isScrollAtBottom)
                 {
                     ScrollToEnd = true;
+                    ScrollToEnd = false;
                 }
             }
         }
@@ -266,6 +279,9 @@ namespace Powork.ViewModel
             }
             nowTeam.LastModifiedTime = DateTime.Now;
             TeamRepository.InsertOrUpdateTeam(nowTeam);
+
+            TextboxScrollToEnd = true;
+            TextboxScrollToEnd = false;
         }
 
         private void GetTeamMember()
@@ -281,8 +297,6 @@ namespace Powork.ViewModel
                 return;
             }
 
-            bool isScrollAtBottom = IsScrollAtBottom;
-
             foreach (UserViewModel selectedUser in dataContext.SelectedUserList)
             {
                 if (RichTextBoxDocument.Blocks.LastBlock is Paragraph)
@@ -295,11 +309,6 @@ namespace Powork.ViewModel
                     paragraph.Inlines.Add(new Run($"@{selectedUser.Name}"));
                     RichTextBoxDocument.Blocks.Add(paragraph);
                 }
-            }
-
-            if (isScrollAtBottom)
-            {
-                ScrollToEnd = true;
             }
         }
 
@@ -358,6 +367,8 @@ namespace Powork.ViewModel
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
+            ScrollToEnd = true;
+            ScrollToEnd = false;
             TeamMessageRepository.InsertMessage(teamMessage);
 
             RichTextBoxDocument = new FlowDocument();

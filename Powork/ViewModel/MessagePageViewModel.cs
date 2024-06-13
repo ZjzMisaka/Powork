@@ -181,6 +181,7 @@ namespace Powork.ViewModel
                 if (isScrollAtBottom)
                 {
                     ScrollToEnd = true;
+                    ScrollToEnd = false;
                 }
             }
         }
@@ -438,6 +439,8 @@ namespace Powork.ViewModel
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
+            ScrollToEnd = true;
+            ScrollToEnd = false;
             if (ex != null)
             {
                 List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
