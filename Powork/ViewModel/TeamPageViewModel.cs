@@ -208,7 +208,31 @@ namespace Powork.ViewModel
 
         private void ManageTeamMember()
         {
+            ManageTeamMemberWindowViewModel dataContext = new ManageTeamMemberWindowViewModel(UserRepository.SelectUser(), TeamRepository.SelectTeamMember(_nowTeam.ID));
+            InputWindow window = new InputWindow
+            {
+                DataContext = dataContext
+            };
+            window.ShowDialog();
+            if (!(bool)window.DialogResult)
+            {
+                return;
+            }
 
+            List<UserViewModel> newTeamMemberList = dataContext.TeamUserList.ToList();
+            Team nowTeam = TeamRepository.SelectTeam(_nowTeam.ID);
+            nowTeam.MemberList = new List<User>();
+            foreach (UserViewModel newTeamMembe in newTeamMemberList)
+            {
+                nowTeam.MemberList.Add(new User()
+                {
+                    IP = newTeamMembe.IP,
+                    GroupName = newTeamMembe.GroupName,
+                    Name = newTeamMembe.Name,
+                });
+            }
+            nowTeam.LastModifiedTime = DateTime.Now;
+            TeamRepository.InsertOrUpdateTeam(nowTeam);
         }
 
         private void GetTeamMember()
