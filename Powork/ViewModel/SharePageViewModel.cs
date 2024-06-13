@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Ookii.Dialogs.Wpf;
 using PowerThreadPool.Options;
 using Powork.Constant;
 using Powork.Helper;
@@ -311,18 +312,22 @@ namespace Powork.ViewModel
             }
             else
             {
-                using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+                var fbd = new VistaFolderBrowserDialog
                 {
-                    fbd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                    System.Windows.Forms.DialogResult result = fbd.ShowDialog();
-                    if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                    {
-                        directoryPath = fbd.SelectedPath;
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    SelectedPath = AppDomain.CurrentDomain.BaseDirectory,
+                    Description = "Select a folder",
+                    UseDescriptionForTitle = true
+                };
+
+                bool result = (bool)fbd.ShowDialog();
+
+                if (result && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    directoryPath = fbd.SelectedPath;
+                }
+                else
+                {
+                    return;
                 }
             }
             if (directoryPath != null)

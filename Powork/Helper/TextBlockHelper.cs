@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Ookii.Dialogs.Wpf;
 using Powork.Constant;
 using Powork.Control;
 using Powork.Model;
@@ -90,14 +91,18 @@ namespace Powork.Helper
                         {
                             InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) =>
                             {
-                                using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+                                var fbd = new VistaFolderBrowserDialog
                                 {
-                                    fbd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                                    System.Windows.Forms.DialogResult result = fbd.ShowDialog();
-                                    if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                                    {
-                                        GlobalVariables.TcpServerClient.RequestFile(body.ID, userMessage.SenderIP, GlobalVariables.TcpPort, fbd.SelectedPath);
-                                    }
+                                    SelectedPath = AppDomain.CurrentDomain.BaseDirectory,
+                                    Description = "Select a folder",
+                                    UseDescriptionForTitle = true
+                                };
+
+                                bool result = (bool)fbd.ShowDialog();
+
+                                if (result && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                                {
+                                    GlobalVariables.TcpServerClient.RequestFile(body.ID, userMessage.SenderIP, GlobalVariables.TcpPort, fbd.SelectedPath);
                                 }
                             })));
                             textBlock.Inlines.Add(container);

@@ -16,7 +16,6 @@ using Powork.Network;
 using Powork.Repository;
 using Powork.Service;
 using Powork.View;
-using Wpf.Ui.Controls;
 
 namespace Powork.ViewModel
 {
