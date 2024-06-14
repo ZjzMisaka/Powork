@@ -19,6 +19,7 @@ namespace Powork.Helper
         public const uint FLASHW_TIMER = 4;
         public const uint FLASHW_TIMERNOFG = 12;
     }
+
     public class FlashHelper
     {
         [DllImport("user32.dll")]
@@ -36,8 +37,6 @@ namespace Powork.Helper
             };
             FlashWindowEx(ref fw);
         }
-
-
 
         public static void FlashTaskbarIcon()
         {

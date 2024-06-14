@@ -18,7 +18,6 @@ using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
 using Wpf.Ui.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Powork.ViewModel
 {
@@ -172,10 +171,6 @@ namespace Powork.ViewModel
 
         private void OnGetMessage(object sender, EventArgs e)
         {
-            GlobalVariables.UserListChanged += UserListChanged;
-            GlobalVariables.GetMessage += OnGetMessage;
-            GlobalVariables.GetFile += OnGetFile;
-
             if (_nowUser == null)
             {
                 return;
@@ -279,6 +274,10 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            GlobalVariables.UserListChanged += UserListChanged;
+            GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetFile += OnGetFile;
+
             if (!UserHelper.IsUserLogon())
             {
                 PageEnabled = false;
@@ -442,6 +441,7 @@ namespace Powork.ViewModel
                 return;
             }
             List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
+            RichTextBoxDocument = new FlowDocument();
             TCPMessage userMessage = new TCPMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
@@ -483,8 +483,6 @@ namespace Powork.ViewModel
                 UserMessageRepository.InsertMessage(errorMessage, _nowUser.IP, _nowUser.Name);
             }
             UserMessageRepository.InsertMessage(userMessage, _nowUser.IP, _nowUser.Name);
-
-            RichTextBoxDocument = new FlowDocument();
         }
 
         private void ScrollAtTop()

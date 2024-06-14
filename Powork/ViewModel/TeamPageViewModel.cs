@@ -334,6 +334,7 @@ namespace Powork.ViewModel
                 return;
             }
             List<TCPMessageBody> teamMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
+            RichTextBoxDocument = new FlowDocument();
             TCPMessage teamMessage = new TCPMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
@@ -386,8 +387,6 @@ namespace Powork.ViewModel
             ScrollToEnd = true;
             ScrollToEnd = false;
             TeamMessageRepository.InsertMessage(teamMessage);
-
-            RichTextBoxDocument = new FlowDocument();
         }
 
         private void TeamClick(TeamViewModel teamViewModel)
