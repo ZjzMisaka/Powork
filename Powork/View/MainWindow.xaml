@@ -37,6 +37,9 @@
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding WindowClosedCommand}" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="Activated">
+            <i:InvokeCommandAction Command="{Binding WindowActivatedCommand}" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
 
     <Grid>
@@ -112,7 +115,7 @@
             FocusOnLeftClick="True"
             MenuOnRightClick="True"
             TooltipText="Powork" Cursor=""
-            Icon="/Image/icon.ico">
+            Icon="{Binding TrayIcon}">
             <tray:NotifyIcon.Menu>
                 <ContextMenu>
                     <MenuItem Header="Exit" Tag="exit" Command="{Binding ExitCommand}"/>

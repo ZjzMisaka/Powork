@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -27,6 +28,21 @@ namespace Powork.ViewModel
         private UdpBroadcaster _udpBroadcaster;
         private static INavigationService s_navigationService;
         private DownloadInfoViewModel _nowDownloadInfoViewModel;
+        private DispatcherTimer _blinkTimer;
+        private bool _isBlinking;
+
+        private string _trayIcon;
+        public string TrayIcon
+        {
+            get
+            {
+                return _trayIcon;
+            }
+            set
+            {
+                SetProperty<string>(ref _trayIcon, value);
+            }
+        }
 
         private string _applicationTitle;
         public string ApplicationTitle
@@ -118,6 +134,7 @@ namespace Powork.ViewModel
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
+        public ICommand WindowActivatedCommand { get; set; }
         public ICommand OpenDownloadInfoCommand { get; set; }
         public ICommand DownloadItemClickCommand { get; set; }
         public ICommand OpenItemCommand { get; set; }
@@ -127,6 +144,10 @@ namespace Powork.ViewModel
         public MainWindowViewModel(INavigationService navigationService)
         {
             s_navigationService = navigationService;
+            _blinkTimer = new DispatcherTimer();
+            _blinkTimer.Interval = TimeSpan.FromMilliseconds(500);
+            _blinkTimer.Tick += (s, e) => ToggleIcon();
+
             NotificationHelper.NavigationService = navigationService;
             NotificationHelper.MainWindowViewModel = this;
 
@@ -145,6 +166,7 @@ namespace Powork.ViewModel
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
+            WindowActivatedCommand = new RelayCommand(WindowActivated);
             OpenDownloadInfoCommand = new RelayCommand(OpenDownloadInfo);
             DownloadItemClickCommand = new RelayCommand<DownloadInfoViewModel>(DownloadItemClick);
             OpenItemCommand = new RelayCommand(OpenItem);
@@ -164,6 +186,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            TrayIcon = "/Image/icon_flash.ico";
             ApplicationTitle = "Powork";
 
             _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
@@ -246,12 +269,28 @@ namespace Powork.ViewModel
 
                         FlashHelper.FlashTaskbarIcon();
                         NotificationHelper.ShowNotification(userMessage, team);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            Window mainWindow = Application.Current.MainWindow;
+                            if (!WindowHelper.IsWindowActive(mainWindow))
+                            {
+                                StartBlinking();
+                            }
+                        }, DispatcherPriority.Normal);
                     }
                     else if (userMessage.Type == MessageType.UserMessage)
                     {
                         UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
                         FlashHelper.FlashTaskbarIcon();
                         NotificationHelper.ShowNotification(userMessage);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            Window mainWindow = Application.Current.MainWindow;
+                            if (!WindowHelper.IsWindowActive(mainWindow))
+                            {
+                                StartBlinking();
+                            }
+                        }, DispatcherPriority.Normal);
                     }
                     GlobalVariables.InvokeGetMessageEvent(userMessage);
                 }
@@ -445,6 +484,11 @@ namespace Powork.ViewModel
             GlobalVariables.PowerPool.Dispose();
         }
 
+        private void WindowActivated()
+        {
+            StopBlinking();
+        }
+
         private void OpenDownloadInfo()
         {
             PopupOpen = !PopupOpen;
@@ -485,6 +529,34 @@ namespace Powork.ViewModel
             if (File.Exists(_nowDownloadInfoViewModel.Path))
             {
                 File.Delete(_nowDownloadInfoViewModel.Path);
+            }
+        }
+
+        private void StartBlinking()
+        {
+            if (!_isBlinking)
+            {
+                _isBlinking = true;
+                _blinkTimer.Start();
+            }
+        }
+
+        private void StopBlinking()
+        {
+            _isBlinking = false;
+            _blinkTimer.Stop();
+            TrayIcon = "/Image/icon.ico";
+        }
+
+        private void ToggleIcon()
+        {
+            if (TrayIcon == "/Image/icon.ico")
+            {
+                TrayIcon = "/Image/icon_flash.ico";
+            }
+            else
+            {
+                TrayIcon = "/Image/icon.ico";
             }
         }
     }

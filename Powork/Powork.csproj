@@ -41,13 +41,7 @@
     <None Update="Image\icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Image\icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Image\icon_flash.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Image\icon_flash.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Image\no_image.png">
@@ -61,6 +55,10 @@
 
   <ItemGroup>
     <Content Include="Image\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Image\icon_flash.ico" />
   </ItemGroup>
 
   <ItemGroup>
