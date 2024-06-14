@@ -290,7 +290,9 @@ namespace Powork.Network
 
             string message = JsonConvert.SerializeObject(userMessage);
 
+#pragma warning disable CS4014
             GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
+#pragma warning restore CS4014
         }
 
         public void RequestShareInfo(string ipAddress, int port, string name)
@@ -354,7 +356,9 @@ namespace Powork.Network
 
             string message = JsonConvert.SerializeObject(userMessage);
 
+#pragma warning disable CS4014
             GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
+#pragma warning restore CS4014
         }
     }
 }
