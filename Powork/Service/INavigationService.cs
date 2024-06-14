@@ -2,7 +2,7 @@
 
 namespace Powork.Service
 {
-    internal interface INavigationService
+    public interface INavigationService
     {
         void Navigate(Type targetType, ObservableObject dataContext);
     }

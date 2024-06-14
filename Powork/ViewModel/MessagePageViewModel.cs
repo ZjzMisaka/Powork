@@ -18,11 +18,14 @@ using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
 using Wpf.Ui.Controls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Powork.ViewModel
 {
     class MessagePageViewModel : ObservableObject
     {
+        private string _needSelectUserIP = null;
+        private string _needSelectUserName = null;
         private int _firstMessageID = -1;
         private UserViewModel _nowUser = null;
         private INavigationService _navigationService;
@@ -123,9 +126,12 @@ namespace Powork.ViewModel
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
-        public MessagePageViewModel(INavigationService navigationService)
+        public MessagePageViewModel(INavigationService navigationService, string userIP = null, string userName = null)
         {
             _navigationService = navigationService;
+
+            _needSelectUserIP = userIP;
+            _needSelectUserName = userName;
 
             PageEnabled = true;
             SendEnabled = false;
@@ -144,9 +150,23 @@ namespace Powork.ViewModel
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
             UserList = new ObservableCollection<UserViewModel>();
+            UserViewModel needSelectUserViewModel = null;
             foreach (User user in GlobalVariables.UserList)
             {
-                UserList.Add(new UserViewModel(user));
+                UserViewModel userViewModel = new UserViewModel(user);
+                if (_needSelectUserIP != null && _needSelectUserName != null)
+                {
+                    if (userViewModel.IP == _needSelectUserIP && userViewModel.Name == _needSelectUserName)
+                    {
+                        needSelectUserViewModel = userViewModel;
+                    }
+                }
+                UserList.Add(userViewModel);
+            }
+
+            if (needSelectUserViewModel != null)
+            {
+                UserClick(needSelectUserViewModel);
             }
         }
 
