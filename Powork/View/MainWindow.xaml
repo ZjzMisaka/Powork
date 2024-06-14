@@ -23,7 +23,8 @@
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d" Cursor="">
+    mc:Ignorable="d" Cursor=""
+    Topmost="{Binding Topmost}">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">

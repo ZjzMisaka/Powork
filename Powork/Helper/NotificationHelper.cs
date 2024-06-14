@@ -13,6 +13,7 @@ namespace Powork.Helper
     public static class NotificationHelper
     {
         public static INavigationService NavigationService { get; set; }
+        public static MainWindowViewModel MainWindowViewModel { get; set; }
         public static void ShowNotification(TCPMessage userMessage, Team team = null)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -159,6 +160,8 @@ namespace Powork.Helper
                 else
                 {
                     Application.Current.MainWindow.Show();
+                    MainWindowViewModel.Topmost = true;
+                    MainWindowViewModel.Topmost = false;
 
                     if (!hasTeamIDArgs)
                     {

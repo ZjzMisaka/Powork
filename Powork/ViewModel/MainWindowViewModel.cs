@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -21,7 +20,7 @@ using Powork.View;
 
 namespace Powork.ViewModel
 {
-    class MainWindowViewModel : ObservableObject
+    public class MainWindowViewModel : ObservableObject
     {
         private UdpBroadcaster _udpBroadcaster;
         private static INavigationService s_navigationService;
@@ -39,6 +38,19 @@ namespace Powork.ViewModel
             }
         }
 
+        private bool _topmost;
+        public bool Topmost
+        {
+            get
+            {
+                return _topmost;
+            }
+            set
+            {
+                SetProperty<bool>(ref _topmost, value);
+            }
+        }
+
         public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -48,6 +60,7 @@ namespace Powork.ViewModel
         {
             s_navigationService = navigationService;
             NotificationHelper.NavigationService = navigationService;
+            NotificationHelper.MainWindowViewModel = this;
 
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = Format.DateTimeFormat;
