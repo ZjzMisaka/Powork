@@ -186,7 +186,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            TrayIcon = "/Image/icon_flash.ico";
+            TrayIcon = "/Image/icon.ico";
             ApplicationTitle = "Powork";
 
             _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
