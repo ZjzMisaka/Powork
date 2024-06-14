@@ -60,9 +60,9 @@
                                     </Grid.InputBindings>
                                     <Grid.ContextMenu>
                                         <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference DownLoadListControl}}">
-                                            <MenuItem Header="Open Item" Command="{Binding OpenItemCommand}"/>
-                                            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}"/>
-                                            <MenuItem Header="Remove Item" Command="{Binding RemoveItemCommand}"/>
+                                            <MenuItem Header="Open Item" Command="{Binding OpenItemCommand}" IsEnabled="{Binding PopupMenuEnable}"/>
+                                            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" IsEnabled="{Binding PopupMenuEnable}"/>
+                                            <MenuItem Header="Remove Item" Command="{Binding RemoveItemCommand}" IsEnabled="{Binding PopupMenuEnable}"/>
                                         </ContextMenu>
                                     </Grid.ContextMenu>
                                     <Grid.RowDefinitions>

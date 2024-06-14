@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -25,6 +26,7 @@ namespace Powork.ViewModel
     {
         private UdpBroadcaster _udpBroadcaster;
         private static INavigationService s_navigationService;
+        private DownloadInfoViewModel _nowDownloadInfoViewModel;
 
         private string _applicationTitle;
         public string ApplicationTitle
@@ -62,6 +64,14 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<bool>(ref _popupOpen, value);
+            }
+        }
+
+        public bool PopupMenuEnable
+        {
+            get
+            {
+                return _nowDownloadInfoViewModel != null;
             }
         }
 
@@ -441,22 +451,40 @@ namespace Powork.ViewModel
 
         private void DownloadItemClick(DownloadInfoViewModel downloadInfoViewModel)
         {
-
+            if (_nowDownloadInfoViewModel != null)
+            {
+                _nowDownloadInfoViewModel.Selected = false;
+            }
+            _nowDownloadInfoViewModel = downloadInfoViewModel;
+            _nowDownloadInfoViewModel.Selected = true;
         }
 
         private void OpenItem()
         {
-
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo(_nowDownloadInfoViewModel.Path)
+            {
+                UseShellExecute = true
+            };
+            p.Start();
         }
 
         private void OpenFolder()
         {
-
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo(Path.GetDirectoryName(_nowDownloadInfoViewModel.Path))
+            {
+                UseShellExecute = true
+            };
+            p.Start();
         }
 
         private void RemoveItem()
         {
-
+            if (File.Exists(_nowDownloadInfoViewModel.Path))
+            {
+                File.Delete(_nowDownloadInfoViewModel.Path);
+            }
         }
     }
 }
