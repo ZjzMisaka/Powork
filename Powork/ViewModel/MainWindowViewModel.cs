@@ -78,6 +78,32 @@ namespace Powork.ViewModel
             }
         }
 
+        private bool _isScrollAtBottom;
+        public bool IsScrollAtBottom
+        {
+            get
+            {
+                return _isScrollAtBottom;
+            }
+            set
+            {
+                SetProperty<bool>(ref _isScrollAtBottom, value);
+            }
+        }
+
+        private bool _scrollToEnd;
+        public bool ScrollToEnd
+        {
+            get
+            {
+                return _scrollToEnd;
+            }
+            set
+            {
+                SetProperty<bool>(ref _scrollToEnd, value);
+            }
+        }
+
         public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -274,6 +300,12 @@ namespace Powork.ViewModel
                                 Failed = false,
                             };
                             DownloadList.Add(downloadInfoViewModel);
+
+                            if (IsScrollAtBottom)
+                            {
+                                ScrollToEnd = true;
+                                ScrollToEnd = false;
+                            }
 
                             using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
                             {

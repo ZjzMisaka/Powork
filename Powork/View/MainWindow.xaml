@@ -8,6 +8,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:extension="clr-namespace:Powork.Control.Extension"
     xmlns:view="clr-namespace:Powork.View"
     Title="{Binding ApplicationTitle, Mode=OneWay}"
     Width="1280"
@@ -46,7 +47,9 @@
 
         <Popup PlacementTarget="{Binding ElementName=OpenPopupButton}" Placement="Bottom" HorizontalOffset="-270" IsOpen="{Binding PopupOpen}" StaysOpen="False">
             <StackPanel Width="300" Height="400" Background="{DynamicResource SystemFillColorSolidNeutralBackgroundBrush}">
-                <ScrollViewer Width="300" Height="400" VerticalScrollBarVisibility="Auto" Padding="5">
+                <ScrollViewer Width="300" Height="400" VerticalScrollBarVisibility="Auto" Padding="5"
+                    extension:ScrollViewerExtension.IsAtBottom="{Binding IsScrollAtBottom, Mode=OneWayToSource}"
+                    extension:ScrollViewerExtension.ScrollToEnd="{Binding ScrollToEnd}">
                     <ItemsControl ItemsSource="{Binding Path=DownLoadList}" x:Name="DownLoadListControl">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
