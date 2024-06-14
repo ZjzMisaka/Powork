@@ -103,8 +103,7 @@
             </Button>
             
             <ui:TitleBar
-                Grid.Column="2"
-                Icon="Icon.png"/>
+                Grid.Column="2"/>
         </Grid>
         
         <tray:NotifyIcon
@@ -112,7 +111,8 @@
             Grid.Row="0"
             FocusOnLeftClick="True"
             MenuOnRightClick="True"
-            TooltipText="Powork" Cursor="">
+            TooltipText="Powork" Cursor=""
+            Icon="/Image/icon.ico">
             <tray:NotifyIcon.Menu>
                 <ContextMenu>
                     <MenuItem Header="Exit" Tag="exit" Command="{Binding ExitCommand}"/>

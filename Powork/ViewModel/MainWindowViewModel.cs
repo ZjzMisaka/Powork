@@ -310,6 +310,7 @@ namespace Powork.ViewModel
                                 Failed = false,
                             };
                             DownloadList.Add(downloadInfoViewModel);
+                            PopupOpen = true;
 
                             if (IsScrollAtBottom)
                             {
