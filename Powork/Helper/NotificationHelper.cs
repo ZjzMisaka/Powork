@@ -38,11 +38,13 @@ namespace Powork.Helper
                     if (userMessage.Type == MessageType.UserMessage)
                     {
                         builder.AddText($"New message from {userMessage.SenderName}");
+                        ++lineCount;
                     }
                     else if (userMessage.Type == MessageType.TeamMessage)
                     {
                         string teamName = team == null ? "Unknown" : TeamRepository.SelectTeam(userMessage.TeamID).Name;
                         builder.AddText($"New message from {userMessage.SenderName} ({teamName})");
+                        ++lineCount;
                     }
                     builder.AddInputTextBox("input");
 
@@ -50,24 +52,40 @@ namespace Powork.Helper
                     {
                         if (messageBody.Type == ContentType.Text)
                         {
-                            builder.AddText(messageBody.Content);
+                            if (lineCount == maxLineCount - 1)
+                            {
+                                continue;
+                            }
                             ++lineCount;
+                            if (lineCount == maxLineCount - 1)
+                            {
+                                builder.AddText(messageBody.Content + "......");
+                            }
+                            else
+                            {
+                                builder.AddText(messageBody.Content);
+                            }
                         }
                         else if (messageBody.Type == ContentType.Picture)
                         {
                             builder.AddInlineImage(new Uri(messageBody.Content));
-                            ++lineCount;
                         }
                         else if (messageBody.Type == ContentType.File)
                         {
-                            builder.AddText($"File {++fileIndex}: {messageBody.Content}");
+                            if (lineCount == maxLineCount - 1)
+                            {
+                                continue;
+                            }
                             ++lineCount;
+                            if (lineCount == maxLineCount - 1)
+                            {
+                                builder.AddText($"File {++fileIndex}: {messageBody.Content}......");
+                            }
+                            else
+                            {
+                                builder.AddText($"File {++fileIndex}: {messageBody.Content}");
+                            }
                             fileIDList.Add(messageBody.ID);
-                        }
-                        if (lineCount == maxLineCount - 1)
-                        {
-                            builder.AddText($"......");
-                            break;
                         }
                     }
 

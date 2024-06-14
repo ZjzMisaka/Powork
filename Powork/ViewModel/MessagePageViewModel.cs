@@ -343,6 +343,9 @@ namespace Powork.ViewModel
                     });
                 }
             }
+
+            ScrollToEnd = true;
+            ScrollToEnd = false;
         }
 
         private void CreateTeam()
