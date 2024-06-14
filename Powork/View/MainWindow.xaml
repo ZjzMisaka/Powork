@@ -38,24 +38,72 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <ui:FluentWindow.InputBindings>
-        <KeyBinding
-            Key="F"
-            Command="{Binding ElementName=AutoSuggestBox, Path=FocusCommand}"
-            Modifiers="Control" />
-    </ui:FluentWindow.InputBindings>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar
-            Title="{Binding ApplicationTitle, Mode=OneWay}"
-            Grid.Row="0"
-            Icon="Icon.png" />
+        <Popup PlacementTarget="{Binding ElementName=OpenPopupButton}" Placement="Bottom" HorizontalOffset="-270" IsOpen="{Binding PopupOpen}" StaysOpen="False">
+            <StackPanel Width="300" Height="400" Background="{DynamicResource SystemFillColorSolidNeutralBackgroundBrush}">
+                <ScrollViewer Width="300" Height="400" VerticalScrollBarVisibility="Auto" Padding="5">
+                    <ItemsControl ItemsSource="{Binding Path=DownLoadList}" x:Name="DownLoadListControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Stretch" Cursor="Hand" Background="{Binding BackgroundColor}">
+                                    <Grid.InputBindings>
+                                        <MouseBinding MouseAction="RightClick" Command="{Binding Path=DataContext.DownloadItemClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding Path=DataContext.DownloadItemClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
+                                    </Grid.InputBindings>
+                                    <Grid.ContextMenu>
+                                        <ContextMenu DataContext="{Binding Path=DataContext, Source={x:Reference DownLoadListControl}}">
+                                            <MenuItem Header="Open Item" Command="{Binding OpenItemCommand}"/>
+                                            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}"/>
+                                            <MenuItem Header="Remove Item" Command="{Binding RemoveItemCommand}"/>
+                                        </ContextMenu>
+                                    </Grid.ContextMenu>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" Grid.Row="0" Grid.Column="0" Foreground="White"/>
+                                    <ProgressBar Value="{Binding Progress}" Grid.Row="0" Grid.Column="1" />
+                                    <TextBlock Text="{Binding FailedText}" Grid.Row="0" Grid.Column="2" Foreground="Pink"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
+        </Popup>
 
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <ui:TitleBar
+                Grid.Column="0"
+                ShowClose="False"
+                ShowMaximize="False"
+                ShowMinimize="False"
+                Title="{Binding ApplicationTitle, Mode=OneWay}"/>
+
+            <Button Grid.Column="1" x:Name="OpenPopupButton" Background="{DynamicResource ApplicationBackgroundBrush}" Command="{Binding OpenDownloadInfoCommand}" BorderThickness="0" VerticalAlignment="Top">
+                <ui:SymbolIcon Symbol="ArrowDownload24" />
+            </Button>
+            
+            <ui:TitleBar
+                Grid.Column="2"
+                Icon="Icon.png"/>
+        </Grid>
+        
         <tray:NotifyIcon
             x:Name="notifyIcon"
             Grid.Row="0"

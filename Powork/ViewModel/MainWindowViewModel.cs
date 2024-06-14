@@ -17,6 +17,7 @@ using Powork.Network;
 using Powork.Repository;
 using Powork.Service;
 using Powork.View;
+using Powork.ViewModel.Inner;
 
 namespace Powork.ViewModel
 {
@@ -51,10 +52,41 @@ namespace Powork.ViewModel
             }
         }
 
+        private bool _popupOpen;
+        public bool PopupOpen
+        {
+            get
+            {
+                return _popupOpen;
+            }
+            set
+            {
+                SetProperty<bool>(ref _popupOpen, value);
+            }
+        }
+
+        private ObservableCollection<DownloadInfoViewModel> _downloadList;
+        public ObservableCollection<DownloadInfoViewModel> DownloadList
+        {
+            get
+            {
+                return _downloadList;
+            }
+            set
+            {
+                SetProperty<ObservableCollection<DownloadInfoViewModel>>(ref _downloadList, value);
+            }
+        }
+
         public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
+        public ICommand OpenDownloadInfoCommand { get; set; }
+        public ICommand DownloadItemClickCommand { get; set; }
+        public ICommand OpenItemCommand { get; set; }
+        public ICommand OpenFolderCommand { get; set; }
+        public ICommand RemoveItemCommand { get; set; }
 
         public MainWindowViewModel(INavigationService navigationService)
         {
@@ -71,10 +103,17 @@ namespace Powork.ViewModel
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
 
+            DownloadList = new ObservableCollection<DownloadInfoViewModel>();
+
             ExitCommand = new RelayCommand(Exit);
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
+            OpenDownloadInfoCommand = new RelayCommand(OpenDownloadInfo);
+            DownloadItemClickCommand = new RelayCommand<DownloadInfoViewModel>(DownloadItemClick);
+            OpenItemCommand = new RelayCommand(OpenItem);
+            OpenFolderCommand = new RelayCommand(OpenFolder);
+            RemoveItemCommand = new RelayCommand(RemoveItem);
         }
 
         public static void Navigate(Type targetType, ObservableObject dataContext)
@@ -187,7 +226,7 @@ namespace Powork.ViewModel
                     List<string> sendFileWorkIDList = new List<string>();
                     if (FileHelper.GetType(path) == FileHelper.Type.None)
                     {
-                        System.Windows.MessageBox.Show("No such file: " + path);
+                        MessageBox.Show("No such file: " + path);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
@@ -211,7 +250,7 @@ namespace Powork.ViewModel
                     string json = userMessage.MessageBody[0].Content;
                     Model.FileInfo fileInfo = JsonConvert.DeserializeObject<Model.FileInfo>(json);
 
-                    if (fileInfo.Status == Model.Status.SendFileStart)
+                    if (fileInfo.Status == Status.SendFileStart)
                     {
                         GlobalVariables.InvokeStartGetFileEvent(fileInfo);
                         string path = Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], fileInfo.RelativePath);
@@ -223,6 +262,19 @@ namespace Powork.ViewModel
                         try
                         {
                             string receivedFilePath = Path.Combine(path, fileInfo.Name);
+                            long totalBytesReceived = 0;
+                            long fileSize = fileInfo.Size;
+
+                            DownloadInfoViewModel downloadInfoViewModel = new DownloadInfoViewModel()
+                            {
+                                ID = fileInfo.Guid,
+                                Path = receivedFilePath,
+                                Name = fileInfo.Name,
+                                Progress = 0,
+                                Failed = false,
+                            };
+                            DownloadList.Add(downloadInfoViewModel);
+
                             using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
                             {
                                 byte[] buffer = new byte[1024];
@@ -231,22 +283,43 @@ namespace Powork.ViewModel
                                 while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
                                 {
                                     fileStream.Write(buffer, 0, bytesRead);
+
+                                    totalBytesReceived += bytesRead;
+
+                                    double progress = (double)totalBytesReceived / fileSize;
+                                    downloadInfoViewModel.Progress = progress;
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            System.Windows.MessageBox.Show(ex.Message);
+                            MessageBox.Show(ex.Message);
                         }
                     }
-                    else if (fileInfo.Status == Model.Status.SendFileFinish)
+                    else if (fileInfo.Status == Status.SendFileFinish)
                     {
                         GlobalVariables.TcpServerClient.savePathDict.Remove(fileInfo.Guid);
                         GlobalVariables.InvokeGetFileEvent(fileInfo);
+
+                        foreach (DownloadInfoViewModel downloadInfoViewModel in DownloadList)
+                        {
+                            if (downloadInfoViewModel.ID == fileInfo.Guid)
+                            {
+                                downloadInfoViewModel.Progress = 1;
+                            }
+                        }
                     }
-                    else if (fileInfo.Status == Model.Status.NoSuchFile)
+                    else if (fileInfo.Status == Status.NoSuchFile)
                     {
-                        System.Windows.MessageBox.Show("No such file: " + fileInfo.Name);
+                        MessageBox.Show("No such file: " + fileInfo.Name);
+
+                        foreach (DownloadInfoViewModel downloadInfoViewModel in DownloadList)
+                        {
+                            if (downloadInfoViewModel.ID == fileInfo.Guid)
+                            {
+                                downloadInfoViewModel.Failed = true;
+                            }
+                        }
                     }
                 }
                 else if (userMessage.Type == MessageType.TeamInfoRequest)
@@ -327,6 +400,31 @@ namespace Powork.ViewModel
         private void WindowClosed()
         {
             GlobalVariables.PowerPool.Dispose();
+        }
+
+        private void OpenDownloadInfo()
+        {
+            PopupOpen = !PopupOpen;
+        }
+
+        private void DownloadItemClick(DownloadInfoViewModel downloadInfoViewModel)
+        {
+
+        }
+
+        private void OpenItem()
+        {
+
+        }
+
+        private void OpenFolder()
+        {
+
+        }
+
+        private void RemoveItem()
+        {
+
         }
     }
 }
