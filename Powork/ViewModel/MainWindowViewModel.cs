@@ -83,11 +83,16 @@ namespace Powork.ViewModel
             }
         }
 
+        private bool _popupMenuEnable;
         public bool PopupMenuEnable
         {
             get
             {
-                return _nowDownloadInfoViewModel != null;
+                return _popupMenuEnable;
+            }
+            set
+            {
+                SetProperty<bool>(ref _popupMenuEnable, value);
             }
         }
 
@@ -340,15 +345,20 @@ namespace Powork.ViewModel
                             long totalBytesReceived = 0;
                             long fileSize = fileInfo.Size;
 
-                            DownloadInfoViewModel downloadInfoViewModel = new DownloadInfoViewModel()
+                            DownloadInfoViewModel downloadInfoViewModel = null;
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                ID = fileInfo.Guid,
-                                Path = receivedFilePath,
-                                Name = fileInfo.Name,
-                                Progress = 0,
-                                Failed = false,
-                            };
-                            DownloadList.Add(downloadInfoViewModel);
+                                downloadInfoViewModel = new DownloadInfoViewModel()
+                                {
+                                    ID = fileInfo.Guid,
+                                    Path = receivedFilePath,
+                                    Name = fileInfo.Name,
+                                    Progress = 0,
+                                    Failed = false,
+                                };
+                                DownloadList.Add(downloadInfoViewModel);
+                            });
+
                             PopupOpen = true;
 
                             if (IsScrollAtBottom)
@@ -368,8 +378,11 @@ namespace Powork.ViewModel
 
                                     totalBytesReceived += bytesRead;
 
-                                    double progress = (double)totalBytesReceived / fileSize;
-                                    downloadInfoViewModel.Progress = progress;
+                                    double progress = (double)totalBytesReceived / fileSize * 100;
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        downloadInfoViewModel.Progress = progress;
+                                    });
                                 }
                             }
                         }
@@ -387,7 +400,7 @@ namespace Powork.ViewModel
                         {
                             if (downloadInfoViewModel.ID == fileInfo.Guid)
                             {
-                                downloadInfoViewModel.Progress = 1;
+                                downloadInfoViewModel.Progress = 100;
                             }
                         }
                     }
@@ -501,6 +514,7 @@ namespace Powork.ViewModel
                 _nowDownloadInfoViewModel.Selected = false;
             }
             _nowDownloadInfoViewModel = downloadInfoViewModel;
+            PopupMenuEnable = true;
             _nowDownloadInfoViewModel.Selected = true;
         }
 

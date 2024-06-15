@@ -40,7 +40,7 @@ namespace Powork.ViewModel.Inner
         {
             get
             {
-                return _failedText;
+                return string.IsNullOrEmpty(_failedText) ? "" : _failedText;
             }
             set
             {
