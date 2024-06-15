@@ -385,7 +385,7 @@ namespace Powork.ViewModel
                     }
                     else if (fileInfo.Status == Status.SendFileFinish)
                     {
-                        GlobalVariables.TcpServerClient.savePathDict.Remove(fileInfo.Guid);
+                        GlobalVariables.TcpServerClient.savePathDict.TryRemove(fileInfo.Guid, out _);
                         GlobalVariables.InvokeGetFileEvent(fileInfo);
 
                         foreach (DownloadInfoViewModel downloadInfoViewModel in DownloadList)

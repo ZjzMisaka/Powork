@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Concurrent;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Powork.Network
     {
         private readonly TcpListener _tcpListener;
 
-        public Dictionary<string, string> savePathDict = new Dictionary<string, string>();
+        public ConcurrentDictionary<string, string> savePathDict = new ConcurrentDictionary<string, string>();
 
         public TcpServerClient(int port)
         {
