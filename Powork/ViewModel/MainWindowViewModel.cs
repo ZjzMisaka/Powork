@@ -251,17 +251,9 @@ namespace Powork.ViewModel
                                 GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
                             }
 
-                            bool containThisUser = false;
-                            foreach (User user in TeamRepository.SelectTeamMember(userMessage.TeamID))
+                            if (!TeamRepository.ContainMember(userMessage.TeamID, userMessage.SenderIP, userMessage.SenderName))
                             {
-                                if (user.IP == userMessage.SenderIP && user.Name == userMessage.SenderName)
-                                {
-                                    containThisUser = true;
-                                    break;
-                                }
-                            }
-                            if (!containThisUser)
-                            {
+                                TeamMessageRepository.InsertMessage(userMessage);
                                 return;
                             }
                         }

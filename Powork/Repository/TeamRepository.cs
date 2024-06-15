@@ -143,5 +143,31 @@ namespace Powork.Repository
             }
             return teamMemberList;
         }
+
+        public static bool ContainMember(string teamID, string userIP, string userName)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"SELECT COUNT(*) FROM TTeamMember WHERE teamID = '{teamID}' AND userIP = '{userIP}' AND userName = '{userName}'";
+
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int count = reader.GetInt32(0);
+                            if (count >= 1)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
