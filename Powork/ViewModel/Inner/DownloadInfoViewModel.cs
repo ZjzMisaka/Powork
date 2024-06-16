@@ -8,6 +8,7 @@ namespace Powork.ViewModel.Inner
         public DownloadInfoViewModel()
         {
         }
+        public string RequestID { get; set; }
         public string ID { get; set; }
         public string Path { get; set; }
 
@@ -32,6 +33,10 @@ namespace Powork.ViewModel.Inner
             }
             set
             {
+                if (_progress == 100)
+                {
+                    return;
+                }
                 SetProperty<double>(ref _progress, value);
             }
         }
@@ -93,6 +98,73 @@ namespace Powork.ViewModel.Inner
             set
             {
                 SetProperty<Brush>(ref _backgroundColor, value);
+            }
+        }
+
+        private long _totalSize = 0;
+        public long TotalSize
+        {
+            get
+            {
+                return _totalSize;
+            }
+            set
+            {
+                _totalSize = value;
+            }
+        }
+
+        private long _totalBytesReceived = 0;
+        public long TotalBytesReceived
+        {
+            get
+            {
+                return _totalBytesReceived;
+            }
+            set
+            {
+                _totalBytesReceived = value;
+            }
+        }
+
+        private int _fileCount;
+        public int FileCount
+        {
+            get
+            {
+                return _fileCount;
+            }
+            set
+            {
+                _fileCount = value;
+            }
+        }
+
+        private int _doneCount;
+        public int DoneCount
+        {
+            get
+            {
+                return _doneCount;
+            }
+            set
+            {
+                _doneCount = value;
+            }
+        }
+
+        public void Received(long size)
+        {
+            Interlocked.Add(ref _totalBytesReceived, size);
+            Progress = (double)TotalBytesReceived / TotalSize * 100;
+        }
+
+        public void Done()
+        {
+            Interlocked.Increment(ref _doneCount);
+            if (_doneCount == FileCount)
+            {
+                Progress = 100;
             }
         }
     }

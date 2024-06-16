@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -31,6 +32,7 @@ namespace Powork.ViewModel
         private DownloadInfoViewModel _nowDownloadInfoViewModel;
         private DispatcherTimer _blinkTimer;
         private bool _isBlinking;
+        private ConcurrentDictionary<string, DownloadInfoViewModel> _downloadInfoDic;
 
         private string _trayIcon;
         public string TrayIcon
@@ -153,6 +155,7 @@ namespace Powork.ViewModel
             _blinkTimer = new DispatcherTimer();
             _blinkTimer.Interval = TimeSpan.FromMilliseconds(500);
             _blinkTimer.Tick += (s, e) => ToggleIcon();
+            _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
 
             NotificationHelper.NavigationService = navigationService;
             NotificationHelper.MainWindowViewModel = this;
@@ -298,16 +301,21 @@ namespace Powork.ViewModel
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
-                        string id = GlobalVariables.TcpServerClient.SendFile(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
+                        string id = GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
                         sendFileWorkIDList.Add(id);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
                         string[] allfiles = Directory.GetFiles(path, Format.AllFilePattern, SearchOption.AllDirectories);
+                        long totalSize = 0;
+                        foreach (string file in allfiles)
+                        {
+                            totalSize += new System.IO.FileInfo(file).Length;
+                        }
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
-                            string id = GlobalVariables.TcpServerClient.SendFile(file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath);
+                            string id = GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileNameWithoutExtension(path));
                             sendFileWorkIDList.Add(id);
                         }
                     }
@@ -316,6 +324,9 @@ namespace Powork.ViewModel
                 {
                     string json = userMessage.MessageBody[0].Content;
                     Model.FileInfo fileInfo = JsonConvert.DeserializeObject<Model.FileInfo>(json);
+
+                    int fileCount = userMessage.FileCount;
+                    long totalSize = userMessage.TotalSize;
 
                     if (fileInfo.Status == Status.SendFileStart)
                     {
@@ -329,23 +340,37 @@ namespace Powork.ViewModel
 
                         try
                         {
-                            string receivedFilePath = Path.Combine(path, fileInfo.Name);
-                            long totalBytesReceived = 0;
-                            long fileSize = fileInfo.Size;
-
                             DownloadInfoViewModel downloadInfoViewModel = null;
-                            Application.Current.Dispatcher.Invoke(() =>
+
+                            string receivedFilePath = Path.Combine(path, fileInfo.Name);
+                            long fileSize = totalSize > 0 ? totalSize : fileInfo.Size;
+                            lock (_downloadInfoDic)
                             {
-                                downloadInfoViewModel = new DownloadInfoViewModel()
+                                if (fileCount > 1)
                                 {
-                                    ID = fileInfo.Guid,
-                                    Path = receivedFilePath,
-                                    Name = fileInfo.Name,
-                                    Progress = 0,
-                                    Failed = false,
-                                };
-                                DownloadList.Add(downloadInfoViewModel);
-                            });
+                                    _downloadInfoDic.TryGetValue(userMessage.RequestID, out downloadInfoViewModel);
+                                }
+
+                                if (downloadInfoViewModel == null)
+                                {
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        downloadInfoViewModel = new DownloadInfoViewModel()
+                                        {
+                                            RequestID = userMessage.RequestID,
+                                            ID = fileInfo.Guid,
+                                            Path = receivedFilePath,
+                                            Name = userMessage.IsFolder ? userMessage.FolderName : fileInfo.Name,
+                                            Progress = 0,
+                                            Failed = false,
+                                            FileCount = fileCount,
+                                            TotalSize = fileSize,
+                                        };
+                                        _downloadInfoDic[userMessage.RequestID] = downloadInfoViewModel;
+                                        DownloadList.Add(downloadInfoViewModel);
+                                    });
+                                }
+                            }
 
                             PopupOpen = true;
                             ScrollToEnd = true;
@@ -360,12 +385,9 @@ namespace Powork.ViewModel
                                 {
                                     fileStream.Write(buffer, 0, bytesRead);
 
-                                    totalBytesReceived += bytesRead;
-
-                                    double progress = (double)totalBytesReceived / fileSize * 100;
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        downloadInfoViewModel.Progress = progress;
+                                        downloadInfoViewModel.Received(bytesRead);
                                     });
                                 }
                             }
@@ -380,14 +402,12 @@ namespace Powork.ViewModel
                         // GlobalVariables.TcpServerClient.savePathDict.TryRemove(fileInfo.Guid, out _);
                         GlobalVariables.InvokeGetFileEvent(fileInfo);
 
-                        for (int i = 0; i < DownloadList.Count; ++i)
+                        DownloadInfoViewModel downloadInfoViewModel = null;
+                        SpinWait.SpinUntil(() => _downloadInfoDic.TryGetValue(userMessage.RequestID, out downloadInfoViewModel));
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            DownloadInfoViewModel downloadInfoViewModel = DownloadList[i];
-                            if (downloadInfoViewModel.ID == fileInfo.Guid)
-                            {
-                                downloadInfoViewModel.Progress = 100;
-                            }
-                        }
+                            downloadInfoViewModel.Done();
+                        });
                     }
                     else if (fileInfo.Status == Status.NoSuchFile)
                     {

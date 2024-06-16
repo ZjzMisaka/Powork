@@ -15,12 +15,15 @@ namespace Powork.Model
         ShareInfo = 8,
     }
 
+    // TODO: Refactor this class to improve single responsibility principle
+    //       Create new classes for each responsibility
     public class TCPMessage
     {
         public TCPMessage()
         {
             MessageBody = new List<TCPMessageBody>();
         }
+        public string RequestID { get; set; }
         /// <summary>
         /// Sender IP
         /// </summary>
@@ -38,5 +41,9 @@ namespace Powork.Model
         public string Time { get; set; } = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
         public DateTime LastModifiedTime { get; set; }
         public int ID { get; set; }
+        public int FileCount { get; set; }
+        public long TotalSize { get; set; }
+        public bool IsFolder { get; set; }
+        public string FolderName { get; set; }
     }
 }

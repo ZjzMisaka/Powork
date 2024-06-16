@@ -40,7 +40,7 @@ namespace Powork.Network
                         GlobalVariables.PowerPool.StopIfRequested();
                     }
 
-                    string id = GlobalVariables.PowerPool.QueueWorkItem(() =>
+                    GlobalVariables.PowerPool.QueueWorkItem(() =>
                     {
                         TcpClient client = _tcpListener.AcceptTcpClient();
                         string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
@@ -107,7 +107,7 @@ namespace Powork.Network
             return await GlobalVariables.PowerPool.FetchAsync<Exception>(id, true);
         }
 
-        public string SendFile(string filePath, string guid, string ipAddress, int port, string relativePath = "")
+        public string SendFile(string requestID, string filePath, string guid, string ipAddress, int port, string relativePath = "", int fileCount = 1, long totalSize = -1, bool isFolder = false, string folderName = "")
         {
             string sendFileWorkID = GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
@@ -130,9 +130,14 @@ namespace Powork.Network
                         List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
                         TCPMessage getFileMessage = new TCPMessage()
                         {
+                            RequestID = requestID,
                             Type = MessageType.FileInfo,
                             SenderIP = GlobalVariables.SelfInfo[0].IP,
                             MessageBody = messageBody,
+                            FileCount = fileCount,
+                            TotalSize = totalSize,
+                            IsFolder = isFolder,
+                            FolderName = folderName,
                         };
                         byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
                         int length = getFileMessageBytes.Length;
@@ -150,7 +155,7 @@ namespace Powork.Network
 
                     tcpClient.Close();
 
-                    GlobalVariables.TcpServerClient.SendFileFinish(guid, ipAddress, port);
+                    GlobalVariables.TcpServerClient.SendFileFinish(requestID, guid, ipAddress, port);
                 }
                 catch (Exception ex)
                 {
@@ -160,7 +165,7 @@ namespace Powork.Network
             return sendFileWorkID;
         }
 
-        public async void SendFileFinish(string guid, string ipAddress, int port)
+        public async void SendFileFinish(string requestID, string guid, string ipAddress, int port)
         {
             GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
@@ -177,6 +182,7 @@ namespace Powork.Network
                     List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
                     TCPMessage getFileMessage = new TCPMessage()
                     {
+                        RequestID = requestID,
                         Type = MessageType.FileInfo,
                         SenderIP = GlobalVariables.SelfInfo[0].IP,
                         MessageBody = messageBody,
@@ -207,6 +213,7 @@ namespace Powork.Network
                     List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = guid }];
                     TCPMessage getFileMessage = new TCPMessage()
                     {
+                        RequestID = Guid.NewGuid().ToString(),
                         Type = MessageType.FileRequest,
                         SenderIP = GlobalVariables.SelfInfo[0].IP,
                         MessageBody = messageBody,
