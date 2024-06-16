@@ -301,8 +301,7 @@ namespace Powork.ViewModel
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
-                        string id = GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
-                        sendFileWorkIDList.Add(id);
+                        GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
@@ -315,8 +314,7 @@ namespace Powork.ViewModel
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
-                            string id = GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileNameWithoutExtension(path));
-                            sendFileWorkIDList.Add(id);
+                            GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileNameWithoutExtension(path));
                         }
                     }
                 }

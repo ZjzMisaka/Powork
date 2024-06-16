@@ -107,77 +107,23 @@ namespace Powork.Network
             return await GlobalVariables.PowerPool.FetchAsync<Exception>(id, true);
         }
 
-        public string SendFile(string requestID, string filePath, string guid, string ipAddress, int port, string relativePath = "", int fileCount = 1, long totalSize = -1, bool isFolder = false, string folderName = "")
+        public void SendFile(string requestID, string filePath, string guid, string ipAddress, int port, string relativePath = "", int fileCount = 1, long totalSize = -1, bool isFolder = false, string folderName = "")
         {
-            string sendFileWorkID = GlobalVariables.PowerPool.QueueWorkItem(() =>
-            {
-                try
-                {
-                    TcpClient tcpClient = new TcpClient();
-                    tcpClient.Connect(ipAddress, port);
-
-                    using (NetworkStream networkStream = tcpClient.GetStream())
-                    using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                    {
-                        Model.FileInfo fileInfo = new Model.FileInfo()
-                        {
-                            Guid = guid,
-                            Status = Model.Status.SendFileStart,
-                            Name = new DirectoryInfo(filePath).Name,
-                            RelativePath = relativePath,
-                            Size = new System.IO.FileInfo(filePath).Length
-                        };
-                        List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
-                        TCPMessage getFileMessage = new TCPMessage()
-                        {
-                            RequestID = requestID,
-                            Type = MessageType.FileInfo,
-                            SenderIP = GlobalVariables.SelfInfo[0].IP,
-                            MessageBody = messageBody,
-                            FileCount = fileCount,
-                            TotalSize = totalSize,
-                            IsFolder = isFolder,
-                            FolderName = folderName,
-                        };
-                        byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
-                        int length = getFileMessageBytes.Length;
-                        byte[] lengthPrefix = BitConverter.GetBytes(length);
-                        networkStream.Write(lengthPrefix, 0, lengthPrefix.Length);
-                        networkStream.Write(getFileMessageBytes, 0, getFileMessageBytes.Length);
-
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            networkStream.Write(buffer, 0, bytesRead);
-                        }
-                    }
-
-                    tcpClient.Close();
-
-                    GlobalVariables.TcpServerClient.SendFileFinish(requestID, guid, ipAddress, port);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            });
-            return sendFileWorkID;
-        }
-
-        public async void SendFileFinish(string requestID, string guid, string ipAddress, int port)
-        {
-            GlobalVariables.PowerPool.QueueWorkItem(() =>
+            try
             {
                 TcpClient tcpClient = new TcpClient();
                 tcpClient.Connect(ipAddress, port);
 
                 using (NetworkStream networkStream = tcpClient.GetStream())
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     Model.FileInfo fileInfo = new Model.FileInfo()
                     {
                         Guid = guid,
-                        Status = Model.Status.SendFileFinish,
+                        Status = Model.Status.SendFileStart,
+                        Name = new DirectoryInfo(filePath).Name,
+                        RelativePath = relativePath,
+                        Size = new System.IO.FileInfo(filePath).Length
                     };
                     List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
                     TCPMessage getFileMessage = new TCPMessage()
@@ -186,103 +132,143 @@ namespace Powork.Network
                         Type = MessageType.FileInfo,
                         SenderIP = GlobalVariables.SelfInfo[0].IP,
                         MessageBody = messageBody,
+                        FileCount = fileCount,
+                        TotalSize = totalSize,
+                        IsFolder = isFolder,
+                        FolderName = folderName,
                     };
                     byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
                     int length = getFileMessageBytes.Length;
                     byte[] lengthPrefix = BitConverter.GetBytes(length);
                     networkStream.Write(lengthPrefix, 0, lengthPrefix.Length);
                     networkStream.Write(getFileMessageBytes, 0, getFileMessageBytes.Length);
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        networkStream.Write(buffer, 0, bytesRead);
+                    }
                 }
-            });
+
+                tcpClient.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            GlobalVariables.TcpServerClient.SendFileFinish(requestID, guid, ipAddress, port);
+        }
+
+        public void SendFileFinish(string requestID, string guid, string ipAddress, int port)
+        {
+            TcpClient tcpClient = new TcpClient();
+            tcpClient.Connect(ipAddress, port);
+
+            using (NetworkStream networkStream = tcpClient.GetStream())
+            {
+                Model.FileInfo fileInfo = new Model.FileInfo()
+                {
+                    Guid = guid,
+                    Status = Model.Status.SendFileFinish,
+                };
+                List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
+                TCPMessage getFileMessage = new TCPMessage()
+                {
+                    RequestID = requestID,
+                    Type = MessageType.FileInfo,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
+                byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                int length = getFileMessageBytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                networkStream.Write(lengthPrefix, 0, lengthPrefix.Length);
+                networkStream.Write(getFileMessageBytes, 0, getFileMessageBytes.Length);
+            }
         }
 
         public void RequestFile(string guid, string ipAddress, int port, string savePath)
         {
-            GlobalVariables.PowerPool.QueueWorkItem(() =>
+            TcpClient tcpClient = null;
+            NetworkStream stream = null;
+
+            savePathDict[guid] = savePath;
+
+            try
             {
-                TcpClient tcpClient = null;
-                NetworkStream stream = null;
+                tcpClient = new TcpClient(ipAddress, port);
+                stream = tcpClient.GetStream();
 
-                savePathDict[guid] = savePath;
-
-                try
+                List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = guid }];
+                TCPMessage getFileMessage = new TCPMessage()
                 {
-                    tcpClient = new TcpClient(ipAddress, port);
-                    stream = tcpClient.GetStream();
+                    RequestID = Guid.NewGuid().ToString(),
+                    Type = MessageType.FileRequest,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
 
-                    List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = guid }];
-                    TCPMessage getFileMessage = new TCPMessage()
-                    {
-                        RequestID = Guid.NewGuid().ToString(),
-                        Type = MessageType.FileRequest,
-                        SenderIP = GlobalVariables.SelfInfo[0].IP,
-                        MessageBody = messageBody,
-                    };
-
-                    byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
-                    int length = bytes.Length;
-                    byte[] lengthPrefix = BitConverter.GetBytes(length);
-                    stream.Write(lengthPrefix, 0, lengthPrefix.Length);
-                    stream.Write(bytes, 0, bytes.Length);
-                }
-                catch
+                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
+                int length = bytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                stream.Write(lengthPrefix, 0, lengthPrefix.Length);
+                stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (stream != null)
                 {
+                    stream.Dispose();
                 }
-                finally
+                if (tcpClient != null)
                 {
-                    if (stream != null)
-                    {
-                        stream.Dispose();
-                    }
-                    if (tcpClient != null)
-                    {
-                        tcpClient.Dispose();
-                    }
+                    tcpClient.Dispose();
                 }
-            });
+            }
         }
 
         public void RequestTeamInfo(string teamID, string ipAddress, int port)
         {
-            GlobalVariables.PowerPool.QueueWorkItem(() =>
+            TcpClient tcpClient = null;
+            NetworkStream stream = null;
+
+            try
             {
-                TcpClient tcpClient = null;
-                NetworkStream stream = null;
+                tcpClient = new TcpClient(ipAddress, port);
+                stream = tcpClient.GetStream();
 
-                try
+                List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = teamID }];
+                TCPMessage tcpMessage = new TCPMessage()
                 {
-                    tcpClient = new TcpClient(ipAddress, port);
-                    stream = tcpClient.GetStream();
+                    Type = MessageType.TeamInfoRequest,
+                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    MessageBody = messageBody,
+                };
 
-                    List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = teamID }];
-                    TCPMessage tcpMessage = new TCPMessage()
-                    {
-                        Type = MessageType.TeamInfoRequest,
-                        SenderIP = GlobalVariables.SelfInfo[0].IP,
-                        MessageBody = messageBody,
-                    };
-
-                    byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(tcpMessage));
-                    int length = bytes.Length;
-                    byte[] lengthPrefix = BitConverter.GetBytes(length);
-                    stream.Write(lengthPrefix, 0, lengthPrefix.Length);
-                    stream.Write(bytes, 0, bytes.Length);
-                }
-                catch
+                byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(tcpMessage));
+                int length = bytes.Length;
+                byte[] lengthPrefix = BitConverter.GetBytes(length);
+                stream.Write(lengthPrefix, 0, lengthPrefix.Length);
+                stream.Write(bytes, 0, bytes.Length);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (stream != null)
                 {
+                    stream.Dispose();
                 }
-                finally
+                if (tcpClient != null)
                 {
-                    if (stream != null)
-                    {
-                        stream.Dispose();
-                    }
-                    if (tcpClient != null)
-                    {
-                        tcpClient.Dispose();
-                    }
+                    tcpClient.Dispose();
                 }
-            });
+            }
         }
 
         internal void SendTeamInfo(string teamID, string teamName, string lastModifiedTime, List<User> users, string senderIP)
