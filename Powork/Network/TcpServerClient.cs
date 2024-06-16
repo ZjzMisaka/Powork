@@ -1,14 +1,17 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
+using System.Windows.Shapes;
 using Newtonsoft.Json;
 using PowerThreadPool.Options;
 using PowerThreadPool.Results;
 using Powork.Constant;
 using Powork.Model;
+using Windows.Networking.NetworkOperators;
 
 namespace Powork.Network
 {
@@ -24,7 +27,7 @@ namespace Powork.Network
             _tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
-        public void StartListening(Action<NetworkStream, string> onReceive)
+        public void StartListening(Action<TcpClient, string> onReceive)
         {
             _tcpListener.Start();
             GlobalVariables.PowerPool.QueueWorkItem(() =>
@@ -36,9 +39,21 @@ namespace Powork.Network
                         Thread.Sleep(100);
                         GlobalVariables.PowerPool.StopIfRequested();
                     }
-                    TcpClient client = _tcpListener.AcceptTcpClient();
-                    onReceive(client.GetStream(), ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString());
-                    client.Dispose();
+
+                    string id = GlobalVariables.PowerPool.QueueWorkItem(() =>
+                    {
+                        TcpClient client = _tcpListener.AcceptTcpClient();
+                        string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+                        if (GlobalVariables.SelfInfo.Count == 0 || ip == GlobalVariables.SelfInfo[0].IP)
+                        {
+                            client.Close();
+                            return;
+                        }
+
+                        onReceive(client, ip);
+
+                        client.Close();
+                    });
 
                     if (GlobalVariables.PowerPool.CheckIfRequestedStop())
                     {
@@ -134,6 +149,8 @@ namespace Powork.Network
                     }
 
                     tcpClient.Close();
+
+                    GlobalVariables.TcpServerClient.SendFileFinish(guid, ipAddress, port);
                 }
                 catch (Exception ex)
                 {
@@ -143,9 +160,8 @@ namespace Powork.Network
             return sendFileWorkID;
         }
 
-        public async void SendFileFinish(string filePath, string guid, string ipAddress, int port, List<string> sendFileWorkIDList)
+        public async void SendFileFinish(string guid, string ipAddress, int port)
         {
-            await GlobalVariables.PowerPool.WaitAsync(sendFileWorkIDList);
             GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
                 TcpClient tcpClient = new TcpClient();

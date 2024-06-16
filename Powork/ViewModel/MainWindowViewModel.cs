@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -224,20 +225,15 @@ namespace Powork.ViewModel
             });
 
             GlobalVariables.TcpServerClient = new TcpServerClient(GlobalVariables.TcpPort);
-            GlobalVariables.TcpServerClient.StartListening((stream, ip) =>
+            GlobalVariables.TcpServerClient.StartListening((client, ip) =>
             {
-                if (GlobalVariables.SelfInfo.Count == 0 || ip == GlobalVariables.SelfInfo[0].IP)
-                {
-                    return;
-                }
-
+                NetworkStream stream = client.GetStream();
                 using var reader = new BinaryReader(stream);
-                // First read the length of the incoming message
                 int length = reader.ReadInt32();
-                // Then read the message itself
                 byte[] messageBytes = reader.ReadBytes(length);
                 string message = Encoding.UTF8.GetString(messageBytes);
                 TCPMessage userMessage = JsonConvert.DeserializeObject<TCPMessage>(message);
+
                 if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
                 {
                     MessageHelper.ConvertImageInMessage(userMessage);
@@ -315,7 +311,6 @@ namespace Powork.ViewModel
                             sendFileWorkIDList.Add(id);
                         }
                     }
-                    GlobalVariables.TcpServerClient.SendFileFinish(path, guid, userMessage.SenderIP, GlobalVariables.TcpPort, sendFileWorkIDList);
                 }
                 else if (userMessage.Type == MessageType.FileInfo)
                 {
@@ -325,6 +320,7 @@ namespace Powork.ViewModel
                     if (fileInfo.Status == Status.SendFileStart)
                     {
                         GlobalVariables.InvokeStartGetFileEvent(fileInfo);
+
                         string path = Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], fileInfo.RelativePath);
                         if (!Directory.Exists(path))
                         {
@@ -352,12 +348,8 @@ namespace Powork.ViewModel
                             });
 
                             PopupOpen = true;
-
-                            if (IsScrollAtBottom)
-                            {
-                                ScrollToEnd = true;
-                                ScrollToEnd = false;
-                            }
+                            ScrollToEnd = true;
+                            ScrollToEnd = false;
 
                             using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
                             {
@@ -385,11 +377,12 @@ namespace Powork.ViewModel
                     }
                     else if (fileInfo.Status == Status.SendFileFinish)
                     {
-                        GlobalVariables.TcpServerClient.savePathDict.TryRemove(fileInfo.Guid, out _);
+                        // GlobalVariables.TcpServerClient.savePathDict.TryRemove(fileInfo.Guid, out _);
                         GlobalVariables.InvokeGetFileEvent(fileInfo);
 
-                        foreach (DownloadInfoViewModel downloadInfoViewModel in DownloadList)
+                        for (int i = 0; i < DownloadList.Count; ++i)
                         {
+                            DownloadInfoViewModel downloadInfoViewModel = DownloadList[i];
                             if (downloadInfoViewModel.ID == fileInfo.Guid)
                             {
                                 downloadInfoViewModel.Progress = 100;
@@ -400,8 +393,9 @@ namespace Powork.ViewModel
                     {
                         MessageBox.Show("No such file: " + fileInfo.Name);
 
-                        foreach (DownloadInfoViewModel downloadInfoViewModel in DownloadList)
+                        for (int i = 0; i < DownloadList.Count; ++i)
                         {
+                            DownloadInfoViewModel downloadInfoViewModel = DownloadList[i];
                             if (downloadInfoViewModel.ID == fileInfo.Guid)
                             {
                                 downloadInfoViewModel.Failed = true;

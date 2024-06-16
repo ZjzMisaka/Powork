@@ -19,11 +19,7 @@ namespace Powork.ViewModel
     class SharePageViewModel : ObservableObject
     {
         private readonly User _user;
-        private readonly ConcurrentDictionary<string, (string, bool)> _waitDownloadingDict;
-        private readonly ConcurrentDictionary<string, (string, bool)> _downloadingDict;
-        private List<string> _downloadedList;
         private bool _pageEnabled;
-        private int _downloadCount = 0;
         public bool PageEnabled
         {
             get
@@ -84,9 +80,6 @@ namespace Powork.ViewModel
         public SharePageViewModel(User user)
         {
             _user = user;
-            _waitDownloadingDict = new ConcurrentDictionary<string, (string, bool)>();
-            _downloadingDict = new ConcurrentDictionary<string, (string, bool)>();
-            _downloadedList = new List<string>();
 
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
@@ -108,8 +101,6 @@ namespace Powork.ViewModel
             }
 
             GlobalVariables.GetShareInfo += SetShareInfo;
-            GlobalVariables.GetFile += OnGetFile;
-            GlobalVariables.GetFile += OnStartGetFile;
 
             UserName = _user.Name;
             if (IsSelf)
@@ -129,67 +120,6 @@ namespace Powork.ViewModel
             SetShareInfo(shareInfoList);
         }
 
-        private void OnStartGetFile(object sender, EventArgs e)
-        {
-            Model.FileInfo fileInfo = (Model.FileInfo)sender;
-            if (_waitDownloadingDict.Remove(fileInfo.Guid, out (string, bool) value))
-            {
-                GlobalVariables.PowerPool.Stop("ShareFileDownload-" + fileInfo.Guid, true);
-                lock (_downloadingDict)
-                {
-                    if (!_downloadedList.Contains(fileInfo.Guid))
-                    {
-                        _downloadingDict.TryAdd(fileInfo.Guid, value);
-                    }
-                }
-            }
-        }
-
-        private void OnGetFile(object sender, EventArgs e)
-        {
-            Model.FileInfo fileInfo = (Model.FileInfo)sender;
-            (string, bool) openInfo;
-            lock (_downloadingDict)
-            {
-                _downloadingDict.Remove(fileInfo.Guid, out openInfo);
-                _downloadedList.Add(openInfo.Item1);
-            }
-            Interlocked.Decrement(ref _downloadCount);
-            if (_downloadCount == 0)
-            {
-                if (openInfo.Item2)
-                {
-                    foreach (string path in _downloadedList)
-                    {
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = path,
-                            UseShellExecute = true
-                        };
-                        Process.Start(startInfo);
-                    }
-                }
-                else
-                {
-                    MessageBoxResult messageBoxResult = MessageBox.Show($"All files received successfully. Open?", string.Empty, MessageBoxButton.YesNo);
-                    if (messageBoxResult == MessageBoxResult.Yes)
-                    {
-                        foreach (string path in _downloadedList)
-                        {
-                            ProcessStartInfo startInfo = new ProcessStartInfo
-                            {
-                                FileName = path,
-                                UseShellExecute = true
-                            };
-                            Process.Start(startInfo);
-                        }
-                    }
-                }
-
-                _downloadedList = new List<string>();
-            }
-        }
-
         private void SetShareInfo(List<ShareInfo> shareInfoList)
         {
             ShareInfoList = new ObservableCollection<ShareInfoViewModel>();
@@ -205,8 +135,6 @@ namespace Powork.ViewModel
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             GlobalVariables.GetShareInfo -= SetShareInfo;
-            GlobalVariables.GetFile -= OnGetFile;
-            GlobalVariables.GetFile -= OnStartGetFile;
         }
 
         private void Drop(DragEventArgs args)
@@ -328,27 +256,7 @@ namespace Powork.ViewModel
             {
                 foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
                 {
-                    if (_waitDownloadingDict.ContainsKey(shareInfoViewModel.Guid))
-                    {
-                        MessageBox.Show(shareInfoViewModel.Name + shareInfoViewModel.Extension + " is already downloading now.");
-                        continue;
-                    }
-                    Interlocked.Increment(ref _downloadCount);
-                    _waitDownloadingDict.TryAdd(shareInfoViewModel.Guid, (Path.Combine(directoryPath, shareInfoViewModel.Name + shareInfoViewModel.Extension), tempFolder));
                     GlobalVariables.TcpServerClient.RequestFile(shareInfoViewModel.Guid, _user.IP, GlobalVariables.TcpPort, directoryPath);
-
-                    GlobalVariables.PowerPool.QueueWorkItem(() =>
-                    {
-                        Thread.Sleep(10000);
-                        if (_waitDownloadingDict.Remove(shareInfoViewModel.Guid, out (string, bool) value))
-                        {
-                            Interlocked.Decrement(ref _downloadCount);
-                            MessageBox.Show($"File: {shareInfoViewModel.Name + shareInfoViewModel.Extension} download did not start.");
-                        }
-                    }, new WorkOption()
-                    {
-                        CustomWorkID = "ShareFileDownload-" + shareInfoViewModel.Guid,
-                    });
                 }
             }
         }
