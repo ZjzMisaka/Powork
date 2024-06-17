@@ -148,7 +148,7 @@ namespace Powork.ViewModel
                     {
                         Guid = Guid.NewGuid().ToString(),
                         Path = path,
-                        Name = Path.GetFileNameWithoutExtension(path),
+                        Name = Path.GetFileName(path),
                         Extension = string.Empty,
                         Type = "Directory",
                         Size = string.Empty,

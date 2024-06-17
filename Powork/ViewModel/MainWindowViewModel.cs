@@ -314,7 +314,7 @@ namespace Powork.ViewModel
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
-                            GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileNameWithoutExtension(path));
+                            GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileName(path));
                         }
                     }
                 }
@@ -525,6 +525,11 @@ namespace Powork.ViewModel
         private void OpenItem()
         {
             Process p = new Process();
+            if (!Path.Exists(_nowDownloadInfoViewModel.Path))
+            {
+                MessageBox.Show($"{Path.GetFileName(_nowDownloadInfoViewModel.Path)} not found.");
+                return;
+            }
             p.StartInfo = new ProcessStartInfo(_nowDownloadInfoViewModel.Path)
             {
                 UseShellExecute = true
@@ -547,6 +552,10 @@ namespace Powork.ViewModel
             if (File.Exists(_nowDownloadInfoViewModel.Path))
             {
                 File.Delete(_nowDownloadInfoViewModel.Path);
+            }
+            else if (Directory.Exists(_nowDownloadInfoViewModel.Path))
+            {
+                Directory.Delete(_nowDownloadInfoViewModel.Path, true);
             }
         }
 
