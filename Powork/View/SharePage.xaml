@@ -31,37 +31,35 @@
             </Grid.ColumnDefinitions>
             <ui:TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="5" Text="{Binding UserName}"></ui:TextBlock>
         </Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-            <ui:ListView ItemsSource="{Binding ShareInfoList}" AllowDrop="{Binding IsSelf}" BorderThickness="0" Margin="5">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Drop">
-                        <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <ui:ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Open File" Command="{Binding OpenCommand}"/>
-                        <MenuItem Header="Download File" Command="{Binding DownloadCommand}" IsEnabled="{Binding DownloadMenuItemEnabled}"/>
-                        <MenuItem Header="Remove File" Command="{Binding RemoveCommand}" IsEnabled="{Binding RemoveMenuItemEnabled}"/>
-                    </ContextMenu>
-                </ui:ListView.ContextMenu>
-                <ui:ListView.ItemContainerStyle>
-                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                    </Style>
-                </ui:ListView.ItemContainerStyle>
-                <ui:ListView.View>
-                    <ui:GridView>
-                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}"/>
-                        <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}"/>
-                        <GridViewColumn Width="auto" Header="Size" DisplayMemberBinding="{Binding Size}"/>
-                        <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}"/>
-                        <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}"/>
-                        <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}"/>
-                    </ui:GridView>
-                </ui:ListView.View>
-            </ui:ListView>
-        </ScrollViewer>
+        <ui:ListView ItemsSource="{Binding ShareInfoList}" Grid.Row="1" AllowDrop="{Binding IsSelf}" BorderThickness="0" Margin="5" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Drop">
+                    <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <ui:ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Open File" Command="{Binding OpenCommand}"/>
+                    <MenuItem Header="Download File" Command="{Binding DownloadCommand}" IsEnabled="{Binding DownloadMenuItemEnabled}"/>
+                    <MenuItem Header="Remove File" Command="{Binding RemoveCommand}" IsEnabled="{Binding RemoveMenuItemEnabled}"/>
+                </ContextMenu>
+            </ui:ListView.ContextMenu>
+            <ui:ListView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                </Style>
+            </ui:ListView.ItemContainerStyle>
+            <ui:ListView.View>
+                <ui:GridView>
+                    <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}"/>
+                    <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Width="auto" Header="Size" DisplayMemberBinding="{Binding Size}"/>
+                    <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}"/>
+                    <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}"/>
+                    <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}"/>
+                </ui:GridView>
+            </ui:ListView.View>
+        </ui:ListView>
     </Grid>
 </Page>

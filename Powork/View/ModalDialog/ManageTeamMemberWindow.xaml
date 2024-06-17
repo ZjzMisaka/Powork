@@ -58,47 +58,43 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Other User" Margin="5"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="Team Member" Margin="5"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Other User" Margin="5, 5, 0, 5"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Team Member" Margin="0, 5, 5, 5"/>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5, 5, 0, 5" Width="250">
-                <ui:ListView ItemsSource="{Binding OtherUserList}" Margin="5">
-                    <ui:ListView.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
-                            <Setter Property="IsSelected" Value="{Binding Selected}" />
-                        </Style>
-                    </ui:ListView.ItemContainerStyle>
-                    <ui:ListView.View>
-                        <ui:GridView>
-                            <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                            <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
-                            <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
-                        </ui:GridView>
-                    </ui:ListView.View>
-                </ui:ListView>
-            </ScrollViewer>
+            <ui:ListView ItemsSource="{Binding OtherUserList}" Grid.Row="1" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5, 5, 0, 5" Width="250" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ui:ListView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding Selected}" />
+                    </Style>
+                </ui:ListView.ItemContainerStyle>
+                <ui:ListView.View>
+                    <ui:GridView>
+                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
+                        <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
+                    </ui:GridView>
+                </ui:ListView.View>
+            </ui:ListView>
 
             <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
                 <Button Content=">" Command="{Binding ToTeamCommand}" Margin="5"></Button>
                 <Button Content="&lt;" Command="{Binding ToOtherCommand}" Margin="5"></Button>
             </StackPanel>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="2" MinHeight="100" MaxHeight="400" Margin="0, 5, 5, 5" Width="250">
-                <ui:ListView ItemsSource="{Binding TeamUserList}" Margin="5">
-                    <ui:ListView.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
-                            <Setter Property="IsSelected" Value="{Binding Selected}" />
-                        </Style>
-                    </ui:ListView.ItemContainerStyle>
-                    <ui:ListView.View>
-                        <ui:GridView>
-                            <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                            <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
-                            <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
-                        </ui:GridView>
-                    </ui:ListView.View>
-                </ui:ListView>
-            </ScrollViewer>
+            <ui:ListView ItemsSource="{Binding TeamUserList}" Grid.Row="1" Grid.Column="2" MinHeight="100" MaxHeight="400" Margin="0, 5, 5, 5" Width="250"  ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ui:ListView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="{x:Type ui:ListViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding Selected}" />
+                    </Style>
+                </ui:ListView.ItemContainerStyle>
+                <ui:ListView.View>
+                    <ui:GridView>
+                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
+                        <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
+                    </ui:GridView>
+                </ui:ListView.View>
+            </ui:ListView>
 
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Cancel" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
