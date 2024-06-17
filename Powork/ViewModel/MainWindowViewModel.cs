@@ -357,7 +357,7 @@ namespace Powork.ViewModel
                                         {
                                             RequestID = userMessage.RequestID,
                                             ID = fileInfo.Guid,
-                                            Path = receivedFilePath,
+                                            Path = userMessage.IsFolder ? Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], userMessage.FolderName) : receivedFilePath,
                                             Name = userMessage.IsFolder ? userMessage.FolderName : fileInfo.Name,
                                             Progress = 0,
                                             Failed = false,

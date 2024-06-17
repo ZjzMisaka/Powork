@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
-using System.Windows.Shapes;
 using Newtonsoft.Json;
 using PowerThreadPool.Options;
 using PowerThreadPool.Results;
 using Powork.Constant;
 using Powork.Model;
-using Windows.Networking.NetworkOperators;
 
 namespace Powork.Network
 {
