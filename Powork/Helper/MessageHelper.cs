@@ -10,9 +10,9 @@ namespace Powork.Helper
 {
     internal static class MessageHelper
     {
-        internal static void ConvertImageInMessage(TCPMessage userMessage)
+        internal static void ConvertImageInMessage(TCPMessageBase tcpMessage)
         {
-            foreach (TCPMessageBody messageBody in userMessage.MessageBody)
+            foreach (TCPMessageBody messageBody in tcpMessage.MessageBody)
             {
                 if (messageBody.Type == ContentType.Picture)
                 {
@@ -58,7 +58,7 @@ namespace Powork.Helper
                 Type = ContentType.Text
             });
 
-            TCPMessage userMessage = new TCPMessage
+            UserMessage userMessage = new UserMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = userMessageBodyList,
@@ -76,7 +76,7 @@ namespace Powork.Helper
             if (ex != null)
             {
                 List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
-                TCPMessage errorMessage = new TCPMessage()
+                UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
                     MessageBody = errorContent,
@@ -95,7 +95,7 @@ namespace Powork.Helper
                 Content = text,
                 Type = ContentType.Text
             });
-            TCPMessage teamMessage = new TCPMessage
+            TeamMessage teamMessage = new TeamMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = teamMessageBodyList,
@@ -119,7 +119,7 @@ namespace Powork.Helper
                 if (ex != null)
                 {
                     List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {member.Name} not online" }];
-                    TCPMessage errorMessage = new TCPMessage()
+                    TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,
                         MessageBody = errorContent,

@@ -22,6 +22,7 @@ using Powork.Repository;
 using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
+using Windows.Networking.NetworkOperators;
 
 namespace Powork.ViewModel
 {
@@ -235,36 +236,37 @@ namespace Powork.ViewModel
                 int length = reader.ReadInt32();
                 byte[] messageBytes = reader.ReadBytes(length);
                 string message = Encoding.UTF8.GetString(messageBytes);
-                TCPMessage userMessage = JsonConvert.DeserializeObject<TCPMessage>(message);
+                TCPMessageBase tcpMessage = JsonConvert.DeserializeObject<TCPMessageBase>(message);
 
-                if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
+                if (tcpMessage.Type == MessageType.UserMessage || tcpMessage.Type == MessageType.TeamMessage)
                 {
-                    MessageHelper.ConvertImageInMessage(userMessage);
-                    if (userMessage.Type == MessageType.TeamMessage)
+                    if (tcpMessage.Type == MessageType.TeamMessage)
                     {
-                        Team team = TeamRepository.SelectTeam(userMessage.TeamID);
+                        TeamMessage teamMessage = JsonConvert.DeserializeObject<TeamMessage>(message);
+                        MessageHelper.ConvertImageInMessage(teamMessage);
+                        Team team = TeamRepository.SelectTeam(teamMessage.TeamID);
                         if (team != null)
                         {
-                            if (DateTime.Parse(team.LastModifiedTime) < userMessage.LastModifiedTime)
+                            if (DateTime.Parse(team.LastModifiedTime) < teamMessage.LastModifiedTime)
                             {
-                                GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
+                                GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, tcpMessage.SenderIP, GlobalVariables.TcpPort);
                             }
 
-                            if (!TeamRepository.ContainMember(userMessage.TeamID, userMessage.SenderIP, userMessage.SenderName))
+                            if (!TeamRepository.ContainMember(teamMessage.TeamID, tcpMessage.SenderIP, tcpMessage.SenderName))
                             {
-                                TeamMessageRepository.InsertMessage(userMessage);
+                                TeamMessageRepository.InsertMessage(teamMessage);
                                 return;
                             }
                         }
                         else
                         {
-                            GlobalVariables.TcpServerClient.RequestTeamInfo(userMessage.TeamID, userMessage.SenderIP, GlobalVariables.TcpPort);
+                            GlobalVariables.TcpServerClient.RequestTeamInfo(teamMessage.TeamID, tcpMessage.SenderIP, GlobalVariables.TcpPort);
                         }
 
-                        TeamMessageRepository.InsertMessage(userMessage);
+                        TeamMessageRepository.InsertMessage(teamMessage);
 
                         FlashHelper.FlashTaskbarIcon();
-                        NotificationHelper.ShowNotification(userMessage, team);
+                        NotificationHelper.ShowNotification(teamMessage, team);
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             Window mainWindow = Application.Current.MainWindow;
@@ -273,9 +275,12 @@ namespace Powork.ViewModel
                                 StartBlinking();
                             }
                         }, DispatcherPriority.Normal);
+                        GlobalVariables.InvokeGetTeamMessageEvent(teamMessage);
                     }
-                    else if (userMessage.Type == MessageType.UserMessage)
+                    else if (tcpMessage.Type == MessageType.UserMessage)
                     {
+                        UserMessage userMessage = JsonConvert.DeserializeObject<UserMessage>(message);
+                        MessageHelper.ConvertImageInMessage(userMessage);
                         UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
                         FlashHelper.FlashTaskbarIcon();
                         NotificationHelper.ShowNotification(userMessage);
@@ -287,12 +292,12 @@ namespace Powork.ViewModel
                                 StartBlinking();
                             }
                         }, DispatcherPriority.Normal);
+                        GlobalVariables.InvokeGetUserMessageEvent(userMessage);
                     }
-                    GlobalVariables.InvokeGetMessageEvent(userMessage);
                 }
-                else if (userMessage.Type == MessageType.FileRequest)
+                else if (tcpMessage.Type == MessageType.FileRequest)
                 {
-                    string guid = userMessage.MessageBody[0].Content;
+                    string guid = tcpMessage.MessageBody[0].Content;
                     string path = FileRepository.SelectFile(guid);
                     List<string> sendFileWorkIDList = new List<string>();
                     if (FileHelper.GetType(path) == FileHelper.Type.None)
@@ -301,7 +306,7 @@ namespace Powork.ViewModel
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
-                        GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, path, guid, userMessage.SenderIP, GlobalVariables.TcpPort);
+                        GlobalVariables.TcpServerClient.SendFile(tcpMessage.RequestID, path, guid, tcpMessage.SenderIP, GlobalVariables.TcpPort);
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
@@ -314,17 +319,19 @@ namespace Powork.ViewModel
                         foreach (string file in allfiles)
                         {
                             string relativePath = Path.Combine(new DirectoryInfo(path).Name, FileHelper.GetRelativePath(file, path));
-                            GlobalVariables.TcpServerClient.SendFile(userMessage.RequestID, file, guid, userMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileName(path));
+                            GlobalVariables.TcpServerClient.SendFile(tcpMessage.RequestID, file, guid, tcpMessage.SenderIP, GlobalVariables.TcpPort, relativePath, allfiles.Length, totalSize, true, Path.GetFileName(path));
                         }
                     }
                 }
-                else if (userMessage.Type == MessageType.FileInfo)
+                else if (tcpMessage.Type == MessageType.FileInfo)
                 {
-                    string json = userMessage.MessageBody[0].Content;
+                    string json = tcpMessage.MessageBody[0].Content;
                     Model.FileInfo fileInfo = JsonConvert.DeserializeObject<Model.FileInfo>(json);
 
-                    int fileCount = userMessage.FileCount;
-                    long totalSize = userMessage.TotalSize;
+                    FileMessage fileMessage = JsonConvert.DeserializeObject<FileMessage>(message);
+
+                    int fileCount = fileMessage.FileCount;
+                    long totalSize = fileMessage.TotalSize;
 
                     if (fileInfo.Status == Status.SendFileStart)
                     {
@@ -346,7 +353,7 @@ namespace Powork.ViewModel
                             {
                                 if (fileCount > 1)
                                 {
-                                    _downloadInfoDic.TryGetValue(userMessage.RequestID, out downloadInfoViewModel);
+                                    _downloadInfoDic.TryGetValue(fileMessage.RequestID, out downloadInfoViewModel);
                                 }
 
                                 if (downloadInfoViewModel == null)
@@ -355,16 +362,16 @@ namespace Powork.ViewModel
                                     {
                                         downloadInfoViewModel = new DownloadInfoViewModel()
                                         {
-                                            RequestID = userMessage.RequestID,
+                                            RequestID = fileMessage.RequestID,
                                             ID = fileInfo.Guid,
-                                            Path = userMessage.IsFolder ? Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], userMessage.FolderName) : receivedFilePath,
-                                            Name = userMessage.IsFolder ? userMessage.FolderName : fileInfo.Name,
+                                            Path = fileMessage.IsFolder ? Path.Combine(GlobalVariables.TcpServerClient.savePathDict[fileInfo.Guid], fileMessage.FolderName) : receivedFilePath,
+                                            Name = fileMessage.IsFolder ? fileMessage.FolderName : fileInfo.Name,
                                             Progress = 0,
                                             Failed = false,
                                             FileCount = fileCount,
                                             TotalSize = fileSize,
                                         };
-                                        _downloadInfoDic[userMessage.RequestID] = downloadInfoViewModel;
+                                        _downloadInfoDic[fileMessage.RequestID] = downloadInfoViewModel;
                                         DownloadList.Add(downloadInfoViewModel);
                                     });
                                 }
@@ -401,7 +408,7 @@ namespace Powork.ViewModel
                         GlobalVariables.InvokeGetFileEvent(fileInfo);
 
                         DownloadInfoViewModel downloadInfoViewModel = null;
-                        SpinWait.SpinUntil(() => _downloadInfoDic.TryGetValue(userMessage.RequestID, out downloadInfoViewModel));
+                        SpinWait.SpinUntil(() => _downloadInfoDic.TryGetValue(tcpMessage.RequestID, out downloadInfoViewModel));
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             downloadInfoViewModel.Done();
@@ -421,18 +428,18 @@ namespace Powork.ViewModel
                         }
                     }
                 }
-                else if (userMessage.Type == MessageType.TeamInfoRequest)
+                else if (tcpMessage.Type == MessageType.TeamInfoRequest)
                 {
-                    string teamID = userMessage.MessageBody[0].Content;
-                    GlobalVariables.TcpServerClient.SendTeamInfo(teamID, TeamRepository.SelectTeam(teamID).Name, TeamRepository.SelectTeam(teamID).LastModifiedTime, TeamRepository.SelectTeamMember(teamID), userMessage.SenderIP);
+                    string teamID = tcpMessage.MessageBody[0].Content;
+                    GlobalVariables.TcpServerClient.SendTeamInfo(teamID, TeamRepository.SelectTeam(teamID).Name, TeamRepository.SelectTeam(teamID).LastModifiedTime, TeamRepository.SelectTeamMember(teamID), tcpMessage.SenderIP);
                 }
-                else if (userMessage.Type == MessageType.TeamInfo)
+                else if (tcpMessage.Type == MessageType.TeamInfo)
                 {
                     string teamID = null;
                     string teamName = null;
                     string lastModifiedTime = null;
                     List<User> members = null;
-                    foreach (TCPMessageBody messageBody in userMessage.MessageBody)
+                    foreach (TCPMessageBody messageBody in tcpMessage.MessageBody)
                     {
                         string json = messageBody.Content;
                         KeyValuePair<string, object> teamInfoPart = JsonConvert.DeserializeObject<KeyValuePair<string, object>>(json);
@@ -461,16 +468,16 @@ namespace Powork.ViewModel
                     TeamRepository.RemoveTeam(team.ID);
                     TeamRepository.InsertOrUpdateTeam(team);
                 }
-                else if (userMessage.Type == MessageType.ShareInfoRequest)
+                else if (tcpMessage.Type == MessageType.ShareInfoRequest)
                 {
-                    string teamID = userMessage.MessageBody[0].Content;
+                    string teamID = tcpMessage.MessageBody[0].Content;
                     ShareRepository.ReCheckFiles();
-                    GlobalVariables.TcpServerClient.SendShareInfo(ShareRepository.SelectFile(), userMessage.SenderIP);
+                    GlobalVariables.TcpServerClient.SendShareInfo(ShareRepository.SelectFile(), tcpMessage.SenderIP);
                 }
-                else if (userMessage.Type == MessageType.ShareInfo)
+                else if (tcpMessage.Type == MessageType.ShareInfo)
                 {
                     List<ShareInfo> shareInfos = null;
-                    foreach (TCPMessageBody messageBody in userMessage.MessageBody)
+                    foreach (TCPMessageBody messageBody in tcpMessage.MessageBody)
                     {
                         string json = messageBody.Content;
                         KeyValuePair<string, object> teamInfoPart = JsonConvert.DeserializeObject<KeyValuePair<string, object>>(json);

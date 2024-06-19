@@ -176,12 +176,7 @@ namespace Powork.ViewModel
                 return;
             }
 
-            TCPMessage userMessage = (TCPMessage)sender;
-
-            if (userMessage.Type != MessageType.UserMessage)
-            {
-                return;
-            }
+            UserMessage userMessage = (UserMessage)sender;
 
             if (userMessage.SenderIP == _nowUser.IP && userMessage.SenderName == _nowUser.Name)
             {
@@ -275,7 +270,7 @@ namespace Powork.ViewModel
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
             GlobalVariables.UserListChanged += UserListChanged;
-            GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetUserMessage += OnGetMessage;
             GlobalVariables.GetFile += OnGetFile;
 
             if (!UserHelper.IsUserLogon())
@@ -286,7 +281,7 @@ namespace Powork.ViewModel
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
-            GlobalVariables.GetMessage -= OnGetMessage;
+            GlobalVariables.GetUserMessage -= OnGetMessage;
             GlobalVariables.UserListChanged -= UserListChanged;
             GlobalVariables.GetFile -= OnGetFile;
         }
@@ -315,13 +310,13 @@ namespace Powork.ViewModel
             _nowUser.Selected = true;
             SendEnabled = true;
 
-            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(_nowUser.IP, _nowUser.Name);
+            List<UserMessage> messageList = UserMessageRepository.SelectMessgae(_nowUser.IP, _nowUser.Name);
             if (messageList != null && messageList.Count >= 1)
             {
                 _firstMessageID = messageList[0].ID;
             }
 
-            foreach (TCPMessage message in messageList)
+            foreach (UserMessage message in messageList)
             {
                 if (message.Type == MessageType.UserMessage)
                 {
@@ -440,12 +435,12 @@ namespace Powork.ViewModel
             {
                 return;
             }
-            List<TCPMessageBody> userMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
+            List<TCPMessageBody> tcpMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
             RichTextBoxDocument = new FlowDocument();
-            TCPMessage userMessage = new TCPMessage
+            UserMessage userMessage = new UserMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
-                MessageBody = userMessageBodyList,
+                MessageBody = tcpMessageBodyList,
                 SenderName = GlobalVariables.SelfInfo[0].Name,
                 Type = MessageType.UserMessage,
             };
@@ -469,7 +464,7 @@ namespace Powork.ViewModel
             if (ex != null)
             {
                 List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
-                TCPMessage errorMessage = new TCPMessage()
+                UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
                     MessageBody = errorContent,
@@ -492,13 +487,13 @@ namespace Powork.ViewModel
                 return;
             }
 
-            List<TCPMessage> messageList = UserMessageRepository.SelectMessgae(_nowUser.IP, _nowUser.Name, _firstMessageID);
+            List<UserMessage> messageList = UserMessageRepository.SelectMessgae(_nowUser.IP, _nowUser.Name, _firstMessageID);
             if (messageList != null && messageList.Count >= 1)
             {
                 _firstMessageID = messageList[0].ID;
             }
             int index = 0;
-            foreach (TCPMessage message in messageList)
+            foreach (UserMessage message in messageList)
             {
                 if (message.Type == MessageType.UserMessage)
                 {

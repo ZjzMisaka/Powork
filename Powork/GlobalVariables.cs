@@ -39,8 +39,10 @@ namespace Powork
         public static event GetFileEventHandler GetFile;
         public delegate void StartGetFileEventHandler(object sender, EventArgs e);
         public static event StartGetFileEventHandler StartGetFile;
-        public delegate void GetMessageEventHandler(object sender, EventArgs e);
-        public static event GetMessageEventHandler GetMessage;
+        public delegate void GetUserMessageEventHandler(object sender, EventArgs e);
+        public static event GetUserMessageEventHandler GetUserMessage;
+        public delegate void GetTeamMessageEventHandler(object sender, EventArgs e);
+        public static event GetTeamMessageEventHandler GetTeamMessage;
 
         public static void InvokeGetShareInfoEvent(List<ShareInfo> shareInfos)
         {
@@ -63,11 +65,18 @@ namespace Powork
                 GetFile.Invoke(fileInfo, new EventArgs());
             }
         }
-        public static void InvokeGetMessageEvent(TCPMessage userMessage)
+        public static void InvokeGetUserMessageEvent(TCPMessageBase tcpMessage)
         {
-            if (GetMessage != null)
+            if (GetUserMessage != null)
             {
-                GetMessage.Invoke(userMessage, new EventArgs());
+                GetUserMessage.Invoke(tcpMessage, new EventArgs());
+            }
+        }
+        public static void InvokeGetTeamMessageEvent(TCPMessageBase tcpMessage)
+        {
+            if (GetTeamMessage != null)
+            {
+                GetTeamMessage.Invoke(tcpMessage, new EventArgs());
             }
         }
         public static List<User> SelfInfo

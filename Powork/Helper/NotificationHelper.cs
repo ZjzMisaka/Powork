@@ -14,7 +14,7 @@ namespace Powork.Helper
     {
         public static INavigationService NavigationService { get; set; }
         public static MainWindowViewModel MainWindowViewModel { get; set; }
-        public static void ShowNotification(TCPMessage userMessage, Team team = null)
+        public static void ShowNotification(TCPMessageBase tcpMessage, Team team = null)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -28,23 +28,23 @@ namespace Powork.Helper
                     List<string> fileIDList = new List<string>();
 
                     ToastContentBuilder builder = new ToastContentBuilder()
-                        .AddArgument("userIP", userMessage.SenderIP)
-                        .AddArgument("userName", userMessage.SenderName)
-                        .AddArgument("TeamID", userMessage.TeamID);
-                    if (userMessage.Type == MessageType.UserMessage)
+                        .AddArgument("userIP", tcpMessage.SenderIP)
+                        .AddArgument("userName", tcpMessage.SenderName);
+                    if (tcpMessage.Type == MessageType.UserMessage)
                     {
-                        builder.AddText($"New message from {userMessage.SenderName}");
+                        builder.AddText($"New message from {tcpMessage.SenderName}");
                         ++lineCount;
                     }
-                    else if (userMessage.Type == MessageType.TeamMessage)
+                    else if (tcpMessage.Type == MessageType.TeamMessage)
                     {
-                        string teamName = team == null ? "Unknown" : TeamRepository.SelectTeam(userMessage.TeamID).Name;
-                        builder.AddText($"New message from {userMessage.SenderName} ({teamName})");
+                        builder.AddArgument("TeamID", ((TeamMessage)tcpMessage).TeamID);
+                        string teamName = team == null ? "Unknown" : TeamRepository.SelectTeam(((TeamMessage)tcpMessage).TeamID).Name;
+                        builder.AddText($"New message from {tcpMessage.SenderName} ({teamName})");
                         ++lineCount;
                     }
                     builder.AddInputTextBox("input");
 
-                    foreach (TCPMessageBody messageBody in userMessage.MessageBody)
+                    foreach (TCPMessageBody messageBody in tcpMessage.MessageBody)
                     {
                         if (messageBody.Type == ContentType.Text)
                         {

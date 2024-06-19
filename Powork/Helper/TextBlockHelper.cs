@@ -12,14 +12,14 @@ namespace Powork.Helper
 {
     public static class TextBlockHelper
     {
-        public static TextBlock GetTimeControl(TCPMessage userMessage, bool showName = false)
+        public static TextBlock GetTimeControl(TCPMessageBase tcpMessage, bool showName = false)
         {
             TextBlock timeTextBlock = null;
 
             Application.Current.Dispatcher.Invoke(() =>
             {
                 timeTextBlock = new TextBlock();
-                if (userMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && userMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
+                if (tcpMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && tcpMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Right;
                 }
@@ -29,13 +29,13 @@ namespace Powork.Helper
                 }
                 timeTextBlock.Foreground = Brushes.LightGreen;
                 string timeStr = null;
-                if (DateTime.TryParse(userMessage.Time, out DateTime dateTime))
+                if (DateTime.TryParse(tcpMessage.Time, out DateTime dateTime))
                 {
                     timeStr = dateTime.ToString(Format.DateTimeFormatWithSeconds);
                 }
                 if (showName)
                 {
-                    timeTextBlock.Text = userMessage.SenderName + " [" + timeStr + "]";
+                    timeTextBlock.Text = tcpMessage.SenderName + " [" + timeStr + "]";
                 }
                 else
                 {
@@ -45,14 +45,14 @@ namespace Powork.Helper
 
             return timeTextBlock;
         }
-        public static TextBlock GetMessageControl(TCPMessage userMessage)
+        public static TextBlock GetMessageControl(TCPMessageBase tcpMessage)
         {
             TextBlock textBlock = null;
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (userMessage.Type == MessageType.UserMessage || userMessage.Type == MessageType.TeamMessage)
+                if (tcpMessage.Type == MessageType.UserMessage || tcpMessage.Type == MessageType.TeamMessage)
                 {
-                    List<TCPMessageBody> userMessageBodyList = userMessage.MessageBody;
+                    List<TCPMessageBody> userMessageBodyList = tcpMessage.MessageBody;
                     textBlock = new SelectableTextBlock();
 
                     textBlock.Foreground = Brushes.White;
@@ -102,7 +102,7 @@ namespace Powork.Helper
 
                                 if (result && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                                 {
-                                    GlobalVariables.TcpServerClient.RequestFile(body.ID, userMessage.SenderIP, GlobalVariables.TcpPort, fbd.SelectedPath);
+                                    GlobalVariables.TcpServerClient.RequestFile(body.ID, tcpMessage.SenderIP, GlobalVariables.TcpPort, fbd.SelectedPath);
                                 }
                             })));
                             textBlock.Inlines.Add(container);
@@ -115,7 +115,7 @@ namespace Powork.Helper
                         }
                     }
 
-                    if (userMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && userMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
+                    if (tcpMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && tcpMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
                     {
                         textBlock.HorizontalAlignment = HorizontalAlignment.Right;
                     }
@@ -124,14 +124,14 @@ namespace Powork.Helper
                         textBlock.HorizontalAlignment = HorizontalAlignment.Left;
                     }
                 }
-                else if (userMessage.Type == MessageType.Error)
+                else if (tcpMessage.Type == MessageType.Error)
                 {
-                    List<TCPMessageBody> userMessageBodyList = userMessage.MessageBody;
+                    List<TCPMessageBody> tcpMessageBodyList = tcpMessage.MessageBody;
                     textBlock = new TextBlock();
 
                     textBlock.Foreground = Brushes.Pink;
 
-                    foreach (TCPMessageBody body in userMessageBodyList)
+                    foreach (TCPMessageBody body in tcpMessageBodyList)
                     {
                         if (textBlock.Inlines.Count > 0)
                         {

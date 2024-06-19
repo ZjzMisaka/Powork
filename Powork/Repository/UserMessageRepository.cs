@@ -6,7 +6,7 @@ namespace Powork.Repository
 {
     public class UserMessageRepository
     {
-        public static void InsertMessage(TCPMessage userMessage, string toIP, string toName)
+        public static void InsertMessage(UserMessage userMessage, string toIP, string toName)
         {
             string body = JsonConvert.SerializeObject(userMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
@@ -29,9 +29,9 @@ namespace Powork.Repository
             }
         }
 
-        public static List<TCPMessage> SelectMessgae(string ip, string name, int id = -1)
+        public static List<UserMessage> SelectMessgae(string ip, string name, int id = -1)
         {
-            List<TCPMessage> userMessageList = new List<TCPMessage>();
+            List<UserMessage> userMessageList = new List<UserMessage>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
@@ -49,7 +49,7 @@ namespace Powork.Repository
                     {
                         while (reader.Read())
                         {
-                            userMessageList.Add(new TCPMessage()
+                            userMessageList.Add(new UserMessage()
                             {
                                 SenderIP = reader["fromIP"].ToString(),
                                 SenderName = reader["fromName"].ToString(),

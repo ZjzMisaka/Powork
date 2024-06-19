@@ -6,9 +6,9 @@ namespace Powork.Repository
 {
     public class TeamMessageRepository
     {
-        public static void InsertMessage(TCPMessage userMessage)
+        public static void InsertMessage(TeamMessage teamMessage)
         {
-            string body = JsonConvert.SerializeObject(userMessage.MessageBody);
+            string body = JsonConvert.SerializeObject(teamMessage.MessageBody);
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
@@ -18,19 +18,19 @@ namespace Powork.Repository
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
                     command.Parameters.Add(new SQLiteParameter("@body", body));
-                    command.Parameters.Add(new SQLiteParameter("@type", userMessage.Type));
-                    command.Parameters.Add(new SQLiteParameter("@time", userMessage.Time));
-                    command.Parameters.Add(new SQLiteParameter("@fromIP", userMessage.SenderIP));
-                    command.Parameters.Add(new SQLiteParameter("@fromName", userMessage.SenderName));
-                    command.Parameters.Add(new SQLiteParameter("@teamID", userMessage.TeamID));
+                    command.Parameters.Add(new SQLiteParameter("@type", teamMessage.Type));
+                    command.Parameters.Add(new SQLiteParameter("@time", teamMessage.Time));
+                    command.Parameters.Add(new SQLiteParameter("@fromIP", teamMessage.SenderIP));
+                    command.Parameters.Add(new SQLiteParameter("@fromName", teamMessage.SenderName));
+                    command.Parameters.Add(new SQLiteParameter("@teamID", teamMessage.TeamID));
                     command.ExecuteNonQuery();
                 }
             }
         }
 
-        public static List<TCPMessage> SelectMessgae(string teamID, int id = -1)
+        public static List<TeamMessage> SelectMessgae(string teamID, int id = -1)
         {
-            List<TCPMessage> userMessageList = new List<TCPMessage>();
+            List<TeamMessage> teamMessageList = new List<TeamMessage>();
             using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
             {
                 connection.Open();
@@ -48,7 +48,7 @@ namespace Powork.Repository
                     {
                         while (reader.Read())
                         {
-                            userMessageList.Add(new TCPMessage()
+                            teamMessageList.Add(new TeamMessage()
                             {
                                 SenderIP = reader["fromIP"].ToString(),
                                 SenderName = reader["fromName"].ToString(),
@@ -59,11 +59,11 @@ namespace Powork.Repository
                                 TeamID = teamID,
                             });
                         }
-                        userMessageList.Reverse();
+                        teamMessageList.Reverse();
                     }
                 }
             }
-            return userMessageList;
+            return teamMessageList;
         }
     }
 }

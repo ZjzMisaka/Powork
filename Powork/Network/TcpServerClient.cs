@@ -123,7 +123,7 @@ namespace Powork.Network
                         Size = new System.IO.FileInfo(filePath).Length
                     };
                     List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
-                    TCPMessage getFileMessage = new TCPMessage()
+                    FileMessage getFileMessage = new FileMessage()
                     {
                         RequestID = requestID,
                         Type = MessageType.FileInfo,
@@ -170,7 +170,7 @@ namespace Powork.Network
                     Status = Model.Status.SendFileFinish,
                 };
                 List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = JsonConvert.SerializeObject(fileInfo) }];
-                TCPMessage getFileMessage = new TCPMessage()
+                FileMessage getFileMessage = new FileMessage()
                 {
                     RequestID = requestID,
                     Type = MessageType.FileInfo,
@@ -198,7 +198,7 @@ namespace Powork.Network
                 stream = tcpClient.GetStream();
 
                 List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = guid }];
-                TCPMessage getFileMessage = new TCPMessage()
+                FileMessage getFileMessage = new FileMessage()
                 {
                     RequestID = Guid.NewGuid().ToString(),
                     Type = MessageType.FileRequest,
@@ -239,7 +239,7 @@ namespace Powork.Network
                 stream = tcpClient.GetStream();
 
                 List<TCPMessageBody> messageBody = [new TCPMessageBody() { Content = teamID }];
-                TCPMessage tcpMessage = new TCPMessage()
+                TeamMessage tcpMessage = new TeamMessage()
                 {
                     Type = MessageType.TeamInfoRequest,
                     SenderIP = GlobalVariables.SelfInfo[0].IP,
@@ -271,7 +271,7 @@ namespace Powork.Network
         internal void SendTeamInfo(string teamID, string teamName, string lastModifiedTime, List<User> users, string senderIP)
         {
             TCPMessageBody tcpMessageBody;
-            TCPMessage userMessage = new TCPMessage
+            TeamMessage teamMessage = new TeamMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = new List<TCPMessageBody>(),
@@ -281,21 +281,21 @@ namespace Powork.Network
 
             tcpMessageBody = new TCPMessageBody();
             tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.TeamID, teamID));
-            userMessage.MessageBody.Add(tcpMessageBody);
+            teamMessage.MessageBody.Add(tcpMessageBody);
 
             tcpMessageBody = new TCPMessageBody();
             tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.TeamName, teamName));
-            userMessage.MessageBody.Add(tcpMessageBody);
+            teamMessage.MessageBody.Add(tcpMessageBody);
 
             tcpMessageBody = new TCPMessageBody();
             tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, string>(MessageBodyContentKey.LastModifiedTime, lastModifiedTime));
-            userMessage.MessageBody.Add(tcpMessageBody);
+            teamMessage.MessageBody.Add(tcpMessageBody);
 
             tcpMessageBody = new TCPMessageBody();
             tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<User>>(MessageBodyContentKey.Members, users));
-            userMessage.MessageBody.Add(tcpMessageBody);
+            teamMessage.MessageBody.Add(tcpMessageBody);
 
-            string message = JsonConvert.SerializeObject(userMessage);
+            string message = JsonConvert.SerializeObject(teamMessage);
 
 #pragma warning disable CS4014
             GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);
@@ -315,7 +315,7 @@ namespace Powork.Network
                     stream = tcpClient.GetStream();
 
                     List<TCPMessageBody> messageBody = [new TCPMessageBody()];
-                    TCPMessage getShareInfoMessage = new TCPMessage()
+                    TCPMessageBase getShareInfoMessage = new TCPMessageBase()
                     {
                         Type = MessageType.ShareInfoRequest,
                         SenderIP = GlobalVariables.SelfInfo[0].IP,
@@ -349,7 +349,7 @@ namespace Powork.Network
         internal void SendShareInfo(List<ShareInfo> shareInfos, string senderIP)
         {
             TCPMessageBody tcpMessageBody;
-            TCPMessage userMessage = new TCPMessage
+            TCPMessageBase tcpMessage = new TCPMessageBase
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = new List<TCPMessageBody>(),
@@ -359,9 +359,9 @@ namespace Powork.Network
 
             tcpMessageBody = new TCPMessageBody();
             tcpMessageBody.Content = JsonConvert.SerializeObject(new KeyValuePair<string, List<ShareInfo>>(MessageBodyContentKey.ShareInfos, shareInfos));
-            userMessage.MessageBody.Add(tcpMessageBody);
+            tcpMessage.MessageBody.Add(tcpMessageBody);
 
-            string message = JsonConvert.SerializeObject(userMessage);
+            string message = JsonConvert.SerializeObject(tcpMessage);
 
 #pragma warning disable CS4014
             GlobalVariables.TcpServerClient.SendMessage(message, senderIP, GlobalVariables.TcpPort);

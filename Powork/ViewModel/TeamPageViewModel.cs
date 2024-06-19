@@ -154,7 +154,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            GlobalVariables.GetMessage += OnGetMessage;
+            GlobalVariables.GetTeamMessage += OnGetMessage;
             GlobalVariables.GetFile += OnGetFile;
 
             if (!UserHelper.IsUserLogon())
@@ -182,24 +182,26 @@ namespace Powork.ViewModel
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
-            GlobalVariables.GetMessage -= OnGetMessage;
+            GlobalVariables.GetTeamMessage -= OnGetMessage;
             GlobalVariables.GetFile -= OnGetFile;
         }
 
         private void OnGetMessage(object sender, EventArgs e)
         {
-            TCPMessage teamMessage = (TCPMessage)sender;
-
-            if (teamMessage.Type != MessageType.TeamMessage)
+            if (_nowTeam == null)
             {
                 return;
             }
+
+
+            TeamMessage teamMessage = (TeamMessage)sender;
+
             if (!TeamRepository.ContainMember(teamMessage.TeamID, teamMessage.SenderIP, teamMessage.SenderName))
             {
                 return;
             }
 
-            if (_nowTeam != null && teamMessage.TeamID == _nowTeam.ID)
+            if (teamMessage.TeamID == _nowTeam.ID)
             {
                 bool isScrollAtBottom = IsScrollAtBottom;
 
@@ -340,7 +342,7 @@ namespace Powork.ViewModel
             }
             List<TCPMessageBody> teamMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
             RichTextBoxDocument = new FlowDocument();
-            TCPMessage teamMessage = new TCPMessage
+            TeamMessage teamMessage = new TeamMessage
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = teamMessageBodyList,
@@ -364,7 +366,7 @@ namespace Powork.ViewModel
                 if (ex != null)
                 {
                     List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {member.Name} not online" }];
-                    TCPMessage errorMessage = new TCPMessage()
+                    TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,
                         MessageBody = errorContent,
@@ -406,13 +408,13 @@ namespace Powork.ViewModel
             _nowTeam.Selected = true;
             SendEnabled = true;
 
-            List<TCPMessage> messageList = TeamMessageRepository.SelectMessgae(_nowTeam.ID);
+            List<TeamMessage> messageList = TeamMessageRepository.SelectMessgae(_nowTeam.ID);
             if (messageList != null && messageList.Count >= 1)
             {
                 _firstMessageID = messageList[0].ID;
             }
 
-            foreach (TCPMessage message in messageList)
+            foreach (TeamMessage message in messageList)
             {
                 if (message.Type == MessageType.TeamMessage)
                 {
@@ -455,13 +457,13 @@ namespace Powork.ViewModel
                 return;
             }
 
-            List<TCPMessage> messageList = TeamMessageRepository.SelectMessgae(_nowTeam.ID, _firstMessageID);
+            List<TeamMessage> messageList = TeamMessageRepository.SelectMessgae(_nowTeam.ID, _firstMessageID);
             if (messageList != null && messageList.Count >= 1)
             {
                 _firstMessageID = messageList[0].ID;
             }
             int index = 0;
-            foreach (TCPMessage message in messageList)
+            foreach (TeamMessage message in messageList)
             {
                 if (message.Type == MessageType.TeamMessage)
                 {
