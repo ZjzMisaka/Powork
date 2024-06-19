@@ -10,6 +10,7 @@ namespace Powork.ViewModel
 {
     class MemoPageViewModel : ObservableObject
     {
+        private readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         private readonly string _htmlStart = @"<!DOCTYPE html>
                                     <html lang=""en"">
                                     <head>
@@ -48,6 +49,41 @@ namespace Powork.ViewModel
                                               font-size: 0.95em;
                                               overflow: auto;
                                             }
+
+                                            table {
+                                              width: 100%;
+                                              border-collapse: collapse;
+                                              margin: 1em 0;
+                                              background-color: #2d2d2d;
+                                              color: #f8f8f2;
+                                              font-family: Arial, sans-serif;
+                                            }
+
+                                            th, td {
+                                              padding: 0.6em 0.8em;
+                                              border: 1px solid #444;
+                                              text-align: left;
+                                            }
+
+                                            th {
+                                              background-color: #444;
+                                              font-weight: bold;
+                                            }
+
+                                            tr:nth-child(even) {
+                                              background-color: #383838;
+                                            }
+
+                                            tr:hover {
+                                              background-color: #555;
+                                            }
+
+                                            caption {
+                                              caption-side: bottom;
+                                              padding: 0.5em;
+                                              font-size: 1em;
+                                              color: #f8f8f2;
+                                            }
                                         </style>
                                     </head>";
         private readonly string _htmlEnd = @"</html>";
@@ -78,7 +114,7 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<string>(ref _memo, value);
-                Preview = _htmlStart + Markdown.ToHtml(value) + _htmlEnd;
+                Preview = _htmlStart + Markdown.ToHtml(value, pipeline) + _htmlEnd;
             }
         }
         private string _preview;
