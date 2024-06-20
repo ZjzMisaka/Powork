@@ -223,7 +223,7 @@ namespace Powork.ViewModel
             GlobalVariables.PowerPool = new PowerPool();
             GlobalVariables.PowerPool.ErrorOccurred += (s, e) =>
             {
-                MessageBox.Show("Error Occurred: \n" + e.Exception.Message + "\n" + e.Exception.StackTrace);
+                MessageBox.Show($"Error Occurred: \n{e.Exception.Message}\n{e.Exception.StackTrace}\nfrom: {e.ErrorFrom}");
             };
 
             CommonRepository.CreateDatabase();
@@ -383,7 +383,7 @@ namespace Powork.ViewModel
                     {
                         UserMessage userMessage = JsonConvert.DeserializeObject<UserMessage>(message);
                         MessageHelper.ConvertImageInMessage(userMessage);
-                        UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo[0].IP, GlobalVariables.SelfInfo[0].Name);
+                        UserMessageRepository.InsertMessage(userMessage, GlobalVariables.SelfInfo.IP, GlobalVariables.SelfInfo.Name);
                         FlashHelper.FlashTaskbarIcon();
                         NotificationHelper.ShowNotification(userMessage);
                         Application.Current.Dispatcher.Invoke(() =>

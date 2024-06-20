@@ -24,11 +24,11 @@ namespace Powork.Network
             {
                 while (true)
                 {
-                    List<User> userList = GlobalVariables.SelfInfo;
-                    if (userList.Count == 1)
+                    User user = GlobalVariables.SelfInfo;
+                    if (user != null)
                     {
                         _udpClient.Client.ReceiveTimeout = 100;
-                        var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(userList[0]));
+                        var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
                         _udpClient.Send(bytes, bytes.Length, _endPoint);
                     }
 

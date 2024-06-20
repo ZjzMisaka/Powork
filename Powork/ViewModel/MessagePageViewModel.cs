@@ -374,9 +374,9 @@ namespace Powork.ViewModel
 
             teamMemberList.Add(new User()
             {
-                IP = GlobalVariables.SelfInfo[0].IP,
-                Name = GlobalVariables.SelfInfo[0].Name,
-                GroupName = GlobalVariables.SelfInfo[0].GroupName,
+                IP = GlobalVariables.SelfInfo.IP,
+                Name = GlobalVariables.SelfInfo.Name,
+                GroupName = GlobalVariables.SelfInfo.GroupName,
             });
 
             Team team = new Team();
@@ -444,7 +444,7 @@ namespace Powork.ViewModel
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = tcpMessageBodyList,
-                SenderName = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo.Name,
                 Type = MessageType.UserMessage,
             };
 

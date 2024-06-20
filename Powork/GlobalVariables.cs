@@ -86,11 +86,11 @@ namespace Powork
             }
             return false;
         }
-        public static List<User> SelfInfo
+        public static User SelfInfo
         {
             get
             {
-                return UserRepository.SelectUserByIp(LocalIP.ToString());
+                return UserRepository.SelectLogonUserCurrentIP();
             }
         }
 

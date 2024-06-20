@@ -19,6 +19,12 @@ namespace Powork.Repository
             {
                 connection.Open();
 
+                string sqlTMe = @"CREATE TABLE IF NOT EXISTS TMe (ip VARCHAR(15), name VARCHAR(20), groupName VARCHAR(20), primary key (ip, name))";
+                using (var command = new SQLiteCommand(sqlTMe, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
                 string sqlTUser = @"CREATE TABLE IF NOT EXISTS TUser (ip VARCHAR(15), name VARCHAR(20), groupName VARCHAR(20), primary key (ip, name))";
                 using (var command = new SQLiteCommand(sqlTUser, connection))
                 {

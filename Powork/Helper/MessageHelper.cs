@@ -62,7 +62,7 @@ namespace Powork.Helper
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = userMessageBodyList,
-                SenderName = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo.Name,
                 Type = MessageType.UserMessage,
             };
 
@@ -99,7 +99,7 @@ namespace Powork.Helper
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = teamMessageBodyList,
-                SenderName = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo.Name,
                 Type = MessageType.TeamMessage,
                 TeamID = nowTeam.ID,
                 LastModifiedTime = DateTime.Parse(TeamRepository.SelectTeam(nowTeam.ID).LastModifiedTime)
@@ -109,7 +109,7 @@ namespace Powork.Helper
 
             foreach (User member in TeamRepository.SelectTeamMember(nowTeam.ID))
             {
-                if (member.IP == GlobalVariables.SelfInfo[0].IP && member.Name == GlobalVariables.SelfInfo[0].Name)
+                if (member.IP == GlobalVariables.SelfInfo.IP && member.Name == GlobalVariables.SelfInfo.Name)
                 {
                     continue;
                 }

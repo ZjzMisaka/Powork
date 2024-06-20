@@ -28,10 +28,10 @@ namespace Powork.Repository
                 connection.Open();
 
                 string sql = "SELECT * FROM TUser";
-                List<User> selfInfo = GlobalVariables.SelfInfo;
-                if (selfInfo != null && selfInfo.Count == 1)
+                User selfInfo = GlobalVariables.SelfInfo;
+                if (selfInfo != null && selfInfo != null)
                 {
-                    sql = $"{sql} WHERE ip <> '{selfInfo[0].IP}' AND name <> '{selfInfo[0].Name}'";
+                    sql = $"{sql} WHERE ip <> '{selfInfo.IP}' AND name <> '{selfInfo.Name}'";
                 }
 
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection))
@@ -155,6 +155,84 @@ namespace Powork.Repository
                 {
                     command.ExecuteNonQuery();
                 }
+            }
+        }
+
+        public static void InsertLogonUser(User user)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"INSERT INTO TMe (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateLogonUserByIP(User user)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"UPDATE TMe SET name = '{user.Name}', groupName = '{user.GroupName}' WHERE ip = '{user.IP}'";
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static User SelectLogonUserCurrentIP()
+        {
+            string ip = GlobalVariables.LocalIP.ToString();
+            List<User> userList = SelectLogonUser(ip);
+            if (userList.Count == 1)
+            {
+                return userList[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static List<User> SelectLogonUser(string ip = null)
+        {
+            List<User> userList = new List<User>();
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"SELECT ip, name, groupName FROM TMe";
+                if (ip != null)
+                {
+                    sql += $" WHERE ip = '{ip}'";
+                }
+
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            User user = new User()
+                            {
+                                IP = reader["ip"].ToString(),
+                                Name = reader["name"].ToString(),
+                                GroupName = reader["groupName"].ToString()
+                            };
+                            userList.Add(user);
+                        }
+                    }
+                }
+
+                return userList;
             }
         }
     }

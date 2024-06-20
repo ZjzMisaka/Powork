@@ -33,11 +33,11 @@ namespace Powork.ViewModel
         {
             get
             {
-                if (GlobalVariables.SelfInfo.Count == 0)
+                if (GlobalVariables.SelfInfo == null)
                 {
                     return false;
                 }
-                return _user.IP == GlobalVariables.SelfInfo[0].IP && _user.Name == GlobalVariables.SelfInfo[0].Name;
+                return _user.IP == GlobalVariables.SelfInfo.IP && _user.Name == GlobalVariables.SelfInfo.Name;
             }
         }
         public bool DownloadMenuItemEnabled => IsSelf ? false : true;

@@ -277,7 +277,7 @@ namespace Powork.ViewModel
         private void ManageTeamMember()
         {
             List<User> allUserIncludeSelf = UserRepository.SelectUser();
-            allUserIncludeSelf.Add(GlobalVariables.SelfInfo[0]);
+            allUserIncludeSelf.Add(GlobalVariables.SelfInfo);
             ManageTeamMemberWindowViewModel dataContext = new ManageTeamMemberWindowViewModel(allUserIncludeSelf, TeamRepository.SelectTeamMember(_nowTeam.ID));
             ManageTeamMemberWindow window = new ManageTeamMemberWindow
             {
@@ -349,7 +349,7 @@ namespace Powork.ViewModel
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = teamMessageBodyList,
-                SenderName = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo.Name,
                 Type = MessageType.TeamMessage,
                 TeamID = _nowTeam.ID,
                 LastModifiedTime = DateTime.Parse(TeamRepository.SelectTeam(_nowTeam.ID).LastModifiedTime)
@@ -359,7 +359,7 @@ namespace Powork.ViewModel
 
             foreach (User member in TeamRepository.SelectTeamMember(_nowTeam.ID))
             {
-                if (member.IP == GlobalVariables.SelfInfo[0].IP && member.Name == GlobalVariables.SelfInfo[0].Name)
+                if (member.IP == GlobalVariables.SelfInfo.IP && member.Name == GlobalVariables.SelfInfo.Name)
                 {
                     continue;
                 }

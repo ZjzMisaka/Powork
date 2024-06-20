@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
 using Powork.Service;
@@ -66,11 +67,11 @@ namespace Powork.ViewModel
         {
             IP = GlobalVariables.LocalIP.ToString();
 
-            List<User> userList = UserRepository.SelectUserByIp(IP);
-            if (userList.Count == 1)
+            User user = GlobalVariables.SelfInfo;
+            if (user != null)
             {
-                Name = userList[0].Name;
-                Group = userList[0].GroupName;
+                Name = user.Name;
+                Group = user.GroupName;
             }
         }
 
@@ -83,12 +84,12 @@ namespace Powork.ViewModel
         {
             if (string.IsNullOrEmpty(Name))
             {
-                System.Windows.MessageBox.Show("Name should not be empty");
+                MessageBox.Show("Name should not be empty");
                 return;
             }
             if (string.IsNullOrEmpty(Group))
             {
-                System.Windows.MessageBox.Show("Group should not be empty");
+                MessageBox.Show("Group should not be empty");
                 return;
             }
 
@@ -98,8 +99,15 @@ namespace Powork.ViewModel
                 GroupName = Group,
                 Name = Name
             };
-            UserRepository.RemoveUserByIp(IP);
-            UserRepository.InsertUser(user);
+
+            if (UserHelper.IsUserLogon())
+            {
+                UserRepository.UpdateLogonUserByIP(user);
+            }
+            else
+            {
+                UserRepository.InsertLogonUser(user);
+            }
 
             _navigationService.Navigate(typeof(MessagePage), new MessagePageViewModel(ServiceLocator.GetService<INavigationService>()));
         }

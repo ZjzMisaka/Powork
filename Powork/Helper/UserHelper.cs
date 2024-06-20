@@ -7,10 +7,7 @@ namespace Powork.Helper
     {
         public static bool IsUserLogon()
         {
-            string ip = GlobalVariables.LocalIP.ToString();
-
-            List<User> userList = UserRepository.SelectUserByIp(ip);
-            return userList.Count == 1;
+            return GlobalVariables.SelfInfo != null;
         }
     }
 }

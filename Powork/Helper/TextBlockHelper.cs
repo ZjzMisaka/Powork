@@ -19,7 +19,7 @@ namespace Powork.Helper
             Application.Current.Dispatcher.Invoke(() =>
             {
                 timeTextBlock = new TextBlock();
-                if (tcpMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && tcpMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
+                if (tcpMessage.SenderIP == GlobalVariables.SelfInfo.IP && tcpMessage.SenderName == GlobalVariables.SelfInfo.Name)
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Right;
                 }
@@ -115,7 +115,7 @@ namespace Powork.Helper
                         }
                     }
 
-                    if (tcpMessage.SenderIP == GlobalVariables.SelfInfo[0].IP && tcpMessage.SenderName == GlobalVariables.SelfInfo[0].Name)
+                    if (tcpMessage.SenderIP == GlobalVariables.SelfInfo.IP && tcpMessage.SenderName == GlobalVariables.SelfInfo.Name)
                     {
                         textBlock.HorizontalAlignment = HorizontalAlignment.Right;
                     }

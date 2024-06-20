@@ -41,7 +41,7 @@ namespace Powork.Network
                     {
                         TcpClient client = _tcpListener.AcceptTcpClient();
                         string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
-                        if (GlobalVariables.SelfInfo.Count == 0 || ip == GlobalVariables.SelfInfo[0].IP)
+                        if (GlobalVariables.SelfInfo == null || ip == GlobalVariables.SelfInfo.IP)
                         {
                             client.Close();
                             return;
@@ -127,7 +127,7 @@ namespace Powork.Network
                     {
                         RequestID = requestID,
                         Type = MessageType.FileInfo,
-                        SenderIP = GlobalVariables.SelfInfo[0].IP,
+                        SenderIP = GlobalVariables.SelfInfo.IP,
                         MessageBody = messageBody,
                         FileCount = fileCount,
                         TotalSize = totalSize,
@@ -174,7 +174,7 @@ namespace Powork.Network
                 {
                     RequestID = requestID,
                     Type = MessageType.FileInfo,
-                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    SenderIP = GlobalVariables.SelfInfo.IP,
                     MessageBody = messageBody,
                 };
                 byte[] getFileMessageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(getFileMessage));
@@ -202,7 +202,7 @@ namespace Powork.Network
                 {
                     RequestID = Guid.NewGuid().ToString(),
                     Type = MessageType.FileRequest,
-                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    SenderIP = GlobalVariables.SelfInfo.IP,
                     MessageBody = messageBody,
                 };
 
@@ -242,7 +242,7 @@ namespace Powork.Network
                 TeamMessage tcpMessage = new TeamMessage()
                 {
                     Type = MessageType.TeamInfoRequest,
-                    SenderIP = GlobalVariables.SelfInfo[0].IP,
+                    SenderIP = GlobalVariables.SelfInfo.IP,
                     MessageBody = messageBody,
                 };
 
@@ -275,7 +275,7 @@ namespace Powork.Network
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = new List<TCPMessageBody>(),
-                SenderName = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo.Name,
                 Type = MessageType.TeamInfo,
             };
 
@@ -318,7 +318,7 @@ namespace Powork.Network
                     TCPMessageBase getShareInfoMessage = new TCPMessageBase()
                     {
                         Type = MessageType.ShareInfoRequest,
-                        SenderIP = GlobalVariables.SelfInfo[0].IP,
+                        SenderIP = GlobalVariables.SelfInfo.IP,
                         MessageBody = messageBody,
                     };
 
@@ -353,7 +353,7 @@ namespace Powork.Network
             {
                 SenderIP = GlobalVariables.LocalIP.ToString(),
                 MessageBody = new List<TCPMessageBody>(),
-                SenderName = GlobalVariables.SelfInfo[0].Name,
+                SenderName = GlobalVariables.SelfInfo.Name,
                 Type = MessageType.ShareInfo,
             };
 
