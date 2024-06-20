@@ -9,17 +9,14 @@ namespace Powork.Repository
     {
         public static void InsertFile(ShareInfo shareInfo)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
-            {
-                connection.Open();
+            SQLiteConnection connection = CommonRepository.GetConnection();
 
-                string sql = $"INSERT INTO TShare (id, path, name, extension, type, size, shareTime, createTime, lastModifiedTime) " +
+            string sql = $"INSERT INTO TShare (id, path, name, extension, type, size, shareTime, createTime, lastModifiedTime) " +
                     $"VALUES ('{shareInfo.Guid}', '{shareInfo.Path}', '{shareInfo.Name}', '{shareInfo.Extension}', '{shareInfo.Type}', '{shareInfo.Size}', '{shareInfo.ShareTime}', '{shareInfo.CreateTime}', '{shareInfo.LastModifiedTime}')";
 
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+            using (var command = new SQLiteCommand(sql, connection))
+            {
+                command.ExecuteNonQuery();
             }
 
             FileRepository.InsertFile(shareInfo.Guid, shareInfo.Path);
@@ -27,65 +24,58 @@ namespace Powork.Repository
 
         public static List<ShareInfo> SelectFile()
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<ShareInfo> shareList = new List<ShareInfo>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+
+            string sql = "SELECT * FROM TShare";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = "SELECT * FROM TShare";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        shareList.Add(new ShareInfo()
                         {
-                            shareList.Add(new ShareInfo()
-                            {
-                                Guid = reader["id"].ToString(),
-                                Path = reader["path"].ToString(),
-                                Name = reader["name"].ToString(),
-                                Extension = reader["extension"].ToString(),
-                                Type = reader["type"].ToString(),
-                                Size = reader["size"].ToString(),
-                                ShareTime = DateTime.Parse(reader["shareTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
-                                CreateTime = DateTime.Parse(reader["createTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
-                                LastModifiedTime = DateTime.Parse(reader["lastModifiedTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
-                            });
-                        }
+                            Guid = reader["id"].ToString(),
+                            Path = reader["path"].ToString(),
+                            Name = reader["name"].ToString(),
+                            Extension = reader["extension"].ToString(),
+                            Type = reader["type"].ToString(),
+                            Size = reader["size"].ToString(),
+                            ShareTime = DateTime.Parse(reader["shareTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
+                            CreateTime = DateTime.Parse(reader["createTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
+                            LastModifiedTime = DateTime.Parse(reader["lastModifiedTime"].ToString()).ToString(Format.DateTimeFormatWithSeconds),
+                        });
                     }
                 }
             }
+
             return shareList;
         }
 
         public static void UpdateFile(ShareInfo shareInfo)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"UPDATE TShare SET size = '{shareInfo.Size}', lastModifiedTime = '{shareInfo.LastModifiedTime}' WHERE id = '{shareInfo.Guid}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"UPDATE TShare SET size = '{shareInfo.Size}', lastModifiedTime = '{shareInfo.LastModifiedTime}' WHERE id = '{shareInfo.Guid}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static void RemoveFile(string id)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"DELETE FROM TShare WHERE id = '{id}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"DELETE FROM TShare WHERE id = '{id}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
 
             FileRepository.RemoveFile(id);

@@ -6,35 +6,29 @@ namespace Powork.Repository
     {
         public static void InsertFile(string guid, string path)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"INSERT INTO TFile (id, path) VALUES ('{guid}', '{path}')";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"INSERT INTO TFile (id, path) VALUES ('{guid}', '{path}')";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static string SelectFile(string guid)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"SELECT * FROM TFile WHERE id = '{guid}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT * FROM TFile WHERE id = '{guid}'";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
-                        {
-                            return reader["path"].ToString();
-                        }
+                        return reader["path"].ToString();
                     }
                 }
             }
@@ -43,20 +37,17 @@ namespace Powork.Repository
 
         public static string RemoveFile(string guid)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"DELETE FROM TFile WHERE id = '{guid}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"DELETE FROM TFile WHERE id = '{guid}'";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
-                        {
-                            return reader["path"].ToString();
-                        }
+                        return reader["path"].ToString();
                     }
                 }
             }

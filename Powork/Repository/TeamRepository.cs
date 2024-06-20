@@ -7,83 +7,71 @@ namespace Powork.Repository
     {
         public static void InsertOrUpdateTeam(Team team)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"INSERT OR REPLACE INTO TTeam (id, name, lastModifiedTime) VALUES ('{team.ID}', '{team.Name}', '{team.LastModifiedTime}')";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"INSERT OR REPLACE INTO TTeam (id, name, lastModifiedTime) VALUES ('{team.ID}', '{team.Name}', '{team.LastModifiedTime}')";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-
-                InsertOrUpdateTeamMembers(team.ID, team.MemberList);
+                command.ExecuteNonQuery();
             }
+
+            InsertOrUpdateTeamMembers(team.ID, team.MemberList);
         }
 
         public static void RemoveTeam(string id)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sqlTTeam = $"DELETE FROM TTeam WHERE id = '{id}'";
+            string sqlTTeamMember = $"DELETE FROM TTeamMember WHERE teamID = '{id}'";
+
+            using (var command = new SQLiteCommand(sqlTTeam, connection))
             {
-                connection.Open();
-
-                string sqlTTeam = $"DELETE FROM TTeam WHERE id = '{id}'";
-                string sqlTTeamMember = $"DELETE FROM TTeamMember WHERE teamID = '{id}'";
-
-                using (var command = new SQLiteCommand(sqlTTeam, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-                using (var command = new SQLiteCommand(sqlTTeamMember, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
+            }
+            using (var command = new SQLiteCommand(sqlTTeamMember, connection))
+            {
+                command.ExecuteNonQuery();
             }
         }
 
         public static void InsertOrUpdateTeamMembers(string teamID, List<User> memberList)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            foreach (User user in memberList)
             {
-                connection.Open();
+                string sql = $"INSERT OR REPLACE INTO TTeamMember (teamID, userIP, userName, groupName) VALUES ('{teamID}', '{user.IP}', '{user.Name}', '{user.GroupName}')";
 
-                foreach (User user in memberList)
+                using (var command = new SQLiteCommand(sql, connection))
                 {
-                    string sql = $"INSERT OR REPLACE INTO TTeamMember (teamID, userIP, userName, groupName) VALUES ('{teamID}', '{user.IP}', '{user.Name}', '{user.GroupName}')";
-
-                    using (var command = new SQLiteCommand(sql, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
+                    command.ExecuteNonQuery();
                 }
             }
         }
 
         public static List<Team> SelectTeam()
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<Team> teamList = new List<Team>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            string sql = "SELECT * FROM TTeam";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = "SELECT * FROM TTeam";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        teamList.Add(new Team()
                         {
-                            teamList.Add(new Team()
-                            {
-                                ID = reader["id"].ToString(),
-                                Name = reader["name"].ToString(),
-                                // Why
-                                // LastModifiedTime = reader["lastModifiedTime"].ToString(),
-                                LastModifiedTime = reader.GetString(2),
-                            });
-                        }
+                            ID = reader["id"].ToString(),
+                            Name = reader["name"].ToString(),
+                            // Why
+                            // LastModifiedTime = reader["lastModifiedTime"].ToString(),
+                            LastModifiedTime = reader.GetString(2),
+                        });
                     }
                 }
             }
@@ -92,85 +80,79 @@ namespace Powork.Repository
 
         public static Team SelectTeam(string id)
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             Team team = null;
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            string sql = $"SELECT * FROM TTeam WHERE id = '{id}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT * FROM TTeam WHERE id = '{id}'";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
+                        team = new Team()
                         {
-                            team = new Team()
-                            {
-                                ID = reader["id"].ToString(),
-                                Name = reader["name"].ToString(),
-                                // Why
-                                // LastModifiedTime = reader["lastModifiedTime"].ToString(),
-                                LastModifiedTime = reader.GetString(2),
-                            };
-                        }
+                            ID = reader["id"].ToString(),
+                            Name = reader["name"].ToString(),
+                            // Why
+                            // LastModifiedTime = reader["lastModifiedTime"].ToString(),
+                            LastModifiedTime = reader.GetString(2),
+                        };
                     }
                 }
             }
+
             return team;
         }
 
         public static List<User> SelectTeamMember(string teamID)
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<User> teamMemberList = new List<User>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            string sql = $"SELECT * FROM TTeamMember WHERE teamID = '{teamID}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT * FROM TTeamMember WHERE teamID = '{teamID}'";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        teamMemberList.Add(new User()
                         {
-                            teamMemberList.Add(new User()
-                            {
-                                IP = reader["userIP"].ToString(),
-                                Name = reader["userName"].ToString(),
-                                GroupName = reader["groupName"].ToString(),
-                            });
-                        }
+                            IP = reader["userIP"].ToString(),
+                            Name = reader["userName"].ToString(),
+                            GroupName = reader["groupName"].ToString(),
+                        });
                     }
                 }
             }
+
             return teamMemberList;
         }
 
         public static bool ContainMember(string teamID, string userIP, string userName)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"SELECT COUNT(*) FROM TTeamMember WHERE teamID = '{teamID}' AND userIP = '{userIP}' AND userName = '{userName}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT COUNT(*) FROM TTeamMember WHERE teamID = '{teamID}' AND userIP = '{userIP}' AND userName = '{userName}'";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
+                        int count = reader.GetInt32(0);
+                        if (count >= 1)
                         {
-                            int count = reader.GetInt32(0);
-                            if (count >= 1)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
             }
+
             return false;
         }
     }

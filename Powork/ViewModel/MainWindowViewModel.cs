@@ -277,7 +277,8 @@ namespace Powork.ViewModel
                     return;
                 }
 
-                if (UserRepository.SelectUserByIpName(user.IP, user.Name).Count == 0)
+                List<User> userList = UserRepository.SelectUserByIpName(user.IP, user.Name);
+                if (userList.Count == 0)
                 {
                     User insertUser = new User()
                     {
@@ -290,6 +291,20 @@ namespace Powork.ViewModel
                     {
                         GlobalVariables.UserList.Add(insertUser);
                     });
+                }
+                else
+                {
+                    if (userList[0].GroupName != user.GroupName)
+                    {
+                        UserRepository.UpdateUserByIpName(user);
+                        foreach (User changeUser in GlobalVariables.UserList)
+                        {
+                            if (changeUser.IP == user.IP && changeUser.Name == user.Name)
+                            {
+                                changeUser.GroupName = user.GroupName;
+                            }
+                        }
+                    }
                 }
             });
 
@@ -644,6 +659,7 @@ namespace Powork.ViewModel
 
         private void WindowClosed()
         {
+            CommonRepository.CloseConnection();
             GlobalVariables.PowerPool.Dispose();
         }
 

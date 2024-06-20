@@ -7,184 +7,160 @@ namespace Powork.Repository
     {
         public static void InsertUser(User user)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"INSERT INTO TUser (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"INSERT INTO TUser (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static List<User> SelectUser()
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<User> userList = new List<User>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+
+            string sql = "SELECT * FROM TUser";
+            User selfInfo = GlobalVariables.SelfInfo;
+            if (selfInfo != null && selfInfo != null)
             {
-                connection.Open();
+                sql = $"{sql} WHERE ip <> '{selfInfo.IP}' AND name <> '{selfInfo.Name}'";
+            }
 
-                string sql = "SELECT * FROM TUser";
-                User selfInfo = GlobalVariables.SelfInfo;
-                if (selfInfo != null && selfInfo != null)
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+            {
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    sql = $"{sql} WHERE ip <> '{selfInfo.IP}' AND name <> '{selfInfo.Name}'";
-                }
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
-                {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        userList.Add(new User()
                         {
-                            userList.Add(new User()
-                            {
-                                IP = reader["ip"].ToString(),
-                                Name = reader["name"].ToString(),
-                                GroupName = reader["groupName"].ToString()
-                            });
-                        }
+                            IP = reader["ip"].ToString(),
+                            Name = reader["name"].ToString(),
+                            GroupName = reader["groupName"].ToString()
+                        });
                     }
                 }
             }
             return userList;
         }
 
-        public static void UpdateUserByIp(User user)
+        public static void UpdateUserByIpName(User user)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"UPDATE TUser SET groupName = '{user.GroupName}' WHERE ip = '{user.IP}' AND name = '{user.Name}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"UPDATE TUser SET name = '{user.Name}', groupName = '{user.GroupName}' WHERE ip = '{user.IP}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static List<User> SelectUserByIp(string ip)
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<User> userList = new List<User>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+
+            string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        User user = new User()
                         {
-                            User user = new User()
-                            {
-                                IP = reader["ip"].ToString(),
-                                Name = reader["name"].ToString(),
-                                GroupName = reader["groupName"].ToString()
-                            };
-                            userList.Add(user);
-                        }
+                            IP = reader["ip"].ToString(),
+                            Name = reader["name"].ToString(),
+                            GroupName = reader["groupName"].ToString()
+                        };
+                        userList.Add(user);
                     }
                 }
-
-                return userList;
             }
+
+            return userList;
         }
 
         public static List<User> SelectUserByIpName(string ip, string name)
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<User> userList = new List<User>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+
+            string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}' AND name = '{name}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}' AND name = '{name}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        User user = new User()
                         {
-                            User user = new User()
-                            {
-                                IP = reader["ip"].ToString(),
-                                Name = reader["name"].ToString(),
-                                GroupName = reader["groupName"].ToString()
-                            };
-                            userList.Add(user);
-                        }
+                            IP = reader["ip"].ToString(),
+                            Name = reader["name"].ToString(),
+                            GroupName = reader["groupName"].ToString()
+                        };
+                        userList.Add(user);
                     }
                 }
-
-                return userList;
             }
+
+            return userList;
         }
 
         public static void RemoveUserByIp(string ip)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"DELETE FROM TUser WHERE ip = '{ip}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"DELETE FROM TUser WHERE ip = '{ip}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static void RemoveUser(string ip, string name)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"DELETE FROM TUser WHERE ip = '{ip}' AND  name = '{name}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"DELETE FROM TUser WHERE ip = '{ip}' AND  name = '{name}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static void InsertLogonUser(User user)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"INSERT INTO TMe (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"INSERT INTO TMe (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
         public static void UpdateLogonUserByIP(User user)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"UPDATE TMe SET name = '{user.Name}', groupName = '{user.GroupName}' WHERE ip = '{user.IP}'";
+
+            using (var command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"UPDATE TMe SET name = '{user.Name}', groupName = '{user.GroupName}' WHERE ip = '{user.IP}'";
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                command.ExecuteNonQuery();
             }
         }
 
@@ -204,57 +180,51 @@ namespace Powork.Repository
 
         public static List<User> SelectLogonUser(string ip = null)
         {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
             List<User> userList = new List<User>();
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            string sql = $"SELECT ip, name, groupName FROM TMe";
+            if (ip != null)
             {
-                connection.Open();
+                sql += $" WHERE ip = '{ip}'";
+            }
 
-                string sql = $"SELECT ip, name, groupName FROM TMe";
-                if (ip != null)
+            using (var command = new SQLiteCommand(sql, connection))
+            {
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    sql += $" WHERE ip = '{ip}'";
-                }
-
-                using (var command = new SQLiteCommand(sql, connection))
-                {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        User user = new User()
                         {
-                            User user = new User()
-                            {
-                                IP = reader["ip"].ToString(),
-                                Name = reader["name"].ToString(),
-                                GroupName = reader["groupName"].ToString()
-                            };
-                            userList.Add(user);
-                        }
+                            IP = reader["ip"].ToString(),
+                            Name = reader["name"].ToString(),
+                            GroupName = reader["groupName"].ToString()
+                        };
+                        userList.Add(user);
                     }
                 }
-
-                return userList;
             }
+
+            return userList;
         }
 
         public static bool IsSelf(string ip, string name)
         {
-            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            string sql = $"SELECT COUNT(*) FROM TMe WHERE ip = '{ip}' AND name = '{name}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
-                connection.Open();
-
-                string sql = $"SELECT COUNT(*) FROM TMe WHERE ip = '{ip}' AND name = '{name}'";
-
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
+                        int count = reader.GetInt32(0);
+                        if (count != 0)
                         {
-                            int count = reader.GetInt32(0);
-                            if (count != 0)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
