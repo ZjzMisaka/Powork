@@ -10,7 +10,7 @@ namespace Powork.ViewModel
 {
     class MemoPageViewModel : ObservableObject
     {
-        private readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+        private readonly MarkdownPipeline _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         private readonly string _htmlStart = @"<!DOCTYPE html>
                                     <html lang=""en"">
                                     <head>
@@ -114,7 +114,7 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<string>(ref _memo, value);
-                Preview = _htmlStart + Markdown.ToHtml(value, pipeline) + _htmlEnd;
+                Preview = _htmlStart + Markdown.ToHtml(value, _pipeline) + _htmlEnd;
             }
         }
         private string _preview;

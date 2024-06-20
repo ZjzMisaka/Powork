@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using PowerThreadPool.Results;
 using Powork.Constant;
+using Powork.CustomEventArgs;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -169,7 +170,7 @@ namespace Powork.ViewModel
             }
         }
 
-        private void OnGetMessage(object sender, EventArgs e)
+        private void OnGetMessage(object sender, MessageEventArgs e)
         {
             if (_nowUser == null)
             {
@@ -195,6 +196,8 @@ namespace Powork.ViewModel
                     ScrollToEnd = true;
                     ScrollToEnd = false;
                 }
+
+                e.Received = true;
             }
         }
 

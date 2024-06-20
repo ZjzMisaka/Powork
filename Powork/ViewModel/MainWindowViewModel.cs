@@ -22,7 +22,6 @@ using Powork.Repository;
 using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
-using Windows.Networking.NetworkOperators;
 
 namespace Powork.ViewModel
 {
@@ -33,6 +32,7 @@ namespace Powork.ViewModel
         private DownloadInfoViewModel _nowDownloadInfoViewModel;
         private DispatcherTimer _blinkTimer;
         private bool _isBlinking;
+        private ConcurrentDictionary<string, NoticeViewModel> _noticeInfoDic;
         private ConcurrentDictionary<string, DownloadInfoViewModel> _downloadInfoDic;
 
         private string _trayIcon;
@@ -61,6 +61,19 @@ namespace Powork.ViewModel
             }
         }
 
+        private Visibility _openNoticeButtonVisibility;
+        public Visibility OpenNoticeButtonVisibility
+        {
+            get
+            {
+                return _openNoticeButtonVisibility;
+            }
+            set
+            {
+                SetProperty<Visibility>(ref _openNoticeButtonVisibility, value);
+            }
+        }
+
         private bool _topmost;
         public bool Topmost
         {
@@ -71,6 +84,32 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<bool>(ref _topmost, value);
+            }
+        }
+
+        private bool _noticePopupOpen;
+        public bool NoticePopupOpen
+        {
+            get
+            {
+                return _noticePopupOpen;
+            }
+            set
+            {
+                SetProperty<bool>(ref _noticePopupOpen, value);
+            }
+        }
+
+        private ObservableCollection<NoticeViewModel> _noticeList;
+        public ObservableCollection<NoticeViewModel> NoticeList
+        {
+            get
+            {
+                return _noticeList;
+            }
+            set
+            {
+                SetProperty<ObservableCollection<NoticeViewModel>>(ref _noticeList, value);
             }
         }
 
@@ -144,6 +183,8 @@ namespace Powork.ViewModel
         public ICommand WindowClosingCommand { get; set; }
         public ICommand WindowClosedCommand { get; set; }
         public ICommand WindowActivatedCommand { get; set; }
+        public ICommand OpenNoticeCommand { get; set; }
+        public ICommand NoticeItemClickCommand { get; set; }
         public ICommand OpenDownloadInfoCommand { get; set; }
         public ICommand DownloadItemClickCommand { get; set; }
         public ICommand OpenItemCommand { get; set; }
@@ -156,6 +197,7 @@ namespace Powork.ViewModel
             _blinkTimer = new DispatcherTimer();
             _blinkTimer.Interval = TimeSpan.FromMilliseconds(500);
             _blinkTimer.Tick += (s, e) => ToggleIcon();
+            _noticeInfoDic = new ConcurrentDictionary<string, NoticeViewModel>();
             _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
 
             NotificationHelper.NavigationService = navigationService;
@@ -170,6 +212,7 @@ namespace Powork.ViewModel
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
 
+            NoticeList = new ObservableCollection<NoticeViewModel>();
             DownloadList = new ObservableCollection<DownloadInfoViewModel>();
 
             ExitCommand = new RelayCommand(Exit);
@@ -177,6 +220,8 @@ namespace Powork.ViewModel
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
             WindowClosedCommand = new RelayCommand(WindowClosed);
             WindowActivatedCommand = new RelayCommand(WindowActivated);
+            OpenNoticeCommand = new RelayCommand(OpenNotice);
+            NoticeItemClickCommand = new RelayCommand<NoticeViewModel>(NoticeItemClick);
             OpenDownloadInfoCommand = new RelayCommand(OpenDownloadInfo);
             DownloadItemClickCommand = new RelayCommand<DownloadInfoViewModel>(DownloadItemClick);
             OpenItemCommand = new RelayCommand(OpenItem);
@@ -198,6 +243,7 @@ namespace Powork.ViewModel
         {
             TrayIcon = "/Image/icon.ico";
             ApplicationTitle = "Powork";
+            OpenNoticeButtonVisibility = Visibility.Collapsed;
 
             _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
@@ -275,7 +321,44 @@ namespace Powork.ViewModel
                                 StartBlinking();
                             }
                         }, DispatcherPriority.Normal);
-                        GlobalVariables.InvokeGetTeamMessageEvent(teamMessage);
+                        if (!GlobalVariables.InvokeGetTeamMessageEvent(teamMessage))
+                        {
+                            lock (_noticeInfoDic)
+                            {
+                                NoticeViewModel noticeViewModel = null;
+                                Team msgTeam = TeamRepository.SelectTeam(teamMessage.TeamID);
+                                string teamName = "Unknown";
+                                if (msgTeam != null)
+                                {
+                                    teamName = msgTeam.Name;
+                                }
+                                _noticeInfoDic.TryGetValue(teamMessage.TeamID, out noticeViewModel);
+                                if (noticeViewModel == null)
+                                {
+                                    noticeViewModel = new NoticeViewModel();
+                                    noticeViewModel.Count = 1;
+                                    noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from Team {teamName}";
+                                    noticeViewModel.TeamMessage = teamMessage;
+                                    _noticeInfoDic[teamMessage.TeamID] = noticeViewModel;
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        NoticeList.Add(noticeViewModel);
+                                        if (NoticeList.Count > 0)
+                                        {
+                                            OpenNoticeButtonVisibility = Visibility.Visible;
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    ++noticeViewModel.Count;
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from Team {teamName}";
+                                    });
+                                }
+                            }
+                        }
                     }
                     else if (tcpMessage.Type == MessageType.UserMessage)
                     {
@@ -292,7 +375,38 @@ namespace Powork.ViewModel
                                 StartBlinking();
                             }
                         }, DispatcherPriority.Normal);
-                        GlobalVariables.InvokeGetUserMessageEvent(userMessage);
+                        if (!GlobalVariables.InvokeGetUserMessageEvent(userMessage))
+                        {
+                            lock (_noticeInfoDic)
+                            {
+                                NoticeViewModel noticeViewModel = null;
+                                _noticeInfoDic.TryGetValue(userMessage.SenderIP + userMessage.SenderName, out noticeViewModel);
+                                if (noticeViewModel == null)
+                                {
+                                    noticeViewModel = new NoticeViewModel();
+                                    noticeViewModel.Count = 1;
+                                    noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from {userMessage.SenderName}";
+                                    noticeViewModel.UserMessage = userMessage;
+                                    _noticeInfoDic[userMessage.SenderIP + userMessage.SenderName] = noticeViewModel;
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        NoticeList.Add(noticeViewModel);
+                                        if (NoticeList.Count > 0)
+                                        {
+                                            OpenNoticeButtonVisibility = Visibility.Visible;
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    ++noticeViewModel.Count;
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from {userMessage.SenderName}";
+                                    });
+                                }
+                            }
+                        }
                     }
                 }
                 else if (tcpMessage.Type == MessageType.FileRequest)
@@ -511,6 +625,49 @@ namespace Powork.ViewModel
         private void WindowActivated()
         {
             StopBlinking();
+        }
+
+        private void OpenNotice()
+        {
+            NoticePopupOpen = !NoticePopupOpen;
+        }
+
+        private void NoticeItemClick(NoticeViewModel noticeViewModel)
+        {
+            if (noticeViewModel.UserMessage != null)
+            {
+                lock (_noticeInfoDic)
+                {
+                    _noticeInfoDic.TryRemove(noticeViewModel.UserMessage.SenderIP + noticeViewModel.UserMessage.SenderName, out _);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        NoticeList.Remove(noticeViewModel);
+                        if (NoticeList.Count == 0)
+                        {
+                            OpenNoticeButtonVisibility = Visibility.Collapsed;
+                        }
+                    });
+                }
+                s_navigationService.Navigate(typeof(MessagePage), new MessagePageViewModel(ServiceLocator.GetService<INavigationService>(), noticeViewModel.UserMessage.SenderIP, noticeViewModel.UserMessage.SenderName));
+            }
+            else if (noticeViewModel.TeamMessage != null)
+            {
+                lock (_noticeInfoDic)
+                {
+                    _noticeInfoDic.TryRemove(noticeViewModel.TeamMessage.TeamID, out _);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        NoticeList.Remove(noticeViewModel);
+                        if (NoticeList.Count == 0)
+                        {
+                            OpenNoticeButtonVisibility = Visibility.Collapsed;
+                        }
+                    });
+                }
+                s_navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel(noticeViewModel.TeamMessage.TeamID));
+            }
+
+            NoticePopupOpen = false;
         }
 
         private void OpenDownloadInfo()

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using PowerThreadPool;
+using Powork.CustomEventArgs;
 using Powork.Model;
 using Powork.Network;
 using Powork.Repository;
@@ -39,9 +40,9 @@ namespace Powork
         public static event GetFileEventHandler GetFile;
         public delegate void StartGetFileEventHandler(object sender, EventArgs e);
         public static event StartGetFileEventHandler StartGetFile;
-        public delegate void GetUserMessageEventHandler(object sender, EventArgs e);
+        public delegate void GetUserMessageEventHandler(object sender, MessageEventArgs e);
         public static event GetUserMessageEventHandler GetUserMessage;
-        public delegate void GetTeamMessageEventHandler(object sender, EventArgs e);
+        public delegate void GetTeamMessageEventHandler(object sender, MessageEventArgs e);
         public static event GetTeamMessageEventHandler GetTeamMessage;
 
         public static void InvokeGetShareInfoEvent(List<ShareInfo> shareInfos)
@@ -65,19 +66,25 @@ namespace Powork
                 GetFile.Invoke(fileInfo, new EventArgs());
             }
         }
-        public static void InvokeGetUserMessageEvent(TCPMessageBase tcpMessage)
+        public static bool InvokeGetUserMessageEvent(TCPMessageBase tcpMessage)
         {
             if (GetUserMessage != null)
             {
-                GetUserMessage.Invoke(tcpMessage, new EventArgs());
+                MessageEventArgs e = new MessageEventArgs();
+                GetUserMessage.Invoke(tcpMessage, e);
+                return e.Received;
             }
+            return false;
         }
-        public static void InvokeGetTeamMessageEvent(TCPMessageBase tcpMessage)
+        public static bool InvokeGetTeamMessageEvent(TCPMessageBase tcpMessage)
         {
             if (GetTeamMessage != null)
             {
-                GetTeamMessage.Invoke(tcpMessage, new EventArgs());
+                MessageEventArgs e = new MessageEventArgs();
+                GetTeamMessage.Invoke(tcpMessage, e);
+                return e.Received;
             }
+            return false;
         }
         public static List<User> SelfInfo
         {
