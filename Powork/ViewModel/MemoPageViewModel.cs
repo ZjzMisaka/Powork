@@ -18,6 +18,10 @@ namespace Powork.ViewModel
                                         <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
                                         <title>Document</title>
                                         <style>
+                                            html {
+                                                overflow: auto;
+                                            }
+
                                             body {
                                                 background-color: rgb(57, 57, 57);
                                                 color: white;
@@ -223,8 +227,10 @@ namespace Powork.ViewModel
 
             MemoColumn = 0;
             PreviewColumn = 1;
-            MemoColumnSpan = 1;
+            MemoColumnSpan = 2;
             PreviewColumnSpan = 1;
+            MemoVisibility = Visibility.Visible;
+            PreviewVisibility = Visibility.Hidden;
 
             Preview = _htmlStart + _htmlEnd;
         }
@@ -271,11 +277,11 @@ namespace Powork.ViewModel
             {
                 if (MemoVisibility == Visibility.Visible && MemoColumn == 1)
                 {
-                    Swap();
+                    Swap(false);
                 }
                 if (PreviewVisibility == Visibility.Visible && PreviewColumn == 1)
                 {
-                    Swap();
+                    Swap(false);
                 }
             }
         }
@@ -330,9 +336,28 @@ namespace Powork.ViewModel
 
         private void Swap()
         {
+            Swap(true);
+        }
+
+        private void Swap(bool swapVisibility)
+        {
+            if (swapVisibility && IsSingleElement())
+            {
+                Visibility tempVisibility = MemoVisibility;
+                MemoVisibility = PreviewVisibility;
+                PreviewVisibility = tempVisibility;
+            }
+
             int temp = MemoColumn;
             MemoColumn = PreviewColumn;
             PreviewColumn = temp;
+
+            if (swapVisibility && IsSingleElement())
+            {
+                SetCol();
+            }
+
+            SetColSpan();
         }
 
         private void Save()
