@@ -113,21 +113,21 @@ namespace Powork.ViewModel
             }
         }
 
-        private bool _popupOpen;
-        public bool PopupOpen
+        private bool _downloadPopupOpen;
+        public bool DownloadPopupOpen
         {
             get
             {
-                return _popupOpen;
+                return _downloadPopupOpen;
             }
             set
             {
-                SetProperty<bool>(ref _popupOpen, value);
+                SetProperty<bool>(ref _downloadPopupOpen, value);
             }
         }
 
         private bool _popupMenuEnable;
-        public bool PopupMenuEnable
+        public bool DownloadPopupMenuEnable
         {
             get
             {
@@ -136,6 +136,18 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<bool>(ref _popupMenuEnable, value);
+            }
+        }
+
+        public bool StopDownloadPopupMenuEnable
+        {
+            get
+            {
+                if (_nowDownloadInfoViewModel == null)
+                {
+                    return false;
+                }
+                return _nowDownloadInfoViewModel.DoneCount != _nowDownloadInfoViewModel.FileCount;
             }
         }
 
@@ -152,29 +164,29 @@ namespace Powork.ViewModel
             }
         }
 
-        private bool _isScrollAtBottom;
-        public bool IsScrollAtBottom
+        private bool _isDownloadPopupScrollAtBottom;
+        public bool IsDownloadPopupScrollAtBottom
         {
             get
             {
-                return _isScrollAtBottom;
+                return _isDownloadPopupScrollAtBottom;
             }
             set
             {
-                SetProperty<bool>(ref _isScrollAtBottom, value);
+                SetProperty<bool>(ref _isDownloadPopupScrollAtBottom, value);
             }
         }
 
-        private bool _scrollToEnd;
-        public bool ScrollToEnd
+        private bool _downloadPopupScrollToEnd;
+        public bool DownloadPopupScrollToEnd
         {
             get
             {
-                return _scrollToEnd;
+                return _downloadPopupScrollToEnd;
             }
             set
             {
-                SetProperty<bool>(ref _scrollToEnd, value);
+                SetProperty<bool>(ref _downloadPopupScrollToEnd, value);
             }
         }
 
@@ -190,6 +202,7 @@ namespace Powork.ViewModel
         public ICommand OpenItemCommand { get; set; }
         public ICommand OpenFolderCommand { get; set; }
         public ICommand RemoveItemCommand { get; set; }
+        public ICommand StopDownloadCommand { get; set; }
 
         public MainWindowViewModel(INavigationService navigationService)
         {
@@ -227,6 +240,7 @@ namespace Powork.ViewModel
             OpenItemCommand = new RelayCommand(OpenItem);
             OpenFolderCommand = new RelayCommand(OpenFolder);
             RemoveItemCommand = new RelayCommand(RemoveItem);
+            StopDownloadCommand = new RelayCommand(StopDownload);
         }
 
         public static void Navigate(Type targetType, ObservableObject dataContext)
@@ -244,6 +258,7 @@ namespace Powork.ViewModel
             TrayIcon = "/Image/icon.ico";
             ApplicationTitle = "Powork";
             OpenNoticeButtonVisibility = Visibility.Collapsed;
+            DownloadPopupMenuEnable = false;
 
             _udpBroadcaster = new UdpBroadcaster(GlobalVariables.UdpPort);
             GlobalVariables.UserList = new ObservableCollection<User>(UserRepository.SelectUser());
@@ -491,9 +506,9 @@ namespace Powork.ViewModel
                                 }
                             }
 
-                            PopupOpen = true;
-                            ScrollToEnd = true;
-                            ScrollToEnd = false;
+                            DownloadPopupOpen = true;
+                            DownloadPopupScrollToEnd = true;
+                            DownloadPopupScrollToEnd = false;
 
                             using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
                             {
@@ -502,6 +517,12 @@ namespace Powork.ViewModel
 
                                 while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
                                 {
+                                    if (downloadInfoViewModel.Stop)
+                                    {
+                                        downloadInfoViewModel.Failed = true;
+                                        break;
+                                    }
+
                                     fileStream.Write(buffer, 0, bytesRead);
 
                                     Application.Current.Dispatcher.Invoke(() =>
@@ -672,7 +693,7 @@ namespace Powork.ViewModel
 
         private void OpenDownloadInfo()
         {
-            PopupOpen = !PopupOpen;
+            DownloadPopupOpen = !DownloadPopupOpen;
         }
 
         private void DownloadItemClick(DownloadInfoViewModel downloadInfoViewModel)
@@ -682,7 +703,7 @@ namespace Powork.ViewModel
                 _nowDownloadInfoViewModel.Selected = false;
             }
             _nowDownloadInfoViewModel = downloadInfoViewModel;
-            PopupMenuEnable = true;
+            DownloadPopupMenuEnable = true;
             _nowDownloadInfoViewModel.Selected = true;
         }
 
@@ -721,6 +742,11 @@ namespace Powork.ViewModel
             {
                 Directory.Delete(_nowDownloadInfoViewModel.Path, true);
             }
+        }
+
+        private void StopDownload()
+        {
+            _nowDownloadInfoViewModel.Stop = true;
         }
 
         private void StartBlinking()

@@ -11,6 +11,7 @@ namespace Powork.ViewModel.Inner
         public string RequestID { get; set; }
         public string ID { get; set; }
         public string Path { get; set; }
+        public bool Stop { get; set; }
 
         private string _name;
         public string Name
@@ -40,16 +41,16 @@ namespace Powork.ViewModel.Inner
                 SetProperty<double>(ref _progress, value);
             }
         }
-        private string _failedText;
-        public string FailedText
+        private string _statusText;
+        public string StatusText
         {
             get
             {
-                return string.IsNullOrEmpty(_failedText) ? "" : _failedText;
+                return string.IsNullOrEmpty(_statusText) ? "" : _statusText;
             }
             set
             {
-                SetProperty<string>(ref _failedText, value);
+                SetProperty<string>(ref _statusText, value);
             }
         }
         private bool _failed;
@@ -63,7 +64,7 @@ namespace Powork.ViewModel.Inner
             {
                 if (value)
                 {
-                    FailedText = "×";
+                    StatusText = "×";
                 }
             }
         }
@@ -164,6 +165,7 @@ namespace Powork.ViewModel.Inner
             Interlocked.Increment(ref _doneCount);
             if (_doneCount == FileCount)
             {
+                StatusText = "〇";
                 Progress = 100;
             }
         }
