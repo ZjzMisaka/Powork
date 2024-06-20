@@ -221,6 +221,10 @@ namespace Powork.ViewModel
             Thread.CurrentThread.CurrentCulture = ci;
 
             GlobalVariables.PowerPool = new PowerPool();
+            GlobalVariables.PowerPool.ErrorOccurred += (s, e) =>
+            {
+                MessageBox.Show("Error Occurred: \n" + e.Exception.Message + "\n" + e.Exception.StackTrace);
+            };
 
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();

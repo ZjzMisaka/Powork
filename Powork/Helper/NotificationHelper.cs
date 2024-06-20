@@ -24,7 +24,6 @@ namespace Powork.Helper
                     int maxLineCount = 4;
                     int lineCount = 0;
 
-                    int fileIndex = 0;
                     List<string> fileIDList = new List<string>();
 
                     ToastContentBuilder builder = new ToastContentBuilder()
@@ -68,19 +67,6 @@ namespace Powork.Helper
                         }
                         else if (messageBody.Type == ContentType.File)
                         {
-                            if (lineCount == maxLineCount - 1)
-                            {
-                                continue;
-                            }
-                            ++lineCount;
-                            if (lineCount == maxLineCount - 1)
-                            {
-                                builder.AddText($"File {++fileIndex}: {messageBody.Content}......");
-                            }
-                            else
-                            {
-                                builder.AddText($"File {++fileIndex}: {messageBody.Content}");
-                            }
                             fileIDList.Add(messageBody.ID);
                         }
                     }
@@ -88,7 +74,7 @@ namespace Powork.Helper
                     if (fileIDList.Count > 0)
                     {
                         builder.AddButton(new ToastButton()
-                                .SetContent($"Download")
+                                .SetContent($"Download {fileIDList.Count} file{(fileIDList.Count == 1 ? "" : "s")}")
                                 .AddArgument("action", "Download")
                                 .AddArgument("file", string.Join("|", fileIDList)));
                     }
