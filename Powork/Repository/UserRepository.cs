@@ -235,5 +235,32 @@ namespace Powork.Repository
                 return userList;
             }
         }
+
+        public static bool IsSelf(string ip, string name)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"SELECT COUNT(*) FROM TMe WHERE ip = '{ip}' AND name = '{name}'";
+
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int count = reader.GetInt32(0);
+                            if (count != 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

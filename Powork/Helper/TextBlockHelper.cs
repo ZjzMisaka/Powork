@@ -6,6 +6,7 @@ using Ookii.Dialogs.Wpf;
 using Powork.Constant;
 using Powork.Control;
 using Powork.Model;
+using Powork.Repository;
 using Wpf.Ui.Controls;
 
 namespace Powork.Helper
@@ -19,7 +20,7 @@ namespace Powork.Helper
             Application.Current.Dispatcher.Invoke(() =>
             {
                 timeTextBlock = new TextBlock();
-                if (tcpMessage.SenderIP == GlobalVariables.SelfInfo.IP && tcpMessage.SenderName == GlobalVariables.SelfInfo.Name)
+                if (UserRepository.IsSelf(tcpMessage.SenderIP, tcpMessage.SenderName))
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Right;
                 }
@@ -115,7 +116,7 @@ namespace Powork.Helper
                         }
                     }
 
-                    if (tcpMessage.SenderIP == GlobalVariables.SelfInfo.IP && tcpMessage.SenderName == GlobalVariables.SelfInfo.Name)
+                    if (UserRepository.IsSelf(tcpMessage.SenderIP, tcpMessage.SenderName))
                     {
                         textBlock.HorizontalAlignment = HorizontalAlignment.Right;
                     }
