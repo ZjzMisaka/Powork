@@ -425,10 +425,7 @@ namespace Powork.ViewModel
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         NoticeList.Add(noticeViewModel);
-                                        if (NoticeList.Count > 0)
-                                        {
-                                            OpenNoticeButtonVisibility = Visibility.Visible;
-                                        }
+                                        OpenNoticeButtonVisibility = Visibility.Visible;
                                     });
                                 }
                                 else
@@ -689,6 +686,8 @@ namespace Powork.ViewModel
                         }
                     });
                 }
+                s_navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel());
+
                 s_navigationService.Navigate(typeof(MessagePage), new MessagePageViewModel(ServiceLocator.GetService<INavigationService>(), noticeViewModel.UserMessage.SenderIP, noticeViewModel.UserMessage.SenderName));
             }
             else if (noticeViewModel.TeamMessage != null)
@@ -705,6 +704,8 @@ namespace Powork.ViewModel
                         }
                     });
                 }
+                s_navigationService.Navigate(typeof(MessagePage), new MessagePageViewModel(ServiceLocator.GetService<INavigationService>()));
+
                 s_navigationService.Navigate(typeof(TeamPage), new TeamPageViewModel(noticeViewModel.TeamMessage.TeamID));
             }
 
