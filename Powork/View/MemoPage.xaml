@@ -54,14 +54,16 @@
         <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" Margin="5" Text="{Binding Memo, UpdateSourceTrigger=PropertyChanged}" Grid.Column="{Binding MemoColumn}" Grid.ColumnSpan="{Binding MemoColumnSpan}" Visibility="{Binding MemoVisibility}">
+            <TextBox ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" Text="{Binding Memo, UpdateSourceTrigger=PropertyChanged}" Grid.Column="{Binding MemoColumn}" Grid.ColumnSpan="{Binding MemoColumnSpan}" Visibility="{Binding MemoVisibility}" Margin="{Binding MemoMargin}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, Mode=OneWay}" />
                 </TextBox.InputBindings>
             </TextBox>
-            <WebBrowser ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" extension:WebBrowserExtension.Source="{Binding Preview}" Grid.Column="{Binding PreviewColumn}" Grid.ColumnSpan="{Binding PreviewColumnSpan}" Visibility="{Binding PreviewVisibility}"/>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5" Background="Transparent" ShowsPreview="True"></GridSplitter>
+            <WebBrowser ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" extension:WebBrowserExtension.Source="{Binding Preview}" Grid.Column="{Binding PreviewColumn}" Grid.ColumnSpan="{Binding PreviewColumnSpan}" Visibility="{Binding PreviewVisibility}" Margin="{Binding PreviewMargin}"/>
         </Grid>
     </Grid>
 </Page>

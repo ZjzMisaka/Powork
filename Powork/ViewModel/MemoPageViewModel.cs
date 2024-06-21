@@ -205,6 +205,30 @@ namespace Powork.ViewModel
                 SetProperty<Visibility>(ref _previewVisibility, value);
             }
         }
+        private Thickness _memoMargin;
+        public Thickness MemoMargin
+        {
+            get
+            {
+                return _memoMargin;
+            }
+            set
+            {
+                SetProperty<Thickness>(ref _memoMargin, value);
+            }
+        }
+        private Thickness _previewMargin;
+        public Thickness PreviewMargin
+        {
+            get
+            {
+                return _previewMargin;
+            }
+            set
+            {
+                SetProperty<Thickness>(ref _previewMargin, value);
+            }
+        }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }
         public ICommand PreviousDayCommand { get; set; }
@@ -226,11 +250,13 @@ namespace Powork.ViewModel
             SaveCommand = new RelayCommand(Save);
 
             MemoColumn = 0;
-            PreviewColumn = 1;
-            MemoColumnSpan = 2;
+            PreviewColumn = 2;
+            MemoColumnSpan = 3;
             PreviewColumnSpan = 1;
             MemoVisibility = Visibility.Visible;
             PreviewVisibility = Visibility.Hidden;
+            MemoMargin = new Thickness(5);
+            PreviewMargin = new Thickness(5);
 
             Preview = _htmlStart + _htmlEnd;
         }
@@ -275,11 +301,11 @@ namespace Powork.ViewModel
         {
             if (IsSingleElement())
             {
-                if (MemoVisibility == Visibility.Visible && MemoColumn == 1)
+                if (MemoVisibility == Visibility.Visible && MemoColumn == 2)
                 {
                     Swap(false);
                 }
-                if (PreviewVisibility == Visibility.Visible && PreviewColumn == 1)
+                if (PreviewVisibility == Visibility.Visible && PreviewColumn == 2)
                 {
                     Swap(false);
                 }
@@ -292,17 +318,45 @@ namespace Powork.ViewModel
             {
                 if (MemoVisibility == Visibility.Visible && MemoColumn == 0)
                 {
-                    MemoColumnSpan = 2;
+                    MemoColumnSpan = 3;
                 }
-                if (PreviewVisibility == Visibility.Visible && PreviewColumn == 0)
+                else if (PreviewVisibility == Visibility.Visible && PreviewColumn == 0)
                 {
-                    PreviewColumnSpan = 2;
+                    PreviewColumnSpan = 3;
                 }
             }
             else
             {
                 MemoColumnSpan = 1;
                 PreviewColumnSpan = 1;
+            }
+        }
+
+        private void SetMargin()
+        {
+            if (IsSingleElement())
+            {
+                if (MemoVisibility == Visibility.Visible && MemoColumn == 0)
+                {
+                    MemoMargin = new Thickness(5);
+                }
+                else if (PreviewVisibility == Visibility.Visible && PreviewColumn == 0)
+                {
+                    PreviewMargin = new Thickness(5);
+                }
+            }
+            else
+            {
+                if (MemoColumn == 0)
+                {
+                    MemoMargin = new Thickness(5, 5, 0, 5);
+                    PreviewMargin = new Thickness(0, 5, 5, 5);
+                }
+                else if (PreviewColumn == 0)
+                {
+                    PreviewMargin = new Thickness(5, 5, 0, 5);
+                    MemoMargin = new Thickness(0, 5, 5, 5);
+                }
             }
         }
 
@@ -318,6 +372,7 @@ namespace Powork.ViewModel
             }
             SetCol();
             SetColSpan();
+            SetMargin();
         }
 
         private void PreviewVisibleChange()
@@ -332,6 +387,7 @@ namespace Powork.ViewModel
             }
             SetCol();
             SetColSpan();
+            SetMargin();
         }
 
         private void Swap()
@@ -358,6 +414,7 @@ namespace Powork.ViewModel
             }
 
             SetColSpan();
+            SetMargin();
         }
 
         private void Save()
