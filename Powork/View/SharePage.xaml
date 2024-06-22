@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ui:TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="5" Text="{Binding UserName}"></ui:TextBlock>
+            <ui:TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="18" VerticalAlignment="Center" Margin="5" Text="{Binding UserName}"></ui:TextBlock>
         </Grid>
         <ui:ListView ItemsSource="{Binding ShareInfoList}" Grid.Row="1" AllowDrop="{Binding IsSelf}" BorderThickness="0" Margin="5" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <i:Interaction.Triggers>

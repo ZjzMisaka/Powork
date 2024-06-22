@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" Margin="5"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="5"></TextBlock>
             <TextBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Value}" Margin="5"></TextBox>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">

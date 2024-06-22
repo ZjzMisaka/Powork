@@ -52,7 +52,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="White" Margin="5, 2"/>
+                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="{Binding ForegroundColor}" Margin="5, 2"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -97,7 +97,7 @@
                 <Button Command="{Binding ManageTeamMemberCommand}" IsEnabled="{Binding SendEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Margin="5">
                     <ui:SymbolIcon Symbol="PeopleSettings24" />
                 </Button>
-                <TextBlock AllowDrop="True" Grid.Column="1" Text="DROP HERE" Foreground="White" Block.TextAlignment="Center" VerticalAlignment="Center">
+                <TextBlock AllowDrop="True" Grid.Column="1" Text="DROP HERE" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Block.TextAlignment="Center" VerticalAlignment="Center">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Drop">
                             <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True" />

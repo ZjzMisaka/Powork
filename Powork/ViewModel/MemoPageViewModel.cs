@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Markdig;
 using Powork.Constant;
+using Powork.Helper;
 using Powork.Repository;
 
 namespace Powork.ViewModel
@@ -11,23 +12,23 @@ namespace Powork.ViewModel
     class MemoPageViewModel : ObservableObject
     {
         private readonly MarkdownPipeline _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-        private readonly string _htmlStart = @"<!DOCTYPE html>
+        private readonly string _htmlStart = $@"<!DOCTYPE html>
                                     <html lang=""en"">
                                     <head>
                                         <meta charset=""UTF-8"">
                                         <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
                                         <title>Document</title>
                                         <style>
-                                            html {
+                                            html {{
                                                 overflow: auto;
-                                            }
+                                            }}
 
-                                            body {
-                                                background-color: rgb(57, 57, 57);
-                                                color: white;
-                                            }
+                                            body {{
+                                                background-color: {ThemeHelper.BackgroundColorText};
+                                                color: {ThemeHelper.ForegroundColorText};
+                                            }}
 
-                                            code {
+                                            code {{
                                               background-color: #2d2d2d;
                                               color: #f8f8f2;
                                               padding: 0.2em 0.4em;
@@ -36,15 +37,15 @@ namespace Powork.ViewModel
                                               font-size: 0.95em;
                                               display: inline-block;
                                               white-space: pre;
-                                            }
+                                            }}
 
-                                            pre code {
+                                            pre code {{
                                               display: block;
                                               padding: 1em;
                                               overflow-x: auto;
-                                            }
+                                            }}
 
-                                            pre {
+                                            pre {{
                                               background-color: #2d2d2d;
                                               color: #f8f8f2;
                                               padding: 0.2em;
@@ -52,42 +53,42 @@ namespace Powork.ViewModel
                                               font-family: Consolas, ""Courier New"", monospace;
                                               font-size: 0.95em;
                                               overflow: auto;
-                                            }
+                                            }}
 
-                                            table {
+                                            table {{
                                               width: 100%;
                                               border-collapse: collapse;
                                               margin: 1em 0;
                                               background-color: #2d2d2d;
                                               color: #f8f8f2;
                                               font-family: Arial, sans-serif;
-                                            }
+                                            }}
 
-                                            th, td {
+                                            th, td {{
                                               padding: 0.6em 0.8em;
                                               border: 1px solid #444;
                                               text-align: left;
-                                            }
+                                            }}
 
-                                            th {
+                                            th {{
                                               background-color: #444;
                                               font-weight: bold;
-                                            }
+                                            }}
 
-                                            tr:nth-child(even) {
+                                            tr:nth-child(even) {{
                                               background-color: #383838;
-                                            }
+                                            }}
 
-                                            tr:hover {
+                                            tr:hover {{
                                               background-color: #555;
-                                            }
+                                            }}
 
-                                            caption {
+                                            caption {{
                                               caption-side: bottom;
                                               padding: 0.5em;
                                               font-size: 1em;
                                               color: #f8f8f2;
-                                            }
+                                            }}
                                         </style>
                                     </head>";
         private readonly string _htmlEnd = @"</html>";

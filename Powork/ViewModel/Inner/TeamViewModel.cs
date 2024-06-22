@@ -1,5 +1,7 @@
-﻿using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
 
@@ -40,15 +42,17 @@ namespace Powork.ViewModel.Inner
                 _selected = value;
                 if (_selected)
                 {
-                    BackgroundColor = new SolidColorBrush(Color.FromRgb(100, 100, 100));
+                    BackgroundColor = ThemeHelper.SelectedBackgroundBrush;
+                    ForegroundColor = ThemeHelper.SelectedForegroundBrush;
                 }
                 else
                 {
-                    BackgroundColor = new SolidColorBrush(Color.FromRgb(39, 39, 39));
+                    BackgroundColor = Brushes.Transparent;
+                    ForegroundColor = ThemeHelper.ForegroundBrush;
                 }
             }
         }
-        private Brush _backgroundColor = new SolidColorBrush(Color.FromRgb(39, 39, 39));
+        private Brush _backgroundColor = Brushes.Transparent;
         public Brush BackgroundColor
         {
             get
@@ -58,6 +62,18 @@ namespace Powork.ViewModel.Inner
             set
             {
                 SetProperty<Brush>(ref _backgroundColor, value);
+            }
+        }
+        private Brush _foregroundColor = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+        public Brush ForegroundColor
+        {
+            get
+            {
+                return _foregroundColor;
+            }
+            set
+            {
+                SetProperty<Brush>(ref _foregroundColor, value);
             }
         }
 

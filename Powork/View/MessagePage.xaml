@@ -51,9 +51,9 @@
                                 <RowDefinition Height="auto"></RowDefinition>
                                 <RowDefinition Height="auto"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="White" Margin="5 2 5 0"/>
-                            <TextBlock Text="{Binding GroupName}" Grid.Row="1" Foreground="White" FontSize="9" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5 0 5 0"/>
-                            <TextBlock Text="{Binding IP}" Grid.Row="2" Foreground="White" FontSize="9" Margin="5 0 5 2"/>
+                            <TextBlock Text="{Binding Name}" Grid.Row="0" Foreground="{Binding ForegroundColor}" Margin="5 2 5 0"/>
+                            <TextBlock Text="{Binding GroupName}" Grid.Row="1" Foreground="{Binding ForegroundColor}" FontSize="9" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5 0 5 0"/>
+                            <TextBlock Text="{Binding IP}" Grid.Row="2" Foreground="{Binding ForegroundColor}" FontSize="9" Margin="5 0 5 2"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -93,7 +93,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock AllowDrop="True" Grid.Column="0" Text="DROP HERE" Foreground="White" Block.TextAlignment="Center" VerticalAlignment="Center">
+                <TextBlock AllowDrop="True" Grid.Column="0" Text="DROP HERE" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Block.TextAlignment="Center" VerticalAlignment="Center">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Drop">
                             <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True" />

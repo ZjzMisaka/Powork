@@ -28,7 +28,7 @@ namespace Powork.Helper
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                 }
-                timeTextBlock.Foreground = Brushes.LightGreen;
+                timeTextBlock.Foreground = ThemeHelper.TimeTextBrush;
                 string timeStr = null;
                 if (DateTime.TryParse(tcpMessage.Time, out DateTime dateTime))
                 {
@@ -56,7 +56,7 @@ namespace Powork.Helper
                     List<TCPMessageBody> userMessageBodyList = tcpMessage.MessageBody;
                     textBlock = new SelectableTextBlock();
 
-                    textBlock.Foreground = Brushes.White;
+                    textBlock.Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
 
                     foreach (TCPMessageBody body in userMessageBodyList)
                     {
@@ -130,7 +130,7 @@ namespace Powork.Helper
                     List<TCPMessageBody> tcpMessageBodyList = tcpMessage.MessageBody;
                     textBlock = new TextBlock();
 
-                    textBlock.Foreground = Brushes.Pink;
+                    textBlock.Foreground = ThemeHelper.ErrorTextBrush;
 
                     foreach (TCPMessageBody body in tcpMessageBodyList)
                     {

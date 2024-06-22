@@ -190,6 +190,8 @@ namespace Powork.ViewModel
             }
         }
 
+        public ICommand SwitchLightThemeCommand { get; set; }
+        public ICommand SwitchDarkThemeCommand { get; set; }
         public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -232,6 +234,8 @@ namespace Powork.ViewModel
             NoticeList = new ObservableCollection<NoticeViewModel>();
             DownloadList = new ObservableCollection<DownloadInfoViewModel>();
 
+            SwitchLightThemeCommand = new RelayCommand(SwitchLightTheme);
+            SwitchDarkThemeCommand = new RelayCommand(SwitchDarkTheme);
             ExitCommand = new RelayCommand(Exit);
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
@@ -250,6 +254,16 @@ namespace Powork.ViewModel
         public static void Navigate(Type targetType, ObservableObject dataContext)
         {
             s_navigationService.Navigate(targetType, dataContext);
+        }
+
+        private void SwitchLightTheme()
+        {
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Light, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
+        }
+
+        private void SwitchDarkTheme()
+        {
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
         }
 
         private void Exit()
