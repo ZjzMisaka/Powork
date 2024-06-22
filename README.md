@@ -1,5 +1,7 @@
 # Powork
 
+![icon](https://github.com/ZjzMisaka/Powork/assets/16731853/75399556-3ab7-4b1e-b5db-4f1e4cdc962e)
+
 Powork is a comprehensive office software designed for local networks, providing efficient communication and collaboration among users.
 
 ## Features
