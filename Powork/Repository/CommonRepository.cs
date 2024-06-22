@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using System.IO;
 
 namespace Powork.Repository

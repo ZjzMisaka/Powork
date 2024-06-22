@@ -1,6 +1,4 @@
 ﻿using System.Data.SQLite;
-using Newtonsoft.Json;
-using Powork.Model;
 
 namespace Powork.Repository
 {

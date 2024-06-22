@@ -15,7 +15,6 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using PowerThreadPool;
 using Powork.Constant;
-using Powork.CustomEventArgs;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Network;
