@@ -17,7 +17,7 @@ namespace Powork
         {
             InitializeComponent();
 
-            var serviceCollection = new ServiceCollection();
+            ServiceCollection serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
@@ -39,7 +39,7 @@ namespace Powork
 
             services.AddSingleton<INavigationService, Service.NavigationService>(provider =>
             {
-                var navigationView = provider.GetRequiredService<NavigationView>();
+                NavigationView navigationView = provider.GetRequiredService<NavigationView>();
                 return new Service.NavigationService(navigationView);
             });
         }

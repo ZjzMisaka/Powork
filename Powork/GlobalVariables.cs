@@ -96,14 +96,14 @@ namespace Powork
 
         public static IPAddress GetLocalIPAddress()
         {
-            foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {
                 if (ni.NetworkInterfaceType != NetworkInterfaceType.Loopback && ni.OperationalStatus == OperationalStatus.Up)
                 {
-                    var ipProperties = ni.GetIPProperties();
+                    IPInterfaceProperties ipProperties = ni.GetIPProperties();
                     if (ipProperties.GatewayAddresses.Count > 0)
                     {
-                        foreach (var ip in ipProperties.UnicastAddresses)
+                        foreach (UnicastIPAddressInformation ip in ipProperties.UnicastAddresses)
                         {
                             if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
                             {

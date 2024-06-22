@@ -19,7 +19,7 @@ namespace Powork.Helper
                     byte[] imageBytes = Convert.FromBase64String(messageBody.Content);
 
                     BitmapImage bitmapImage = new BitmapImage();
-                    using (var ms = new MemoryStream(imageBytes))
+                    using (MemoryStream ms = new MemoryStream(imageBytes))
                     {
                         bitmapImage.BeginInit();
                         bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
@@ -37,7 +37,7 @@ namespace Powork.Helper
 
                     string localFilePath = Path.Combine(directoryPath, DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + "-" + Guid.NewGuid() + ".png");
 
-                    using (var fileStream = new FileStream(localFilePath, FileMode.Create))
+                    using (FileStream fileStream = new FileStream(localFilePath, FileMode.Create))
                     {
                         PngBitmapEncoder encoder = new PngBitmapEncoder();
                         encoder.Frames.Add(BitmapFrame.Create(bitmapImage));

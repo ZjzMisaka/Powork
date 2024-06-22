@@ -11,7 +11,7 @@ namespace Powork.Repository
 
             string sql = $"INSERT INTO TUser (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -54,7 +54,7 @@ namespace Powork.Repository
 
             string sql = $"UPDATE TUser SET groupName = '{user.GroupName}' WHERE ip = '{user.IP}' AND name = '{user.Name}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -68,7 +68,7 @@ namespace Powork.Repository
 
             string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
@@ -96,7 +96,7 @@ namespace Powork.Repository
 
             string sql = $"SELECT ip, name, groupName FROM TUser WHERE ip = '{ip}' AND name = '{name}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
@@ -122,7 +122,7 @@ namespace Powork.Repository
 
             string sql = $"DELETE FROM TUser WHERE ip = '{ip}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -134,7 +134,7 @@ namespace Powork.Repository
 
             string sql = $"DELETE FROM TUser WHERE ip = '{ip}' AND  name = '{name}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -146,7 +146,7 @@ namespace Powork.Repository
 
             string sql = $"INSERT INTO TMe (ip, name, groupName) VALUES ('{user.IP}', '{user.Name}', '{user.GroupName}')";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -158,7 +158,7 @@ namespace Powork.Repository
 
             string sql = $"UPDATE TMe SET name = '{user.Name}', groupName = '{user.GroupName}' WHERE ip = '{user.IP}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -189,7 +189,7 @@ namespace Powork.Repository
                 sql += $" WHERE ip = '{ip}'";
             }
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {

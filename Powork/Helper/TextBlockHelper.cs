@@ -92,7 +92,7 @@ namespace Powork.Helper
                         {
                             InlineUIContainer container = new InlineUIContainer(ButtonHelper.CreateImageButton(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image\\file.png"), new RoutedEventHandler((s, e) =>
                             {
-                                var fbd = new VistaFolderBrowserDialog
+                                VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog
                                 {
                                     SelectedPath = AppDomain.CurrentDomain.BaseDirectory,
                                     Description = "Select a folder",

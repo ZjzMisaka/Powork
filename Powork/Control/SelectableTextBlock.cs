@@ -24,9 +24,9 @@ namespace Powork.Control
 
         public static TextEditorWrapper CreateFor(TextBlock tb)
         {
-            var textContainer = s_textContainerProp.GetValue(tb);
+            object textContainer = s_textContainerProp.GetValue(tb);
 
-            var editor = new TextEditorWrapper(textContainer, tb, false);
+            TextEditorWrapper editor = new TextEditorWrapper(textContainer, tb, false);
             s_isReadOnlyProp.SetValue(editor._editor, true);
             s_textViewProp.SetValue(editor._editor, s_textContainerTextViewProp.GetValue(textContainer));
 

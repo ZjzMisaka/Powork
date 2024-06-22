@@ -14,7 +14,7 @@ namespace Powork.Repository
             string sql = $"INSERT INTO TShare (id, path, name, extension, type, size, shareTime, createTime, lastModifiedTime) " +
                     $"VALUES ('{shareInfo.Guid}', '{shareInfo.Path}', '{shareInfo.Name}', '{shareInfo.Extension}', '{shareInfo.Type}', '{shareInfo.Size}', '{shareInfo.ShareTime}', '{shareInfo.CreateTime}', '{shareInfo.LastModifiedTime}')";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -61,7 +61,7 @@ namespace Powork.Repository
 
             string sql = $"UPDATE TShare SET size = '{shareInfo.Size}', lastModifiedTime = '{shareInfo.LastModifiedTime}' WHERE id = '{shareInfo.Guid}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -73,7 +73,7 @@ namespace Powork.Repository
 
             string sql = $"DELETE FROM TShare WHERE id = '{id}'";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }

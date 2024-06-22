@@ -29,7 +29,7 @@ namespace Powork.Repository
 
             string sql = @"INSERT OR REPLACE INTO TMemo (date, memo) VALUES (@date, @memo)";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@date", date);
                 command.Parameters.AddWithValue("@memo", memo);

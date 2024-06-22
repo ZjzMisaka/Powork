@@ -40,7 +40,7 @@ namespace Powork.Repository
             }
             sql = $"{sql}  ORDER BY time DESC LIMIT 10";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {

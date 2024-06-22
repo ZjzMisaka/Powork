@@ -232,7 +232,7 @@ namespace Powork.ViewModel
             }
             else
             {
-                var fbd = new VistaFolderBrowserDialog
+                VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog
                 {
                     SelectedPath = AppDomain.CurrentDomain.BaseDirectory,
                     Description = "Select a folder",

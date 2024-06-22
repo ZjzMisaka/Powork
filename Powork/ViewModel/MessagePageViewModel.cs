@@ -227,10 +227,10 @@ namespace Powork.ViewModel
 
         public void InsertImage(string uri)
         {
-            var image = new Wpf.Ui.Controls.Image();
+            Image image = new Image();
             image.Source = new BitmapImage(new Uri(uri));
             image.Width = image.Height = 64;
-            var container = new BlockUIContainer(image);
+            BlockUIContainer container = new BlockUIContainer(image);
             RichTextBoxDocument.Blocks.Add(container);
         }
 

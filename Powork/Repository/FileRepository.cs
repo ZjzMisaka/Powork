@@ -10,7 +10,7 @@ namespace Powork.Repository
 
             string sql = $"INSERT INTO TFile (id, path) VALUES ('{guid}', '{path}')";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }

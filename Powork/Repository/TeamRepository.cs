@@ -11,7 +11,7 @@ namespace Powork.Repository
 
             string sql = $"INSERT OR REPLACE INTO TTeam (id, name, lastModifiedTime) VALUES ('{team.ID}', '{team.Name}', '{team.LastModifiedTime}')";
 
-            using (var command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -26,11 +26,11 @@ namespace Powork.Repository
             string sqlTTeam = $"DELETE FROM TTeam WHERE id = '{id}'";
             string sqlTTeamMember = $"DELETE FROM TTeamMember WHERE teamID = '{id}'";
 
-            using (var command = new SQLiteCommand(sqlTTeam, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sqlTTeam, connection))
             {
                 command.ExecuteNonQuery();
             }
-            using (var command = new SQLiteCommand(sqlTTeamMember, connection))
+            using (SQLiteCommand command = new SQLiteCommand(sqlTTeamMember, connection))
             {
                 command.ExecuteNonQuery();
             }
@@ -44,7 +44,7 @@ namespace Powork.Repository
             {
                 string sql = $"INSERT OR REPLACE INTO TTeamMember (teamID, userIP, userName, groupName) VALUES ('{teamID}', '{user.IP}', '{user.Name}', '{user.GroupName}')";
 
-                using (var command = new SQLiteCommand(sql, connection))
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
                 }

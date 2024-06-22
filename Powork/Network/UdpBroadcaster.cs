@@ -28,7 +28,7 @@ namespace Powork.Network
                     if (user != null)
                     {
                         _udpClient.Client.ReceiveTimeout = 100;
-                        var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
+                        byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user));
                         _udpClient.Send(bytes, bytes.Length, _endPoint);
                     }
 

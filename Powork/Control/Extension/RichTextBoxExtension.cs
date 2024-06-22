@@ -20,7 +20,7 @@ namespace Powork.Control.Extension
 
         private static void OnDocumentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var richTextBox = (RichTextBox)d;
+            RichTextBox richTextBox = (RichTextBox)d;
 
             richTextBox.Document = (FlowDocument)e.NewValue;
         }
@@ -58,7 +58,7 @@ namespace Powork.Control.Extension
         {
             if (d is RichTextBox richTextBox && (bool)e.NewValue)
             {
-                var scrollViewer = GetScrollViewer(richTextBox);
+                ScrollViewer scrollViewer = GetScrollViewer(richTextBox);
                 if (scrollViewer != null)
                 {
                     scrollViewer.ScrollToEnd();
@@ -87,7 +87,7 @@ namespace Powork.Control.Extension
         {
             if (d is RichTextBox richTextBox)
             {
-                var scrollViewer = GetScrollViewer(richTextBox);
+                ScrollViewer scrollViewer = GetScrollViewer(richTextBox);
                 if (scrollViewer != null)
                 {
                     if ((bool)e.NewValue)
@@ -136,14 +136,14 @@ namespace Powork.Control.Extension
             {
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(richTextBox); i++)
                 {
-                    var child = VisualTreeHelper.GetChild(richTextBox, i);
+                    DependencyObject child = VisualTreeHelper.GetChild(richTextBox, i);
                     if (child is ScrollViewer)
                     {
                         return (ScrollViewer)child;
                     }
                     else
                     {
-                        var result = GetScrollViewer(child);
+                        ScrollViewer result = GetScrollViewer(child);
                         if (result != null)
                         {
                             return result;

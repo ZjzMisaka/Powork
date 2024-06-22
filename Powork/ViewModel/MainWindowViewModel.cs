@@ -312,7 +312,7 @@ namespace Powork.ViewModel
             GlobalVariables.TcpServerClient.StartListening((client, ip) =>
             {
                 NetworkStream stream = client.GetStream();
-                using var reader = new BinaryReader(stream);
+                using BinaryReader reader = new BinaryReader(stream);
                 int length = reader.ReadInt32();
                 byte[] messageBytes = reader.ReadBytes(length);
                 string message = Encoding.UTF8.GetString(messageBytes);
@@ -526,7 +526,7 @@ namespace Powork.ViewModel
                             DownloadPopupScrollToEnd = true;
                             DownloadPopupScrollToEnd = false;
 
-                            using (var fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
+                            using (FileStream fileStream = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write))
                             {
                                 byte[] buffer = new byte[1024];
                                 int bytesRead;
