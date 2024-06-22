@@ -93,11 +93,11 @@ namespace Powork.ViewModel.Inner
                 }
                 else
                 {
-                    Opacity = 0.5;
+                    Opacity = 0.7;
                 }
             }
         }
-        private double _opacity = 0.5;
+        private double _opacity = 0.7;
         public double Opacity
         {
             get

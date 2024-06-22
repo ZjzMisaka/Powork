@@ -144,6 +144,7 @@ namespace Powork.Helper
                     }
 
                     textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                    textBlock.TextAlignment = TextAlignment.Center;
                 }
             });
 

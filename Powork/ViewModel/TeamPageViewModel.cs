@@ -342,6 +342,7 @@ namespace Powork.ViewModel
             {
                 return;
             }
+
             List<TCPMessageBody> teamMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
             RichTextBoxDocument = new FlowDocument();
             TeamMessage teamMessage = new TeamMessage
@@ -356,6 +357,7 @@ namespace Powork.ViewModel
 
             string message = JsonConvert.SerializeObject(teamMessage);
 
+            List<(Task<ExecuteResult<Exception>>, User)> tupleList = new List<(Task<ExecuteResult<Exception>>, User)>();
             foreach (User member in TeamRepository.SelectTeamMember(_nowTeam.ID))
             {
                 if (member.IP == GlobalVariables.SelfInfo.IP && member.Name == GlobalVariables.SelfInfo.Name)
@@ -364,10 +366,27 @@ namespace Powork.ViewModel
                 }
 
                 Task<ExecuteResult<Exception>> task = GlobalVariables.TcpServerClient.SendMessage(message, member.IP, GlobalVariables.TcpPort);
-                Exception ex = (await task).Result;
+                tupleList.Add((task, member));
+            }
+
+            MessageHelper.ConvertImageInMessage(teamMessage);
+
+            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
+            TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageList.Add(timeTextBlock);
+                MessageList.Add(textBlock);
+            });
+            TeamMessageRepository.InsertMessage(teamMessage);
+
+            foreach ((Task<ExecuteResult<Exception>>, User) tuple in tupleList)
+            {
+                Exception ex = (await tuple.Item1).Result;
+                User member = tuple.Item2;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline. The message will be delayed." }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline.\nThe message will be delayed." }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,
@@ -384,18 +403,8 @@ namespace Powork.ViewModel
                 }
             }
 
-            MessageHelper.ConvertImageInMessage(teamMessage);
-
-            TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(teamMessage, true);
-            TextBlock textBlock = TextBlockHelper.GetMessageControl(teamMessage);
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                MessageList.Add(timeTextBlock);
-                MessageList.Add(textBlock);
-            });
             ScrollToEnd = true;
             ScrollToEnd = false;
-            TeamMessageRepository.InsertMessage(teamMessage);
         }
 
         private void TeamClick(TeamViewModel teamViewModel)

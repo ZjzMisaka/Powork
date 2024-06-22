@@ -454,6 +454,7 @@ namespace Powork.ViewModel
             {
                 return;
             }
+
             List<TCPMessageBody> tcpMessageBodyList = RichTextBoxHelper.ConvertFlowDocumentToMessageBodyList(RichTextBoxDocument);
             RichTextBoxDocument = new FlowDocument();
             UserMessage userMessage = new UserMessage
@@ -467,8 +468,7 @@ namespace Powork.ViewModel
             string message = JsonConvert.SerializeObject(userMessage);
 
             Task<ExecuteResult<Exception>> task = GlobalVariables.TcpServerClient.SendMessage(message, _nowUser.IP, GlobalVariables.TcpPort);
-            Exception ex = (await task).Result;
-
+            
             MessageHelper.ConvertImageInMessage(userMessage);
 
             TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);
@@ -478,11 +478,13 @@ namespace Powork.ViewModel
                 MessageList.Add(timeTextBlock);
                 MessageList.Add(textBlock);
             });
-            ScrollToEnd = true;
-            ScrollToEnd = false;
+
+            UserMessageRepository.InsertMessage(userMessage, _nowUser.IP, _nowUser.Name);
+
+            Exception ex = (await task).Result;
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline. The message will be delayed." }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline.\nThe message will be delayed." }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
@@ -496,7 +498,9 @@ namespace Powork.ViewModel
 
                 UserMessageRepository.InsertMessage(errorMessage, _nowUser.IP, _nowUser.Name);
             }
-            UserMessageRepository.InsertMessage(userMessage, _nowUser.IP, _nowUser.Name);
+
+            ScrollToEnd = true;
+            ScrollToEnd = false;
         }
 
         private void ScrollAtTop()

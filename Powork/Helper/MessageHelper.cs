@@ -75,7 +75,7 @@ namespace Powork.Helper
 
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline. The message will be delayed." }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline.\nThe message will be delayed." }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
@@ -118,7 +118,7 @@ namespace Powork.Helper
                 Exception ex = (await task).Result;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline. The message will be delayed." }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline.\nThe message will be delayed." }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,
