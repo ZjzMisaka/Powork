@@ -9,6 +9,7 @@ using PowerThreadPool.Options;
 using PowerThreadPool.Results;
 using Powork.Constant;
 using Powork.Model;
+using Powork.Repository;
 
 namespace Powork.Network
 {
@@ -83,6 +84,7 @@ namespace Powork.Network
                 }
                 catch (Exception ex)
                 {
+                    DelaySendingMessageRepository.InsertMessage(ipAddress, message);
                     return ex;
                 }
                 finally

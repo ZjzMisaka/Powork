@@ -368,7 +368,7 @@ namespace Powork.ViewModel
                 Exception ex = (await task).Result;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Send failed: User {member.Name} not online" }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline. The message will be delayed." }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,

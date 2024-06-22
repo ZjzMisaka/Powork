@@ -75,6 +75,12 @@ namespace Powork.Repository
                 command.ExecuteNonQuery();
             }
 
+            string sqlTDelaySendingMessage = @"CREATE TABLE IF NOT EXISTS TDelaySendingMessage (toIP VARCHAR(36), message VARCHAR(5000), id INTEGER PRIMARY KEY AUTOINCREMENT)";
+            using (SQLiteCommand command = new SQLiteCommand(sqlTDelaySendingMessage, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+
             string sqlTFile = @"CREATE TABLE IF NOT EXISTS TFile (id VARCHAR(36) PRIMARY KEY, path VARCHAR(256))";
             using (SQLiteCommand command = new SQLiteCommand(sqlTFile, connection))
             {

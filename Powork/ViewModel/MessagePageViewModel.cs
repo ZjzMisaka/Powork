@@ -483,7 +483,7 @@ namespace Powork.ViewModel
             ScrollToEnd = false;
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Send failed: User not online" }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline. The message will be delayed." }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,

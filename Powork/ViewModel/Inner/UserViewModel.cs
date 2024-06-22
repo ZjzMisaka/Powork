@@ -1,6 +1,7 @@
 ﻿using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Powork.Model;
+using Powork.Repository;
 
 namespace Powork.ViewModel.Inner
 {
@@ -66,6 +67,20 @@ namespace Powork.ViewModel.Inner
             }
             set
             {
+                if (_status == OnlineStatus.Offline && value == OnlineStatus.Online)
+                {
+                    List<string> messages = DelaySendingMessageRepository.SelectMessgae(IP);
+                    if (messages.Count > 0)
+                    {
+                        DelaySendingMessageRepository.RemoveMessgae(IP);
+                        foreach (string message in messages)
+                        {
+#pragma warning disable CS4014
+                            GlobalVariables.TcpServerClient.SendMessage(message, IP, GlobalVariables.TcpPort);
+#pragma warning restore CS4014
+                        }
+                    }
+                }
                 _status = value;
                 if (_status == OnlineStatus.Online)
                 {
