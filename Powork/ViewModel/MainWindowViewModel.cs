@@ -222,7 +222,21 @@ namespace Powork.ViewModel
             ci.DateTimeFormat.ShortDatePattern = Format.DateTimeFormat;
             Thread.CurrentThread.CurrentCulture = ci;
 
-            GlobalVariables.PowerPool = new PowerPool();
+            int maxThreads = Environment.ProcessorCount;
+            int minThreads = 5;
+            if (minThreads > maxThreads)
+            {
+                minThreads = maxThreads;
+            }
+            GlobalVariables.PowerPool = new PowerPool(new PowerThreadPool.Options.PowerPoolOption()
+            {
+                MaxThreads = maxThreads,
+                DestroyThreadOption = new PowerThreadPool.Options.DestroyThreadOption()
+                {
+                    KeepAliveTime = 3000,
+                    MinThreads = minThreads,
+                }
+            });
             GlobalVariables.PowerPool.ErrorOccurred += (s, e) =>
             {
                 MessageBox.Show($"Error Occurred: \n{e.Exception.Message}\n{e.Exception.StackTrace}\nfrom: {e.ErrorFrom}");
