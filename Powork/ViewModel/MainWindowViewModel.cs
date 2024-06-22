@@ -658,6 +658,8 @@ namespace Powork.ViewModel
         {
             CommonRepository.CloseConnection();
             GlobalVariables.PowerPool.Dispose();
+
+            Environment.Exit(0);
         }
 
         private void WindowActivated()
