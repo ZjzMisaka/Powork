@@ -4,8 +4,14 @@ using Powork.Model;
 
 namespace Powork.ViewModel.Inner
 {
-    internal class UserViewModel : ObservableObject
+    public enum OnlineStatus
     {
+        Online,
+        Offline,
+    }
+    public class UserViewModel : ObservableObject
+    {
+        private Timer _timer;
         public UserViewModel()
         {
         }
@@ -49,6 +55,43 @@ namespace Powork.ViewModel.Inner
             set
             {
                 SetProperty<Brush>(ref _backgroundColor, value);
+            }
+        }
+        private OnlineStatus _status = OnlineStatus.Offline;
+        public OnlineStatus Status
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                if (_status == OnlineStatus.Online)
+                {
+                    Opacity = 1;
+                    if (_timer != null)
+                    {
+                        _timer.Dispose();
+                    }
+                    _timer = new Timer((e) => { Status = OnlineStatus.Offline; }, null, TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
+                }
+                else
+                {
+                    Opacity = 0.5;
+                }
+            }
+        }
+        private double _opacity = 0.5;
+        public double Opacity
+        {
+            get
+            {
+                return _opacity;
+            }
+            set
+            {
+                SetProperty<double>(ref _opacity, value);
             }
         }
     }

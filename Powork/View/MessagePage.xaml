@@ -33,7 +33,7 @@
             <ItemsControl ItemsSource="{Binding Path=UserList}" x:Name="UserListControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid HorizontalAlignment="Stretch" Cursor="Hand" Background="{Binding BackgroundColor}">
+                        <Grid HorizontalAlignment="Stretch" Cursor="Hand" Background="{Binding BackgroundColor}" Opacity="{Binding Opacity}">
                             <Grid.InputBindings>
                                 <MouseBinding MouseAction="RightClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding Path=DataContext.UserClickCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>

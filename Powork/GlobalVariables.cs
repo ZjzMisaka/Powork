@@ -44,6 +44,8 @@ namespace Powork
         public static event GetUserMessageEventHandler GetUserMessage;
         public delegate void GetTeamMessageEventHandler(object sender, MessageEventArgs e);
         public static event GetTeamMessageEventHandler GetTeamMessage;
+        public delegate void UserOnlineEventHandler(object sender, EventArgs e);
+        public static event UserOnlineEventHandler UserOnline;
 
         public static void InvokeGetShareInfoEvent(List<ShareInfo> shareInfos)
         {
@@ -85,6 +87,13 @@ namespace Powork
                 return e.Received;
             }
             return false;
+        }
+        public static void InvokeUserOnlineEvent(User user)
+        {
+            if (GlobalVariables.UserOnline != null)
+            {
+                GlobalVariables.UserOnline.Invoke(user, new EventArgs());
+            }
         }
         public static User SelfInfo
         {

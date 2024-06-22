@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -201,6 +202,20 @@ namespace Powork.ViewModel
             }
         }
 
+        private void UserOnline(object s, EventArgs e)
+        {
+            User user = s as User;
+
+            foreach (UserViewModel userViewModel in UserList)
+            {
+                if (userViewModel.IP == user.IP && userViewModel.Name == user.Name)
+                {
+                    userViewModel.Status = OnlineStatus.Online;
+                    return;
+                }
+            }
+        }
+
         private void UserListChanged(object s, EventArgs e)
         {
             foreach (User user in (ObservableCollection<User>)s)
@@ -274,6 +289,7 @@ namespace Powork.ViewModel
         {
             GlobalVariables.UserListChanged += UserListChanged;
             GlobalVariables.GetUserMessage += OnGetMessage;
+            GlobalVariables.UserOnline += UserOnline;
             GlobalVariables.GetFile += OnGetFile;
 
             if (!UserHelper.IsUserLogon())
@@ -285,6 +301,7 @@ namespace Powork.ViewModel
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             GlobalVariables.GetUserMessage -= OnGetMessage;
+            GlobalVariables.UserOnline -= UserOnline;
             GlobalVariables.UserListChanged -= UserListChanged;
             GlobalVariables.GetFile -= OnGetFile;
         }
