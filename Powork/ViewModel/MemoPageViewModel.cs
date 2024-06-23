@@ -1,96 +1,19 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Markdig;
 using Powork.Constant;
 using Powork.Helper;
 using Powork.Repository;
+using Wpf.Ui.Appearance;
 
 namespace Powork.ViewModel
 {
     class MemoPageViewModel : ObservableObject
     {
         private readonly MarkdownPipeline _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-        private readonly string _htmlStart = $@"<!DOCTYPE html>
-                                    <html lang=""en"">
-                                    <head>
-                                        <meta charset=""UTF-8"">
-                                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-                                        <title>Document</title>
-                                        <style>
-                                            html {{
-                                                overflow: auto;
-                                            }}
-
-                                            body {{
-                                                background-color: {ThemeHelper.BackgroundColorText};
-                                                color: {ThemeHelper.ForegroundColorText};
-                                            }}
-
-                                            code {{
-                                              background-color: #2d2d2d;
-                                              color: #f8f8f2;
-                                              padding: 0.2em 0.4em;
-                                              border-radius: 4px;
-                                              font-family: Consolas, ""Courier New"", monospace;
-                                              font-size: 0.95em;
-                                              display: inline-block;
-                                              white-space: pre;
-                                            }}
-
-                                            pre code {{
-                                              display: block;
-                                              padding: 1em;
-                                              overflow-x: auto;
-                                            }}
-
-                                            pre {{
-                                              background-color: #2d2d2d;
-                                              color: #f8f8f2;
-                                              padding: 0.2em;
-                                              border-radius: 4px;
-                                              font-family: Consolas, ""Courier New"", monospace;
-                                              font-size: 0.95em;
-                                              overflow: auto;
-                                            }}
-
-                                            table {{
-                                              width: 100%;
-                                              border-collapse: collapse;
-                                              margin: 1em 0;
-                                              background-color: #2d2d2d;
-                                              color: #f8f8f2;
-                                              font-family: Arial, sans-serif;
-                                            }}
-
-                                            th, td {{
-                                              padding: 0.6em 0.8em;
-                                              border: 1px solid #444;
-                                              text-align: left;
-                                            }}
-
-                                            th {{
-                                              background-color: #444;
-                                              font-weight: bold;
-                                            }}
-
-                                            tr:nth-child(even) {{
-                                              background-color: #383838;
-                                            }}
-
-                                            tr:hover {{
-                                              background-color: #555;
-                                            }}
-
-                                            caption {{
-                                              caption-side: bottom;
-                                              padding: 0.5em;
-                                              font-size: 1em;
-                                              color: #f8f8f2;
-                                            }}
-                                        </style>
-                                    </head>";
         private readonly string _htmlEnd = @"</html>";
         private string _date;
         public string Date
@@ -119,7 +42,7 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<string>(ref _memo, value);
-                Preview = _htmlStart + Markdown.ToHtml(value, _pipeline) + _htmlEnd;
+                Preview = GetHtmlStart() + Markdown.ToHtml(value, _pipeline) + _htmlEnd;
             }
         }
         private string _preview;
@@ -259,16 +182,19 @@ namespace Powork.ViewModel
             MemoMargin = new Thickness(5);
             PreviewMargin = new Thickness(5);
 
-            Preview = _htmlStart + _htmlEnd;
+            Preview = GetHtmlStart() + _htmlEnd;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
             Date = DateTime.Now.ToString(Format.DateTimeFormat);
+
+            ApplicationThemeManager.Changed += ThemeChanged;
         }
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
+            ApplicationThemeManager.Changed -= ThemeChanged;
         }
 
         private void PreviousDay()
@@ -421,6 +347,94 @@ namespace Powork.ViewModel
         private void Save()
         {
             MemoRepository.InsertOrUpdateMemo(Date, Memo);
+        }
+
+        private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
+        {
+            Memo = _memo;
+        }
+
+        public string GetHtmlStart()
+        {
+            return $@"<!DOCTYPE html>
+                    <html lang=""en"">
+                    <head>
+                        <meta charset=""UTF-8"">
+                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                        <title>Document</title>
+                        <style>
+                            html {{
+                                overflow: auto;
+                            }}
+
+                            body {{
+                                background-color: {ThemeHelper.BackgroundColorText};
+                                color: {ThemeHelper.ForegroundColorText};
+                            }}
+
+                            code {{
+                                background-color: #2d2d2d;
+                                color: #f8f8f2;
+                                padding: 0.2em 0.4em;
+                                border-radius: 4px;
+                                font-family: Consolas, ""Courier New"", monospace;
+                                font-size: 0.95em;
+                                display: inline-block;
+                                white-space: pre;
+                            }}
+
+                            pre code {{
+                                display: block;
+                                padding: 1em;
+                                overflow-x: auto;
+                            }}
+
+                            pre {{
+                                background-color: #2d2d2d;
+                                color: #f8f8f2;
+                                padding: 0.2em;
+                                border-radius: 4px;
+                                font-family: Consolas, ""Courier New"", monospace;
+                                font-size: 0.95em;
+                                overflow: auto;
+                            }}
+
+                            table {{
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin: 1em 0;
+                                background-color: #2d2d2d;
+                                color: #f8f8f2;
+                                font-family: Arial, sans-serif;
+                            }}
+
+                            th, td {{
+                                padding: 0.6em 0.8em;
+                                border: 1px solid #444;
+                                text-align: left;
+                            }}
+
+                            th {{
+                                background-color: #444;
+                                font-weight: bold;
+                            }}
+
+                            tr:nth-child(even) {{
+                                background-color: #383838;
+                            }}
+
+                            tr:hover {{
+                                background-color: #555;
+                            }}
+
+                            caption {{
+                                caption-side: bottom;
+                                padding: 0.5em;
+                                font-size: 1em;
+                                color: #f8f8f2;
+                            }}
+                        </style>
+                    </head>";
         }
     }
 }

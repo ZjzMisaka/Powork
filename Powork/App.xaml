@@ -6,7 +6,11 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Not for binding -->
             <SolidColorBrush x:Key="SelectedBrush" Color="#646464" />
+            <!-- For binding -->
+            <SolidColorBrush x:Key="TimeTextBrush" Color="LightGreen"/>
+            <SolidColorBrush x:Key="ErrorTextBrush" Color="Pink"/>
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />

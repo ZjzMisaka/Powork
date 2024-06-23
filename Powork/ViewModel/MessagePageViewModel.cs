@@ -18,6 +18,7 @@ using Powork.Repository;
 using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
 namespace Powork.ViewModel

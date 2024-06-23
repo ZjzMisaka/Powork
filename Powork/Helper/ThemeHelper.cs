@@ -5,36 +5,6 @@ namespace Powork.Helper
 {
     public static class ThemeHelper
     {
-        public static Brush TimeTextBrush
-        {
-            get
-            {
-                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
-                {
-                    return Brushes.LightGreen;
-                }
-                else
-                {
-                    return Brushes.DarkGreen;
-                }
-            }
-        }
-
-        public static Brush ErrorTextBrush
-        {
-            get
-            {
-                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
-                {
-                    return Brushes.Pink;
-                }
-                else
-                {
-                    return Brushes.DarkRed;
-                }
-            }
-        }
-
         public static string BackgroundColorText
         {
             get

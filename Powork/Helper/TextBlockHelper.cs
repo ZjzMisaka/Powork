@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Media;
 using Ookii.Dialogs.Wpf;
 using Powork.Constant;
 using Powork.Control;
@@ -28,7 +27,7 @@ namespace Powork.Helper
                 {
                     timeTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                 }
-                timeTextBlock.Foreground = ThemeHelper.TimeTextBrush;
+                timeTextBlock.SetResourceReference(TextBlock.ForegroundProperty, "TimeTextBrush");
                 string timeStr = null;
                 if (DateTime.TryParse(tcpMessage.Time, out DateTime dateTime))
                 {
@@ -56,7 +55,7 @@ namespace Powork.Helper
                     List<TCPMessageBody> userMessageBodyList = tcpMessage.MessageBody;
                     textBlock = new SelectableTextBlock();
 
-                    textBlock.Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+                    textBlock.SetResourceReference(TextBlock.ForegroundProperty, "TextFillColorPrimaryBrush");
 
                     foreach (TCPMessageBody body in userMessageBodyList)
                     {
@@ -130,7 +129,7 @@ namespace Powork.Helper
                     List<TCPMessageBody> tcpMessageBodyList = tcpMessage.MessageBody;
                     textBlock = new TextBlock();
 
-                    textBlock.Foreground = ThemeHelper.ErrorTextBrush;
+                    textBlock.SetResourceReference(TextBlock.ForegroundProperty, "ErrorTextBrush");
 
                     foreach (TCPMessageBody body in tcpMessageBodyList)
                     {

@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -22,6 +23,7 @@ using Powork.Repository;
 using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
+using Wpf.Ui.Appearance;
 
 namespace Powork.ViewModel
 {
@@ -214,6 +216,8 @@ namespace Powork.ViewModel
             _blinkTimer.Tick += (s, e) => ToggleIcon();
             _noticeInfoDic = new ConcurrentDictionary<string, NoticeViewModel>();
             _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
+
+            ApplicationThemeManager.Changed += ThemeChanged;
 
             NotificationHelper.NavigationService = navigationService;
             NotificationHelper.MainWindowViewModel = this;
@@ -827,6 +831,20 @@ namespace Powork.ViewModel
             else
             {
                 TrayIcon = "/Image/icon.ico";
+            }
+        }
+
+        private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
+        {
+            if (currentApplicationTheme == ApplicationTheme.Dark)
+            {
+                Application.Current.Resources["TimeTextBrush"] = Brushes.LightGreen;
+                Application.Current.Resources["ErrorTextBrush"] = Brushes.Pink;
+            }
+            else
+            {
+                Application.Current.Resources["TimeTextBrush"] = Brushes.DarkGreen;
+                Application.Current.Resources["ErrorTextBrush"] = Brushes.DarkRed;
             }
         }
     }
