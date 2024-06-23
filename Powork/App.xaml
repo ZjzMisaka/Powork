@@ -7,7 +7,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <!-- Not for binding -->
-            <SolidColorBrush x:Key="SelectedBrush" Color="#646464" />
+            <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#646464" />
+            <SolidColorBrush x:Key="SelectedForegroundBrush" Color="White" />
             <!-- For binding -->
             <SolidColorBrush x:Key="TimeTextBrush" Color="LightGreen"/>
             <SolidColorBrush x:Key="ErrorTextBrush" Color="Pink"/>

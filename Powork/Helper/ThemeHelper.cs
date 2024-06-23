@@ -39,7 +39,7 @@ namespace Powork.Helper
         {
             get
             {
-                return (SolidColorBrush)Application.Current.Resources["SelectedBrush"];
+                return (SolidColorBrush)Application.Current.Resources["SelectedBackgroundBrush"];
             }
         }
 
@@ -47,7 +47,7 @@ namespace Powork.Helper
         {
             get
             {
-                return Brushes.White;
+                return (SolidColorBrush)Application.Current.Resources["SelectedForegroundBrush"];
             }
         }
 

@@ -16,6 +16,7 @@ using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
 using Powork.ViewModel.Inner;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
 namespace Powork.ViewModel
@@ -156,6 +157,7 @@ namespace Powork.ViewModel
         {
             GlobalVariables.GetTeamMessage += OnGetMessage;
             GlobalVariables.GetFile += OnGetFile;
+            ApplicationThemeManager.Changed += ThemeChanged;
 
             if (!UserHelper.IsUserLogon())
             {
@@ -184,6 +186,7 @@ namespace Powork.ViewModel
         {
             GlobalVariables.GetTeamMessage -= OnGetMessage;
             GlobalVariables.GetFile -= OnGetFile;
+            ApplicationThemeManager.Changed -= ThemeChanged;
         }
 
         private void OnGetMessage(object sender, MessageEventArgs e)
@@ -226,6 +229,14 @@ namespace Powork.ViewModel
         private void OnGetFile(object sender, EventArgs e)
         {
             System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} received successfully.");
+        }
+
+        private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
+        {
+            foreach (TeamViewModel teamViewModel in TeamList)
+            {
+                teamViewModel.Selected = teamViewModel.Selected;
+            }
         }
 
         public void InsertImage(string uri)

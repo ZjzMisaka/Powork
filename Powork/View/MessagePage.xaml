@@ -29,7 +29,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Left Side -->
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0, 10, 0, 0">
             <ItemsControl ItemsSource="{Binding Path=UserList}" x:Name="UserListControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

@@ -240,6 +240,14 @@ namespace Powork.ViewModel
             System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} received successfully.");
         }
 
+        private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
+        {
+            foreach (UserViewModel userViewModel in UserList)
+            {
+                userViewModel.Selected = userViewModel.Selected;
+            }
+        }
+
         public void InsertImage(string uri)
         {
             Image image = new Image();
@@ -291,6 +299,7 @@ namespace Powork.ViewModel
             GlobalVariables.GetUserMessage += OnGetMessage;
             GlobalVariables.UserOnline += UserOnline;
             GlobalVariables.GetFile += OnGetFile;
+            ApplicationThemeManager.Changed += ThemeChanged;
 
             if (!UserHelper.IsUserLogon())
             {
@@ -304,6 +313,7 @@ namespace Powork.ViewModel
             GlobalVariables.UserOnline -= UserOnline;
             GlobalVariables.UserListChanged -= UserListChanged;
             GlobalVariables.GetFile -= OnGetFile;
+            ApplicationThemeManager.Changed -= ThemeChanged;
         }
 
         private void UserClick(UserViewModel userViewModel)

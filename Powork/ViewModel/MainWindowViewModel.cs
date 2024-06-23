@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Net.Sockets;
@@ -838,11 +839,17 @@ namespace Powork.ViewModel
         {
             if (currentApplicationTheme == ApplicationTheme.Dark)
             {
+                Application.Current.Resources["SelectedBackgroundBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#646464"));
+                Application.Current.Resources["SelectedForegroundBrush"] = Brushes.White;
+
                 Application.Current.Resources["TimeTextBrush"] = Brushes.LightGreen;
                 Application.Current.Resources["ErrorTextBrush"] = Brushes.Pink;
             }
             else
             {
+                Application.Current.Resources["SelectedBackgroundBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f4f4f4"));
+                Application.Current.Resources["SelectedForegroundBrush"] = Brushes.Black;
+
                 Application.Current.Resources["TimeTextBrush"] = Brushes.DarkGreen;
                 Application.Current.Resources["ErrorTextBrush"] = Brushes.DarkRed;
             }
