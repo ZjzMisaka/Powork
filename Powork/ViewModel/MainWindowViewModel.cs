@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Net.Sockets;
@@ -218,7 +217,21 @@ namespace Powork.ViewModel
             _noticeInfoDic = new ConcurrentDictionary<string, NoticeViewModel>();
             _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
 
+            CommonRepository.CreateDatabase();
+            CommonRepository.CreateTable();
+            SettingRepository.SetDefault("Theme", "Dark");
+
             ApplicationThemeManager.Changed += ThemeChanged;
+
+            string theme = SettingRepository.SelectSetting("Theme");
+            if (theme == "Dark")
+            {
+                SwitchDarkTheme();
+            }
+            else if (theme == "Light")
+            {
+                SwitchLightTheme();
+            }
 
             NotificationHelper.NavigationService = navigationService;
             NotificationHelper.MainWindowViewModel = this;
@@ -247,9 +260,6 @@ namespace Powork.ViewModel
                 MessageBox.Show($"Error Occurred: \n{e.Exception.Message}\n{e.Exception.StackTrace}\nfrom: {e.ErrorFrom}");
             };
 
-            CommonRepository.CreateDatabase();
-            CommonRepository.CreateTable();
-
             NoticeList = new ObservableCollection<NoticeViewModel>();
             DownloadList = new ObservableCollection<DownloadInfoViewModel>();
 
@@ -277,12 +287,14 @@ namespace Powork.ViewModel
 
         private void SwitchLightTheme()
         {
-            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Light, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
+            ApplicationThemeManager.Apply(ApplicationTheme.Light, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
+            SettingRepository.UpdateSetting("Theme", "Light");
         }
 
         private void SwitchDarkTheme()
         {
-            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
+            ApplicationThemeManager.Apply(ApplicationTheme.Dark, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
+            SettingRepository.UpdateSetting("Theme", "Dark");
         }
 
         private void Exit()

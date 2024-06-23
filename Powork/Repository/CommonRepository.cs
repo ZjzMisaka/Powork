@@ -97,6 +97,12 @@ namespace Powork.Repository
             {
                 command.ExecuteNonQuery();
             }
+
+            string sqlTSetting = @"CREATE TABLE IF NOT EXISTS TSetting (key VARCHAR(128) PRIMARY KEY, value VARCHAR(128))";
+            using (SQLiteCommand command = new SQLiteCommand(sqlTSetting, connection))
+            {
+                command.ExecuteNonQuery();
+            }
         }
     }
 }
