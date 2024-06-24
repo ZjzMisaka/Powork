@@ -157,6 +157,8 @@ namespace Powork.ViewModel
         public ICommand WindowUnloadedCommand { get; set; }
         public ICommand PreviousDayCommand { get; set; }
         public ICommand NextDayCommand { get; set; }
+        public ICommand PreviousMemoCommand { get; set; }
+        public ICommand NextMemoCommand { get; set; }
         public ICommand EditVisibleChangeCommand { get; set; }
         public ICommand PreviewVisibleChangeCommand { get; set; }
         public ICommand SwapCommand { get; set; }
@@ -168,6 +170,8 @@ namespace Powork.ViewModel
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
             PreviousDayCommand = new RelayCommand(PreviousDay);
             NextDayCommand = new RelayCommand(NextDay);
+            PreviousMemoCommand = new RelayCommand(PreviousMemo);
+            NextMemoCommand = new RelayCommand(NextMemo);
             EditVisibleChangeCommand = new RelayCommand(EditVisibleChange);
             PreviewVisibleChangeCommand = new RelayCommand(PreviewVisibleChange);
             SwapCommand = new RelayCommand(Swap);
@@ -215,7 +219,30 @@ namespace Powork.ViewModel
                 dateTime = dateTime.AddDays(1);
                 string formattedDate = dateTime.ToString(Format.DateTimeFormat);
                 Date = dateTime.ToString(Format.DateTimeFormat);
-                Memo = MemoRepository.SelectMemo(formattedDate);
+            }
+        }
+
+        private void PreviousMemo()
+        {
+            if (DateTime.TryParse(Date, out DateTime dateTime))
+            {
+                string date = MemoRepository.SelectPreviousMemoDate(dateTime.ToString(Format.DateTimeFormat));
+                if (date != null)
+                {
+                    Date = date;
+                }
+            }
+        }
+
+        private void NextMemo()
+        {
+            if (DateTime.TryParse(Date, out DateTime dateTime))
+            {
+                string date = MemoRepository.SelectNextMemoDate(dateTime.ToString(Format.DateTimeFormat));
+                if (date != null)
+                {
+                    Date = date;
+                }
             }
         }
 
