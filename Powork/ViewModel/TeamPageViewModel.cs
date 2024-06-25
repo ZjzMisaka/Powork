@@ -29,97 +29,52 @@ namespace Powork.ViewModel
         private bool _isScrollAtBottom;
         public bool IsScrollAtBottom
         {
-            get
-            {
-                return _isScrollAtBottom;
-            }
-            set
-            {
-                SetProperty<bool>(ref _isScrollAtBottom, value);
-            }
+            get => _isScrollAtBottom;
+            set => SetProperty<bool>(ref _isScrollAtBottom, value);
         }
         private bool _scrollToEnd;
         public bool ScrollToEnd
         {
-            get
-            {
-                return _scrollToEnd;
-            }
-            set
-            {
-                SetProperty<bool>(ref _scrollToEnd, value);
-            }
+            get => _scrollToEnd;
+            set => SetProperty<bool>(ref _scrollToEnd, value);
         }
         private bool _textboxScrollToEnd;
         public bool TextboxScrollToEnd
         {
-            get
-            {
-                return _textboxScrollToEnd;
-            }
-            set
-            {
-                SetProperty<bool>(ref _textboxScrollToEnd, value);
-            }
+            get => _textboxScrollToEnd;
+            set => SetProperty<bool>(ref _textboxScrollToEnd, value);
         }
 
         private ObservableCollection<TextBlock> _messageList;
         public ObservableCollection<TextBlock> MessageList
         {
-            get
-            {
-                return _messageList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<TextBlock>>(ref _messageList, value);
-            }
+            get => _messageList;
+            set => SetProperty<ObservableCollection<TextBlock>>(ref _messageList, value);
         }
 
         private ObservableCollection<TeamViewModel> _teamList;
         public ObservableCollection<TeamViewModel> TeamList
         {
-            get
-            {
-                return _teamList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<TeamViewModel>>(ref _teamList, value);
-            }
+            get => _teamList;
+            set => SetProperty<ObservableCollection<TeamViewModel>>(ref _teamList, value);
         }
         private bool _pageEnabled;
         public bool PageEnabled
         {
-            get
-            {
-                return _pageEnabled;
-            }
-            set
-            {
-                SetProperty<bool>(ref _pageEnabled, value);
-            }
+            get => _pageEnabled;
+            set => SetProperty<bool>(ref _pageEnabled, value);
         }
         private bool _sendEnabled;
         public bool SendEnabled
         {
-            get
-            {
-                return _sendEnabled;
-            }
-            set
-            {
-                SetProperty<bool>(ref _sendEnabled, value);
-            }
+            get => _sendEnabled;
+            set => SetProperty<bool>(ref _sendEnabled, value);
         }
         private FlowDocument _richTextBoxDocument;
         public FlowDocument RichTextBoxDocument
         {
-            get { return _richTextBoxDocument; }
-            set
-            {
-                SetProperty<FlowDocument>(ref _richTextBoxDocument, value);
-            }
+            get => _richTextBoxDocument;
+            set => SetProperty<FlowDocument>(ref _richTextBoxDocument, value);
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }

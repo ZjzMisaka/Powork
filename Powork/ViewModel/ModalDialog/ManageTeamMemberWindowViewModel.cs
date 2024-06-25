@@ -16,14 +16,8 @@ namespace Powork.ViewModel
         private ObservableCollection<UserViewModel> _otherUserList;
         public ObservableCollection<UserViewModel> OtherUserList
         {
-            get
-            {
-                return _otherUserList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<UserViewModel>>(ref _otherUserList, value);
-            }
+            get => _otherUserList;
+            set => SetProperty<ObservableCollection<UserViewModel>>(ref _otherUserList, value);
         }
 
         private List<UserViewModel> SelectedInTeamUserList => TeamUserList.Where(x => x.Selected).ToList();
@@ -31,14 +25,8 @@ namespace Powork.ViewModel
         private ObservableCollection<UserViewModel> _teamUserList;
         public ObservableCollection<UserViewModel> TeamUserList
         {
-            get
-            {
-                return _teamUserList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<UserViewModel>>(ref _teamUserList, value);
-            }
+            get => _teamUserList;
+            set => SetProperty<ObservableCollection<UserViewModel>>(ref _teamUserList, value);
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }

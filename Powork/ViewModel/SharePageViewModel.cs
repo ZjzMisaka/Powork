@@ -20,14 +20,8 @@ namespace Powork.ViewModel
         private bool _pageEnabled;
         public bool PageEnabled
         {
-            get
-            {
-                return _pageEnabled;
-            }
-            set
-            {
-                SetProperty<bool>(ref _pageEnabled, value);
-            }
+            get => _pageEnabled;
+            set => SetProperty<bool>(ref _pageEnabled, value);
         }
         public bool IsSelf
         {
@@ -45,28 +39,16 @@ namespace Powork.ViewModel
         private string _userName;
         public string UserName
         {
-            get
-            {
-                return _userName + "'s Sharing";
-            }
-            set
-            {
-                SetProperty<string>(ref _userName, value);
-            }
+            get => _userName + "'s Sharing";
+            set => SetProperty<string>(ref _userName, value);
         }
         public List<ShareInfoViewModel> SelectedItems => ShareInfoList.Where(x => x.IsSelected).ToList();
 
         private ObservableCollection<ShareInfoViewModel> _shareInfoList;
         public ObservableCollection<ShareInfoViewModel> ShareInfoList
         {
-            get
-            {
-                return _shareInfoList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<ShareInfoViewModel>>(ref _shareInfoList, value);
-            }
+            get => _shareInfoList;
+            set => SetProperty<ObservableCollection<ShareInfoViewModel>>(ref _shareInfoList, value);
         }
 
         public ICommand WindowLoadedCommand { get; set; }

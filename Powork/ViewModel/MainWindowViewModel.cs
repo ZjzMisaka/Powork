@@ -40,105 +40,57 @@ namespace Powork.ViewModel
         private string _trayIcon;
         public string TrayIcon
         {
-            get
-            {
-                return _trayIcon;
-            }
-            set
-            {
-                SetProperty<string>(ref _trayIcon, value);
-            }
+            get => _trayIcon;
+            set => SetProperty<string>(ref _trayIcon, value);
         }
 
         private string _applicationTitle;
         public string ApplicationTitle
         {
-            get
-            {
-                return _applicationTitle;
-            }
-            set
-            {
-                SetProperty<string>(ref _applicationTitle, value);
-            }
+            get => _applicationTitle;
+            set => SetProperty<string>(ref _applicationTitle, value);
         }
 
         private Visibility _openNoticeButtonVisibility;
         public Visibility OpenNoticeButtonVisibility
         {
-            get
-            {
-                return _openNoticeButtonVisibility;
-            }
-            set
-            {
-                SetProperty<Visibility>(ref _openNoticeButtonVisibility, value);
-            }
+            get => _openNoticeButtonVisibility;
+            set => SetProperty<Visibility>(ref _openNoticeButtonVisibility, value);
         }
 
         private bool _topmost;
         public bool Topmost
         {
-            get
-            {
-                return _topmost;
-            }
-            set
-            {
-                SetProperty<bool>(ref _topmost, value);
-            }
+            get => _topmost;
+            set => SetProperty<bool>(ref _topmost, value);
         }
 
         private bool _noticePopupOpen;
         public bool NoticePopupOpen
         {
-            get
-            {
-                return _noticePopupOpen;
-            }
-            set
-            {
-                SetProperty<bool>(ref _noticePopupOpen, value);
-            }
+            get => _noticePopupOpen;
+            set => SetProperty<bool>(ref _noticePopupOpen, value);
         }
 
         private ObservableCollection<NoticeViewModel> _noticeList;
         public ObservableCollection<NoticeViewModel> NoticeList
         {
-            get
-            {
-                return _noticeList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<NoticeViewModel>>(ref _noticeList, value);
-            }
+            get => _noticeList;
+            set => SetProperty<ObservableCollection<NoticeViewModel>>(ref _noticeList, value);
         }
 
         private bool _downloadPopupOpen;
         public bool DownloadPopupOpen
         {
-            get
-            {
-                return _downloadPopupOpen;
-            }
-            set
-            {
-                SetProperty<bool>(ref _downloadPopupOpen, value);
-            }
+            get => _downloadPopupOpen;
+            set => SetProperty<bool>(ref _downloadPopupOpen, value);
         }
 
         private bool _popupMenuEnable;
         public bool DownloadPopupMenuEnable
         {
-            get
-            {
-                return _popupMenuEnable;
-            }
-            set
-            {
-                SetProperty<bool>(ref _popupMenuEnable, value);
-            }
+            get => _popupMenuEnable;
+            set => SetProperty<bool>(ref _popupMenuEnable, value);
         }
 
         public bool StopDownloadPopupMenuEnable
@@ -156,40 +108,22 @@ namespace Powork.ViewModel
         private ObservableCollection<DownloadInfoViewModel> _downloadList;
         public ObservableCollection<DownloadInfoViewModel> DownloadList
         {
-            get
-            {
-                return _downloadList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<DownloadInfoViewModel>>(ref _downloadList, value);
-            }
+            get => _downloadList;
+            set => SetProperty<ObservableCollection<DownloadInfoViewModel>>(ref _downloadList, value);
         }
 
         private bool _isDownloadPopupScrollAtBottom;
         public bool IsDownloadPopupScrollAtBottom
         {
-            get
-            {
-                return _isDownloadPopupScrollAtBottom;
-            }
-            set
-            {
-                SetProperty<bool>(ref _isDownloadPopupScrollAtBottom, value);
-            }
+            get => _isDownloadPopupScrollAtBottom;
+            set => SetProperty<bool>(ref _isDownloadPopupScrollAtBottom, value);
         }
 
         private bool _downloadPopupScrollToEnd;
         public bool DownloadPopupScrollToEnd
         {
-            get
-            {
-                return _downloadPopupScrollToEnd;
-            }
-            set
-            {
-                SetProperty<bool>(ref _downloadPopupScrollToEnd, value);
-            }
+            get => _downloadPopupScrollToEnd;
+            set => SetProperty<bool>(ref _downloadPopupScrollToEnd, value);
         }
 
         public ICommand SwitchLightThemeCommand { get; set; }

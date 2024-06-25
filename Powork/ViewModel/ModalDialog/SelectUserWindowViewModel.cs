@@ -16,14 +16,8 @@ namespace Powork.ViewModel
         private ObservableCollection<UserViewModel> _userList;
         public ObservableCollection<UserViewModel> UserList
         {
-            get
-            {
-                return _userList;
-            }
-            set
-            {
-                SetProperty<ObservableCollection<UserViewModel>>(ref _userList, value);
-            }
+            get => _userList;
+            set => SetProperty<ObservableCollection<UserViewModel>>(ref _userList, value);
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }

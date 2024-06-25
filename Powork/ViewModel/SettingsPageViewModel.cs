@@ -17,38 +17,20 @@ namespace Powork.ViewModel
         private string _ip;
         public string IP
         {
-            get
-            {
-                return _ip;
-            }
-            set
-            {
-                SetProperty<string>(ref _ip, value);
-            }
+            get => _ip;
+            set => SetProperty<string>(ref _ip, value);
         }
         private string _name;
         public string Name
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                SetProperty<string>(ref _name, value);
-            }
+            get => _name;
+            set => SetProperty<string>(ref _name, value);
         }
         private string _group;
         public string Group
         {
-            get
-            {
-                return _group;
-            }
-            set
-            {
-                SetProperty<string>(ref _group, value);
-            }
+            get => _group;
+            set => SetProperty<string>(ref _group, value);
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }

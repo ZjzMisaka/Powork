@@ -18,10 +18,7 @@ namespace Powork.ViewModel
         private string _date;
         public string Date
         {
-            get
-            {
-                return _date;
-            }
+            get => _date;
             set
             {
                 SetProperty<string>(ref _date, value);
@@ -35,10 +32,7 @@ namespace Powork.ViewModel
         private string _memo;
         public string Memo
         {
-            get
-            {
-                return _memo;
-            }
+            get => _memo;
             set
             {
                 SetProperty<string>(ref _memo, value);
@@ -48,10 +42,7 @@ namespace Powork.ViewModel
         private string _preview;
         public string Preview
         {
-            get
-            {
-                return _preview;
-            }
+            get => _preview;
             set
             {
                 SetProperty<string>(ref _preview, value);
@@ -60,98 +51,50 @@ namespace Powork.ViewModel
         private int _memoColumn;
         public int MemoColumn
         {
-            get
-            {
-                return _memoColumn;
-            }
-            set
-            {
-                SetProperty<int>(ref _memoColumn, value);
-            }
+            get => _memoColumn;
+            set => SetProperty<int>(ref _memoColumn, value);
         }
         private int _previewColumn;
         public int PreviewColumn
         {
-            get
-            {
-                return _previewColumn;
-            }
-            set
-            {
-                SetProperty<int>(ref _previewColumn, value);
-            }
+            get => _previewColumn;
+            set => SetProperty<int>(ref _previewColumn, value);
         }
         private int _memoColumnSpan;
         public int MemoColumnSpan
         {
-            get
-            {
-                return _memoColumnSpan;
-            }
-            set
-            {
-                SetProperty<int>(ref _memoColumnSpan, value);
-            }
+            get => _memoColumnSpan;
+            set => SetProperty<int>(ref _memoColumnSpan, value);
         }
         private int _previewColumnSpan;
         public int PreviewColumnSpan
         {
-            get
-            {
-                return _previewColumnSpan;
-            }
-            set
-            {
-                SetProperty<int>(ref _previewColumnSpan, value);
-            }
+            get => _previewColumnSpan;
+            set => SetProperty<int>(ref _previewColumnSpan, value);
         }
         private Visibility _memoVisibility;
         public Visibility MemoVisibility
         {
-            get
-            {
-                return _memoVisibility;
-            }
-            set
-            {
-                SetProperty<Visibility>(ref _memoVisibility, value);
-            }
+            get => _memoVisibility;
+            set => SetProperty<Visibility>(ref _memoVisibility, value);
         }
         private Visibility _previewVisibility;
         public Visibility PreviewVisibility
         {
-            get
-            {
-                return _previewVisibility;
-            }
-            set
-            {
-                SetProperty<Visibility>(ref _previewVisibility, value);
-            }
+            get => _previewVisibility;
+            set => SetProperty<Visibility>(ref _previewVisibility, value);
         }
         private Thickness _memoMargin;
         public Thickness MemoMargin
         {
-            get
-            {
-                return _memoMargin;
-            }
-            set
-            {
-                SetProperty<Thickness>(ref _memoMargin, value);
-            }
+            get => _memoMargin;
+            set => SetProperty<Thickness>(ref _memoMargin, value);
         }
         private Thickness _previewMargin;
         public Thickness PreviewMargin
         {
-            get
-            {
-                return _previewMargin;
-            }
-            set
-            {
-                SetProperty<Thickness>(ref _previewMargin, value);
-            }
+            get => _previewMargin;
+            set => SetProperty<Thickness>(ref _previewMargin, value);
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }

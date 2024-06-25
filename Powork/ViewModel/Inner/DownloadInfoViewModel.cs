@@ -18,22 +18,13 @@ namespace Powork.ViewModel.Inner
         private string _name;
         public string Name
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                SetProperty<string>(ref _name, value);
-            }
+            get => _name;
+            set => SetProperty<string>(ref _name, value);
         }
         private double _progress;
         public double Progress
         {
-            get
-            {
-                return _progress;
-            }
+            get => _progress;
             set
             {
                 if (_progress == 100)
@@ -46,22 +37,13 @@ namespace Powork.ViewModel.Inner
         private string _statusText;
         public string StatusText
         {
-            get
-            {
-                return string.IsNullOrEmpty(_statusText) ? "" : _statusText;
-            }
-            set
-            {
-                SetProperty<string>(ref _statusText, value);
-            }
+            get => string.IsNullOrEmpty(_statusText) ? "" : _statusText;
+            set => SetProperty<string>(ref _statusText, value);
         }
         private bool _failed;
         public bool Failed
         {
-            get
-            {
-                return _failed;
-            }
+            get => _failed;
             set
             {
                 if (value)
@@ -74,10 +56,7 @@ namespace Powork.ViewModel.Inner
         private bool _selected;
         public bool Selected
         {
-            get
-            {
-                return _selected;
-            }
+            get => _selected;
             set
             {
                 _selected = value;
@@ -96,79 +75,43 @@ namespace Powork.ViewModel.Inner
         private Brush _backgroundColor = Brushes.Transparent;
         public Brush BackgroundColor
         {
-            get
-            {
-                return _backgroundColor;
-            }
-            set
-            {
-                SetProperty<Brush>(ref _backgroundColor, value);
-            }
+            get => _backgroundColor;
+            set => SetProperty<Brush>(ref _backgroundColor, value);
         }
 
         private Brush _foregroundColor = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
         public Brush ForegroundColor
         {
-            get
-            {
-                return _foregroundColor;
-            }
-            set
-            {
-                SetProperty<Brush>(ref _foregroundColor, value);
-            }
+            get => _foregroundColor;
+            set => SetProperty<Brush>(ref _foregroundColor, value);
         }
 
         private long _totalSize = 0;
         public long TotalSize
         {
-            get
-            {
-                return _totalSize;
-            }
-            set
-            {
-                _totalSize = value;
-            }
+            get => _totalSize;
+            set => _totalSize = value;
         }
 
         private long _totalBytesReceived = 0;
         public long TotalBytesReceived
         {
-            get
-            {
-                return _totalBytesReceived;
-            }
-            set
-            {
-                _totalBytesReceived = value;
-            }
+            get => _totalBytesReceived;
+            set => _totalBytesReceived = value;
         }
 
         private int _fileCount;
         public int FileCount
         {
-            get
-            {
-                return _fileCount;
-            }
-            set
-            {
-                _fileCount = value;
-            }
+            get => _fileCount;
+            set => _fileCount = value;
         }
 
         private int _doneCount;
         public int DoneCount
         {
-            get
-            {
-                return _doneCount;
-            }
-            set
-            {
-                _doneCount = value;
-            }
+            get => _doneCount;
+            set => _doneCount = value;
         }
 
         public void Received(long size)

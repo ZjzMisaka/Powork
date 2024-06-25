@@ -12,14 +12,8 @@ namespace Powork.ViewModel.Inner
         private string _notice;
         public string Notice
         {
-            get
-            {
-                return _notice;
-            }
-            set
-            {
-                SetProperty<string>(ref _notice, value);
-            }
+            get => _notice;
+            set => SetProperty<string>(ref _notice, value);
         }
 
         public int Count { get; set; }

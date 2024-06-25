@@ -11,26 +11,14 @@ namespace Powork.ViewModel
         private string _title;
         public string Title
         {
-            get
-            {
-                return _title;
-            }
-            set
-            {
-                SetProperty<string>(ref _title, value);
-            }
+            get => _title;
+            set => SetProperty<string>(ref _title, value);
         }
         private string _value;
         public string Value
         {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                SetProperty<string>(ref _value, value);
-            }
+            get => _value;
+            set => SetProperty<string>(ref _value, value);
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
