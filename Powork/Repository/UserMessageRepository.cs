@@ -38,7 +38,7 @@ namespace Powork.Repository
             {
                 sql = $"{sql}  AND  id < {id}";
             }
-            sql = $"{sql}  ORDER BY time DESC LIMIT 10";
+            sql = $"{sql}  ORDER BY time DESC LIMIT 20";
 
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
