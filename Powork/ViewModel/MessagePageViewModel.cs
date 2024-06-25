@@ -84,6 +84,10 @@ namespace Powork.ViewModel
                 SetProperty<ObservableCollection<UserViewModel>>(ref _userList, value);
             }
         }
+        public bool MergeEnabled
+        {
+            get => SelectedUserList.Count >= 2;
+        }
         private bool _pageEnabled;
         public bool PageEnabled
         {
@@ -124,6 +128,7 @@ namespace Powork.ViewModel
         public ICommand CreateTeamCommand { get; set; }
         public ICommand SharedItemsCommand { get; set; }
         public ICommand RemoveUserCommand { get; set; }
+        public ICommand MergeCommand { get; set; }
         public ICommand ScrollAtTopCommand { get; set; }
         public ICommand DropCommand { get; set; }
 
@@ -147,6 +152,7 @@ namespace Powork.ViewModel
             CreateTeamCommand = new RelayCommand(CreateTeam);
             SharedItemsCommand = new RelayCommand(SharedItems);
             RemoveUserCommand = new RelayCommand(RemoveUser);
+            MergeCommand = new RelayCommand(Merge);
             ScrollAtTopCommand = new RelayCommand(ScrollAtTop);
             DropCommand = new RelayCommand<DragEventArgs>(Drop);
 
@@ -456,6 +462,36 @@ namespace Powork.ViewModel
             {
                 UserRepository.RemoveUser(user.IP, user.Name);
                 UserList.Remove(user);
+            }
+        }
+
+        private void Merge()
+        {
+            foreach (UserViewModel user in SelectedUserList)
+            {
+                foreach (UserViewModel mergeUser in SelectedUserList)
+                {
+                    if (user.IP == mergeUser.IP && user.Name == mergeUser.Name)
+                    {
+                        continue;
+                    }
+
+                    List<UserMessage> messages = UserMessageRepository.SelectAllMessgae(mergeUser.IP, mergeUser.Name);
+                    foreach (UserMessage message in messages)
+                    {
+                        if (message.SenderIP == GlobalVariables.SelfInfo.IP && message.SenderName == GlobalVariables.SelfInfo.Name)
+                        {
+                            UserMessageRepository.InsertMessage(message, user.IP, user.Name);
+                        }
+                        else
+                        {
+                            message.SenderIP = user.IP;
+                            message.SenderName = user.Name;
+
+                            UserMessageRepository.InsertMessage(message, GlobalVariables.SelfInfo.IP, GlobalVariables.SelfInfo.Name);
+                        }
+                    }
+                }
             }
         }
 

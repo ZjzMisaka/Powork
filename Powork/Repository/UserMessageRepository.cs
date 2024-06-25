@@ -62,5 +62,35 @@ namespace Powork.Repository
 
             return userMessageList;
         }
+
+        public static List<UserMessage> SelectAllMessgae(string ip, string name)
+        {
+            SQLiteConnection connection = CommonRepository.GetConnection();
+
+            List<UserMessage> userMessageList = new List<UserMessage>();
+
+            string sql = $"SELECT * FROM TUserMessage WHERE (fromIP='{ip}' AND fromName='{name}') OR (toIP='{ip}' AND toName='{name}') ORDER BY time ASC";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+            {
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        userMessageList.Add(new UserMessage()
+                        {
+                            SenderIP = reader["fromIP"].ToString(),
+                            SenderName = reader["fromName"].ToString(),
+                            MessageBody = JsonConvert.DeserializeObject<List<TCPMessageBody>>(reader["body"].ToString()),
+                            Type = (MessageType)(int.Parse(reader["type"].ToString())),
+                            Time = reader["time"].ToString(),
+                            ID = int.Parse(reader["id"].ToString()),
+                        });
+                    }
+                }
+            }
+
+            return userMessageList;
+        }
     }
 }

@@ -44,6 +44,7 @@
                                     <MenuItem Header="Create Team" Command="{Binding CreateTeamCommand}"/>
                                     <MenuItem Header="Shared Items" Command="{Binding SharedItemsCommand}"/>
                                     <MenuItem Header="Remove User" Command="{Binding RemoveUserCommand}"/>
+                                    <MenuItem Header="Merge" Command="{Binding MergeCommand}" IsEnabled="{Binding MergeEnabled}"/>
                                 </ContextMenu>
                             </Grid.ContextMenu>
                             <Grid.RowDefinitions>
