@@ -32,20 +32,13 @@ namespace Powork
                 }
             }
         }
-        public delegate void UserListChangedEventHandler(object sender, EventArgs e);
-        public static event UserListChangedEventHandler UserListChanged;
-        public delegate void GetShareInfoEventHandler(object sender, EventArgs e);
-        public static event GetShareInfoEventHandler GetShareInfo;
-        public delegate void GetFileEventHandler(object sender, EventArgs e);
-        public static event GetFileEventHandler GetFile;
-        public delegate void StartGetFileEventHandler(object sender, EventArgs e);
-        public static event StartGetFileEventHandler StartGetFile;
-        public delegate void GetUserMessageEventHandler(object sender, MessageEventArgs e);
-        public static event GetUserMessageEventHandler GetUserMessage;
-        public delegate void GetTeamMessageEventHandler(object sender, MessageEventArgs e);
-        public static event GetTeamMessageEventHandler GetTeamMessage;
-        public delegate void UserOnlineEventHandler(object sender, EventArgs e);
-        public static event UserOnlineEventHandler UserOnline;
+        public static event EventHandler UserListChanged;
+        public static event EventHandler GetShareInfo;
+        public static event EventHandler GetFile;
+        public static event EventHandler StartGetFile;
+        public static event EventHandler<MessageEventArgs> GetUserMessage;
+        public static event EventHandler<MessageEventArgs> GetTeamMessage;
+        public static event EventHandler UserOnline;
 
         public static void InvokeGetShareInfoEvent(List<ShareInfo> shareInfos)
         {
