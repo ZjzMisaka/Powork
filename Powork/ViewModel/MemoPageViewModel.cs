@@ -43,10 +43,7 @@ namespace Powork.ViewModel
         public string Preview
         {
             get => _preview;
-            set
-            {
-                SetProperty<string>(ref _preview, value);
-            }
+            set => SetProperty<string>(ref _preview, value);
         }
         private int _memoColumn;
         public int MemoColumn
@@ -160,7 +157,6 @@ namespace Powork.ViewModel
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
                 dateTime = dateTime.AddDays(1);
-                string formattedDate = dateTime.ToString(Format.DateTimeFormat);
                 Date = dateTime.ToString(Format.DateTimeFormat);
             }
         }
@@ -342,6 +338,11 @@ namespace Powork.ViewModel
                                 color: {ThemeHelper.ForegroundColorText};
                             }}
 
+                            p, ul, ol {{
+                                margin-top: 0.5em;
+                                margin-bottom: 0.5em;
+                            }}
+
                             code {{
                                 background-color: #2d2d2d;
                                 color: #f8f8f2;
@@ -376,6 +377,7 @@ namespace Powork.ViewModel
                                 background-color: #2d2d2d;
                                 color: #f8f8f2;
                                 font-family: Arial, sans-serif;
+                                font-size: 0.95em;
                             }}
 
                             th, td {{

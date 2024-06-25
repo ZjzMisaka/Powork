@@ -75,7 +75,7 @@
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" Text="{Binding Memo, UpdateSourceTrigger=PropertyChanged}" Grid.Column="{Binding MemoColumn}" Grid.ColumnSpan="{Binding MemoColumnSpan}" Visibility="{Binding MemoVisibility}" Margin="{Binding MemoMargin}">
+            <TextBox ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Memo, UpdateSourceTrigger=PropertyChanged}" Grid.Column="{Binding MemoColumn}" Grid.ColumnSpan="{Binding MemoColumnSpan}" Visibility="{Binding MemoVisibility}" Margin="{Binding MemoMargin}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, Mode=OneWay}" />
 
