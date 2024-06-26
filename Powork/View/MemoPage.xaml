@@ -42,6 +42,7 @@
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding PreviousDayCommand}">
                 <ui:SymbolIcon Symbol="ArrowLeft24" />
@@ -65,7 +66,10 @@
             <Button Grid.Column="7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding SwapCommand}">
                 <ui:SymbolIcon Symbol="ArrowSwap24" />
             </Button>
-            <Button Grid.Column="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveCommand}">
+            <Button Grid.Column="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveDocumentCommand}">
+                <ui:SymbolIcon Symbol="DocumentSave24" />
+            </Button>
+            <Button Grid.Column="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveCommand}">
                 <ui:SymbolIcon Symbol="Save24" />
             </Button>
         </Grid>
@@ -77,6 +81,7 @@
             </Grid.ColumnDefinitions>
             <TextBox ScrollViewer.CanContentScroll="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Memo, UpdateSourceTrigger=PropertyChanged}" Grid.Column="{Binding MemoColumn}" Grid.ColumnSpan="{Binding MemoColumnSpan}" Visibility="{Binding MemoVisibility}" Margin="{Binding MemoMargin}">
                 <TextBox.InputBindings>
+                    <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveDocumentCommand, Mode=OneWay}" />
                     <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, Mode=OneWay}" />
 
                     <KeyBinding Key="Left" Modifiers="Control" Command="{Binding PreviousDayCommand, Mode=OneWay}" />

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -102,6 +104,7 @@ namespace Powork.ViewModel
         public ICommand EditVisibleChangeCommand { get; set; }
         public ICommand PreviewVisibleChangeCommand { get; set; }
         public ICommand SwapCommand { get; set; }
+        public ICommand SaveDocumentCommand { get; set; }
         public ICommand SaveCommand { get; set; }
 
         public MemoPageViewModel()
@@ -115,6 +118,7 @@ namespace Powork.ViewModel
             EditVisibleChangeCommand = new RelayCommand(EditVisibleChange);
             PreviewVisibleChangeCommand = new RelayCommand(PreviewVisibleChange);
             SwapCommand = new RelayCommand(Swap);
+            SaveDocumentCommand = new RelayCommand(SaveDocument);
             SaveCommand = new RelayCommand(Save);
 
             MemoColumn = 0;
@@ -308,6 +312,25 @@ namespace Powork.ViewModel
 
             SetColSpan();
             SetMargin();
+        }
+
+        private void SaveDocument()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                DefaultExt = ".html",
+                Filter = "Html documents (.html)|*.html|All files (*.*)|*.*",
+                FileName = $"Memo-{Date}.html",
+            };
+
+            DialogResult result = saveFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+
+                File.WriteAllText(filePath, Preview);
+            }
         }
 
         private void Save()
