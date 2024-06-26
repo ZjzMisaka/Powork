@@ -41,7 +41,7 @@ namespace Powork.ViewModel
                 double percentage = 0;
                 if (Memo != null && Memo.Length != 0)
                 {
-                    percentage = (double)CaretIndex / Memo.Length;
+                    percentage = (double)CurrentLineIndex(Memo, CaretIndex) / TotalLineCount(Memo);
                 }
                 Preview = GetHtmlStart(percentage) + Markdown.ToHtml(value, _pipeline) + _htmlEnd;
             }
@@ -354,7 +354,7 @@ namespace Powork.ViewModel
             Memo = _memo;
         }
 
-        public string GetHtmlStart(double percentage)
+        private string GetHtmlStart(double percentage)
         {
             return $@"<!DOCTYPE html>
                     <html lang=""en"">
@@ -452,6 +452,42 @@ namespace Powork.ViewModel
                         </script>
 
                     </head>";
+        }
+
+        private int CurrentLineIndex(string text, int caretIndex)
+        {
+            int line = 1;
+            for (int i = 0; i < caretIndex; i++)
+            {
+                if (text[i] == '\n')
+                {
+                    ++line;
+                }
+            }
+
+            if (line == 1)
+            {
+                line = 0;
+            }
+
+            return line;
+        }
+
+        private int TotalLineCount(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return 0;
+
+            int lineCount = 1;
+            foreach (char c in text)
+            {
+                if (c == '\n')
+                {
+                    ++lineCount;
+                }
+            }
+
+            return lineCount;
         }
     }
 }
