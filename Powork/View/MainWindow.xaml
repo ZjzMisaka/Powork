@@ -147,6 +147,7 @@
                         <MenuItem Header="Light" Tag="light" Command="{Binding SwitchLightThemeCommand}"/>
                         <MenuItem Header="Dark" Tag="dark" Command="{Binding SwitchDarkThemeCommand}"/>
                     </MenuItem>
+                    <MenuItem Header="View on GitHub" Tag="view on github" Command="{Binding ViewOnGithubCommand}"/>
                     <MenuItem Header="Exit" Tag="exit" Command="{Binding ExitCommand}"/>
                 </ContextMenu>
             </tray:NotifyIcon.Menu>

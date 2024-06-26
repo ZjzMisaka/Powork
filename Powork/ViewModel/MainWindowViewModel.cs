@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Sockets;
+using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -128,6 +129,7 @@ namespace Powork.ViewModel
 
         public ICommand SwitchLightThemeCommand { get; set; }
         public ICommand SwitchDarkThemeCommand { get; set; }
+        public ICommand ViewOnGithubCommand { get; set; }
         public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -199,6 +201,7 @@ namespace Powork.ViewModel
 
             SwitchLightThemeCommand = new RelayCommand(SwitchLightTheme);
             SwitchDarkThemeCommand = new RelayCommand(SwitchDarkTheme);
+            ViewOnGithubCommand = new RelayCommand(ViewOnGithub);
             ExitCommand = new RelayCommand(Exit);
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
@@ -229,6 +232,14 @@ namespace Powork.ViewModel
         {
             ApplicationThemeManager.Apply(ApplicationTheme.Dark, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
             SettingRepository.UpdateSetting("Theme", "Dark");
+        }
+
+        private void ViewOnGithub()
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/ZjzMisaka/Powork")
+            {
+                UseShellExecute = true
+            });
         }
 
         private void Exit()
