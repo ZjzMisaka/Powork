@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Sockets;
-using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
