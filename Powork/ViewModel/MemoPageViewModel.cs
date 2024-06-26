@@ -38,7 +38,12 @@ namespace Powork.ViewModel
             set
             {
                 SetProperty<string>(ref _memo, value);
-                Preview = GetHtmlStart() + Markdown.ToHtml(value, _pipeline) + _htmlEnd;
+                double percentage = 0;
+                if (Memo != null && Memo.Length != 0)
+                {
+                    percentage = (double)CaretIndex / Memo.Length;
+                }
+                Preview = GetHtmlStart(percentage) + Markdown.ToHtml(value, _pipeline) + _htmlEnd;
             }
         }
         private string _preview;
@@ -89,6 +94,12 @@ namespace Powork.ViewModel
             get => _memoMargin;
             set => SetProperty<Thickness>(ref _memoMargin, value);
         }
+        private int _caretIndex;
+        public int CaretIndex
+        {
+            get => _caretIndex;
+            set => SetProperty<int>(ref _caretIndex, value);
+        }
         private Thickness _previewMargin;
         public Thickness PreviewMargin
         {
@@ -130,7 +141,7 @@ namespace Powork.ViewModel
             MemoMargin = new Thickness(5);
             PreviewMargin = new Thickness(5);
 
-            Preview = GetHtmlStart() + _htmlEnd;
+            Preview = GetHtmlStart(0) + _htmlEnd;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
@@ -343,7 +354,7 @@ namespace Powork.ViewModel
             Memo = _memo;
         }
 
-        public string GetHtmlStart()
+        public string GetHtmlStart(double percentage)
         {
             return $@"<!DOCTYPE html>
                     <html lang=""en"">
@@ -429,6 +440,17 @@ namespace Powork.ViewModel
                                 color: #f8f8f2;
                             }}
                         </style>
+
+                        <script>
+                            (function() {{
+                                window.onload = function() {{
+                                    var totalHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                                    var scrollPosition = totalHeight * {percentage};
+                                    window.scrollTo(0, scrollPosition);
+                                }};
+                            }})();
+                        </script>
+
                     </head>";
         }
     }
