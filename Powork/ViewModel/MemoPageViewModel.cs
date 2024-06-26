@@ -457,7 +457,7 @@ namespace Powork.ViewModel
         private int CurrentLineIndex(string text, int caretIndex)
         {
             int line = 1;
-            for (int i = 0; i < caretIndex; i++)
+            for (int i = 0; i < caretIndex && i < text.Length; i++)
             {
                 if (text[i] == '\n')
                 {
