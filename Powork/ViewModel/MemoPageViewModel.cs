@@ -365,6 +365,7 @@ namespace Powork.ViewModel
                         <style>
                             html {{
                                 overflow: auto;
+                                {ThemeHelper.ScrollbarStyleText}
                             }}
 
                             body {{
@@ -386,6 +387,7 @@ namespace Powork.ViewModel
                                 font-size: 0.95em;
                                 display: inline-block;
                                 white-space: pre;
+                                overflow: hidden;
                             }}
 
                             pre code {{
