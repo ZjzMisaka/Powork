@@ -57,27 +57,42 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Resources\StringResource.en-US.msg.xaml" />
+    <Page Remove="Resources\StringResource.en-US.ui.xaml" />
+    <Page Remove="Resources\StringResource.ja-JP.msg.xaml" />
+    <Page Remove="Resources\StringResource.ja-JP.ui.xaml" />
+    <Page Remove="Resources\StringResource.zh-CN.msg.xaml" />
+    <Page Remove="Resources\StringResource.zh-CN.ui.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Image\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Image\icon_flash.ico" />
+    <Content Include="Resources\StringResource.en-US.msg.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\StringResource.en-US.ui.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\StringResource.ja-JP.msg.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\StringResource.ja-JP.ui.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\StringResource.zh-CN.msg.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\StringResource.zh-CN.ui.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="F:\_programming\c#\Powork\Powork\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="Resources\StringResource.en-US.ui.xaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Resources\StringResource.ja-JP.ui.xaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
-    <Page Update="Resources\StringResource.zh-CN.ui.xaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
   </ItemGroup>
 
 </Project>

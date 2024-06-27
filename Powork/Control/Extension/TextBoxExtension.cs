@@ -48,7 +48,7 @@ namespace Powork.Control.Extension
 
         private static void OnTrackCaretIndex(DependencyObject dependency, DependencyPropertyChangedEventArgs e)
         {
-            var textbox = dependency as TextBox;
+            TextBox textbox = dependency as TextBox;
 
             if (textbox == null)
                 return;
@@ -67,7 +67,7 @@ namespace Powork.Control.Extension
 
         private static void OnSelectionChanged(object sender, RoutedEventArgs e)
         {
-            var textbox = sender as TextBox;
+            TextBox textbox = sender as TextBox;
 
             if (textbox != null)
                 SetCursorPosition(textbox, textbox.CaretIndex); // dies line does nothing

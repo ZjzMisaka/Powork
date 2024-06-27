@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    Title="SelectUser"
+    Title="{DynamicResource SelectUser}"
     Width="600"
     Height="300"
     d:DataContext="{d:DesignInstance local:SelectUserWindow,
@@ -62,16 +62,16 @@
                 </ui:ListView.ItemContainerStyle>
                 <ui:ListView.View>
                     <ui:GridView>
-                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
+                        <GridViewColumn Width="auto" Header="{DynamicResource Name}" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="auto" Header="{DynamicResource Group}" DisplayMemberBinding="{Binding GroupName}"/>
                         <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
                     </ui:GridView>
                 </ui:ListView.View>
             </ui:ListView>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Grid.Row="1" Grid.Column="1" Content="Cancel" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
-                <Button Grid.Row="1" Grid.Column="1" Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
+                <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource Cancel}" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
+                <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource OK}" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
             </StackPanel>
         </Grid>
     </Grid>

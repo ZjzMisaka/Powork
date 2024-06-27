@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    Title="ManageTeamMember"
+    Title="{DynamicResource ManageTeamMember}"
     Width="600"
     Height="300"
     d:DataContext="{d:DesignInstance local:ManageTeamMemberWindow,
@@ -58,8 +58,8 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Other User" Margin="5, 5, 0, 5"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="Team Member" Margin="0, 5, 5, 5"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource OtherUser}" Margin="5, 5, 0, 5"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="{DynamicResource TeamMember}" Margin="0, 5, 5, 5"/>
 
             <ui:ListView ItemsSource="{Binding OtherUserList}" Grid.Row="1" Grid.Column="0" MinHeight="100" MaxHeight="400" Margin="5, 5, 0, 5" Width="250" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <ui:ListView.ItemContainerStyle>
@@ -69,16 +69,20 @@
                 </ui:ListView.ItemContainerStyle>
                 <ui:ListView.View>
                     <ui:GridView>
-                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
+                        <GridViewColumn Width="auto" Header="{DynamicResource Name}" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="auto" Header="{DynamicResource Group}" DisplayMemberBinding="{Binding GroupName}"/>
                         <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
                     </ui:GridView>
                 </ui:ListView.View>
             </ui:ListView>
 
             <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-                <Button Content=">" Command="{Binding ToTeamCommand}" Margin="5"></Button>
-                <Button Content="&lt;" Command="{Binding ToOtherCommand}" Margin="5"></Button>
+                <Button Command="{Binding ToTeamCommand}" Margin="5">
+                    <ui:SymbolIcon Symbol="ArrowRight24" />
+                </Button>
+                <Button Command="{Binding ToOtherCommand}" Margin="5">
+                    <ui:SymbolIcon Symbol="ArrowLeft24" />
+                </Button>
             </StackPanel>
 
             <ui:ListView ItemsSource="{Binding TeamUserList}" Grid.Row="1" Grid.Column="2" MinHeight="100" MaxHeight="400" Margin="0, 5, 5, 5" Width="250"  ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -89,16 +93,16 @@
                 </ui:ListView.ItemContainerStyle>
                 <ui:ListView.View>
                     <ui:GridView>
-                        <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="auto" Header="Group" DisplayMemberBinding="{Binding GroupName}"/>
+                        <GridViewColumn Width="auto" Header="{DynamicResource Name}" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="auto" Header="{DynamicResource Group}" DisplayMemberBinding="{Binding GroupName}"/>
                         <GridViewColumn Width="auto" Header="IP" DisplayMemberBinding="{Binding IP}"/>
                     </ui:GridView>
                 </ui:ListView.View>
             </ui:ListView>
 
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="Cancel" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
-                <Button Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
+                <Button Content="{DynamicResource Cancel}" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
+                <Button Content="{DynamicResource OK}" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
             </StackPanel>
         </Grid>
     </Grid>

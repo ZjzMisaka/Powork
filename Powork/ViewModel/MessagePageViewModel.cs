@@ -378,7 +378,7 @@ namespace Powork.ViewModel
             team.MemberList = teamMemberList;
             team.LastModifiedTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
 
-            InputWindowViewModel dataContext = new InputWindowViewModel("Team name");
+            InputWindowViewModel dataContext = new InputWindowViewModel(Application.Current.FindResource("TeamName").ToString());
             InputWindow window = new InputWindow
             {
                 DataContext = dataContext
@@ -492,7 +492,7 @@ namespace Powork.ViewModel
             Exception ex = (await task).Result;
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline.\nThe message will be delayed." }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOffline").ToString() }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,

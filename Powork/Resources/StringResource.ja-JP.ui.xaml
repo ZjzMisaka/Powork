@@ -1,6 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- User -->
+    <sys:String x:Key="Name">名前</sys:String>
+    <sys:String x:Key="Group">グループ</sys:String>
+
+    <!-- Button -->
+    <sys:String x:Key="OK">確認</sys:String>
+    <sys:String x:Key="Cancel">キャンセル</sys:String>
 
     <!-- MainWindow -->
     <sys:String x:Key="Msg">メッセージ</sys:String>
@@ -21,8 +28,12 @@
     <sys:String x:Key="CreateTime">作成日時</sys:String>
     <sys:String x:Key="ModifiedTime">更新日時</sys:String>
 
-    <!-- SettingPage -->
-    <sys:String x:Key="Name">名前</sys:String>
-    <sys:String x:Key="Group">グループ</sys:String>
-    <sys:String x:Key="OK">確認</sys:String>
+    <!-- SelectUserWindow -->
+    <sys:String x:Key="SelectUser">ユーザーを選択</sys:String>
+
+    <!-- ManageTeamMemberWindow -->
+    <sys:String x:Key="ManageTeamMember">チーム管理</sys:String>
+    <sys:String x:Key="OtherUser">ほかのユーザー</sys:String>
+    <sys:String x:Key="TeamMember">チームメンバー</sys:String>
+    <sys:String x:Key="TeamName">チームネーム</sys:String>
 </ResourceDictionary>

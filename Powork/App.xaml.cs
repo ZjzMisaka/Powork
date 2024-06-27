@@ -8,5 +8,4 @@ namespace Powork
     public partial class App : Application
     {
     }
-
 }

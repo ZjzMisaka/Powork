@@ -352,7 +352,7 @@ namespace Powork.ViewModel
                 User member = tuple.Item2;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline.\nThe message will be delayed." }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOffline").ToString(), member.Name) }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,

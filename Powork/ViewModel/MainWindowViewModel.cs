@@ -163,6 +163,8 @@ namespace Powork.ViewModel
             _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
             _languageResourceDictionaryList = new List<ResourceDictionary>();
 
+            LoadResourceDictionaries();
+
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
             SettingRepository.SetDefault("Theme", "Dark");
@@ -229,34 +231,11 @@ namespace Powork.ViewModel
             RemoveItemCommand = new RelayCommand(RemoveItem);
             StopDownloadCommand = new RelayCommand(StopDownload);
 
-            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
-            {
-                if (dictionary.Source != null)
-                {
-                    string originalString = dictionary.Source.OriginalString;
-                    if (!originalString.Contains("StringResource"))
-                    {
-                        continue;
-                    }
-                    string cultureStr = originalString.Remove(0, originalString.IndexOf(".") + 1);
-                    cultureStr = cultureStr.Remove(cultureStr.IndexOf("."));
-                    CultureInfo cultureInfo = new CultureInfo(cultureStr, false);
-                    string nativeName = cultureInfo.NativeName;
-                    _languageResourceDictionaryList.Add(dictionary);
-
-                    LanguageMenuItemList.Add(new MenuItem {
-                        Header = nativeName,
-                        Tag = nativeName,
-                        Command = LanguageSelectedCommand,
-                        CommandParameter = cultureInfo.Name,
-                    });
-                }
-            }
-
+            InitLanguage();
             LanguageSelected(SettingRepository.SelectSetting("Language"));
         }
 
-        public static void Navigate(Type targetType, ObservableObject dataContext)
+        private static void Navigate(Type targetType, ObservableObject dataContext)
         {
             s_navigationService.Navigate(targetType, dataContext);
         }
@@ -264,11 +243,11 @@ namespace Powork.ViewModel
         private void LanguageSelected(string language)
         {
             string requestedCulture = string.Format(@"Resources\StringResource.{0}", language);
-            IEnumerable<ResourceDictionary> resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.StartsWith(requestedCulture));
+            IEnumerable<ResourceDictionary> resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.Contains(requestedCulture));
             if (resourceDictionaryList == null || !resourceDictionaryList.Any())
             {
                 requestedCulture = @"Resources\StringResource.en-US";
-                resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.StartsWith(requestedCulture));
+                resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.Contains(requestedCulture));
             }
             if (resourceDictionaryList != null && resourceDictionaryList.Any())
             {
@@ -869,6 +848,65 @@ namespace Powork.ViewModel
 
                 Application.Current.Resources["TimeTextBrush"] = Brushes.DarkGreen;
                 Application.Current.Resources["ErrorTextBrush"] = Brushes.DarkRed;
+            }
+        }
+
+        private void InitLanguage()
+        {
+            List<string> addedLanguage = new List<string>();
+            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+            {
+                if (dictionary.Source != null)
+                {
+                    string originalString = Path.GetFileName(dictionary.Source.OriginalString);
+                    if (!originalString.Contains("StringResource"))
+                    {
+                        continue;
+                    }
+                    string cultureStr = originalString.Remove(0, originalString.IndexOf(".") + 1);
+                    cultureStr = cultureStr.Remove(cultureStr.IndexOf("."));
+                    CultureInfo cultureInfo = new CultureInfo(cultureStr, false);
+                    string nativeName = cultureInfo.NativeName;
+                    _languageResourceDictionaryList.Add(dictionary);
+
+                    if (addedLanguage.Contains(cultureInfo.Name))
+                    {
+                        continue;
+                    }
+                    addedLanguage.Add(cultureInfo.Name);
+                    LanguageMenuItemList.Add(new MenuItem
+                    {
+                        Header = nativeName,
+                        Tag = nativeName,
+                        Command = LanguageSelectedCommand,
+                        CommandParameter = cultureInfo.Name,
+                    });
+                }
+            }
+        }
+
+        private void LoadResourceDictionaries()
+        {
+            string resourcesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+
+            if (Directory.Exists(resourcesPath))
+            {
+                foreach (string file in Directory.GetFiles(resourcesPath, "*.xaml", SearchOption.AllDirectories))
+                {
+                    AddResourceDictionary(file);
+                }
+            }
+        }
+
+        private void AddResourceDictionary(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                ResourceDictionary resourceDictionary = new ResourceDictionary
+                {
+                    Source = new Uri(filePath, UriKind.Absolute)
+                };
+                Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             }
         }
     }

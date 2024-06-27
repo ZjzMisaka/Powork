@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 using PowerThreadPool.Results;
@@ -75,7 +76,7 @@ namespace Powork.Helper
 
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = "Failed to send: User is offline.\nThe message will be delayed." }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOffline").ToString() }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
@@ -118,7 +119,7 @@ namespace Powork.Helper
                 Exception ex = (await task).Result;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = $"Failed to send: User {member.Name} is offline.\nThe message will be delayed." }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOffline").ToString(), member.Name) }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,
