@@ -76,7 +76,7 @@ namespace Powork.Helper
 
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOffline").ToString() }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOfflineSendFailed").ToString() }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
@@ -119,7 +119,7 @@ namespace Powork.Helper
                 Exception ex = (await task).Result;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOffline").ToString(), member.Name) }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOfflineSendFailed").ToString(), member.Name) }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,

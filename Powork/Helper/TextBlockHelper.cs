@@ -75,7 +75,7 @@ namespace Powork.Helper
                             {
                                 if (!System.IO.Path.Exists(body.Content))
                                 {
-                                    System.Windows.MessageBox.Show("No such file: " + body.Content);
+                                    System.Windows.MessageBox.Show($"{Application.Current.FindResource("NoSuchFile")}: {body.Content}");
                                     return;
                                 }
                                 Process p = new Process();

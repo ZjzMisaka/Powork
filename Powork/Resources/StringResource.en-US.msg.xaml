@@ -1,8 +1,17 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    <sys:String x:Key="UserOffline" xml:space="preserve">Failed to send: User is offline.
+    <!-- Message -->
+    <sys:String x:Key="UserOfflineSendFailed" xml:space="preserve">Failed to send: User is offline.
 The message will be delayed.</sys:String>
-    <sys:String x:Key="TeamMemberOffline" xml:space="preserve">Failed to send: User {0} is offline.
+    <sys:String x:Key="TeamMemberOfflineSendFailed" xml:space="preserve">Failed to send: User {0} is offline.
 The message will be delayed.</sys:String>
+
+    <!-- MessageBox -->
+    <sys:String x:Key="NoSuchFile">No such file</sys:String>
+    <sys:String x:Key="UserOffline">User {0} is offline.</sys:String>
+    <sys:String x:Key="NotFound">not found.</sys:String>
+    <sys:String x:Key="ReceivedSuccessfully">received successfully.</sys:String>
+    <sys:String x:Key="EmptyNameErrorMessage">Name should not be empty.</sys:String>
+    <sys:String x:Key="EmptyGroupErrorMessage">Group should not be empty.</sys:String>
 </ResourceDictionary>

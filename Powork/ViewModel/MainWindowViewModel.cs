@@ -478,7 +478,7 @@ namespace Powork.ViewModel
                     List<string> sendFileWorkIDList = new List<string>();
                     if (FileHelper.GetType(path) == FileHelper.Type.None)
                     {
-                        MessageBox.Show("No such file: " + path);
+                        MessageBox.Show($"{Application.Current.FindResource("NoSuchFile")}: {path}");
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
@@ -598,7 +598,7 @@ namespace Powork.ViewModel
                     }
                     else if (fileInfo.Status == Status.NoSuchFile)
                     {
-                        MessageBox.Show("No such file: " + fileInfo.Name);
+                        MessageBox.Show($"{Application.Current.FindResource("NoSuchFile")}: {fileInfo.Name}");
 
                         for (int i = 0; i < DownloadList.Count; ++i)
                         {
@@ -766,7 +766,7 @@ namespace Powork.ViewModel
             Process p = new Process();
             if (!Path.Exists(_nowDownloadInfoViewModel.Path))
             {
-                MessageBox.Show($"{Path.GetFileName(_nowDownloadInfoViewModel.Path)} not found.");
+                MessageBox.Show($"{Path.GetFileName(_nowDownloadInfoViewModel.Path)} {Application.Current.FindResource("NotFound")}");
                 return;
             }
             p.StartInfo = new ProcessStartInfo(_nowDownloadInfoViewModel.Path)

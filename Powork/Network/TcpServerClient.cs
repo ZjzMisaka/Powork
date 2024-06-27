@@ -332,7 +332,7 @@ namespace Powork.Network
                 }
                 catch
                 {
-                    MessageBox.Show($"User {name} not online");
+                    MessageBox.Show(string.Format(Application.Current.FindResource("UserOffline").ToString(), name));
                 }
                 finally
                 {

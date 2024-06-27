@@ -183,7 +183,7 @@ namespace Powork.ViewModel
 
         private void OnGetFile(object sender, EventArgs e)
         {
-            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} received successfully.");
+            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} {Application.Current.FindResource("ReceivedSuccessfully")}");
         }
 
         private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
@@ -352,7 +352,7 @@ namespace Powork.ViewModel
                 User member = tuple.Item2;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOffline").ToString(), member.Name) }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOfflineSendFailed").ToString(), member.Name) }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,

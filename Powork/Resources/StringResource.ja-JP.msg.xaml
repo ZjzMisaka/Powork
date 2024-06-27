@@ -1,8 +1,17 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    <sys:String x:Key="UserOffline" xml:space="preserve">送信失敗：ユーザーがオフラインです。
+    <!-- Message -->
+    <sys:String x:Key="UserOfflineSendFailed" xml:space="preserve">送信失敗：ユーザーがオフラインです。
 メッセージは送信が遅れます。</sys:String>
-    <sys:String x:Key="TeamMemberOffline" xml:space="preserve">送信失敗：ユーザー{0}がオフラインです。
+    <sys:String x:Key="TeamMemberOfflineSendFailed" xml:space="preserve">送信失敗：ユーザー{0}がオフラインです。
 メッセージは送信が遅れます。</sys:String>
+
+    <!-- MessageBox -->
+    <sys:String x:Key="NoSuchFile">ファイルが存在しません</sys:String>
+    <sys:String x:Key="UserOffline">ユーザー{0}はオフラインです。</sys:String>
+    <sys:String x:Key="NotFound">見つかりませんでした。</sys:String>
+    <sys:String x:Key="ReceivedSuccessfully">受信成功。</sys:String>
+    <sys:String x:Key="EmptyNameErrorMessage">名前は空にできません。</sys:String>
+    <sys:String x:Key="EmptyGroupErrorMessage">グループ名は空にできません。</sys:String>
 </ResourceDictionary>

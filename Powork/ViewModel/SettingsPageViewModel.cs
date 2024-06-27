@@ -66,12 +66,12 @@ namespace Powork.ViewModel
         {
             if (string.IsNullOrEmpty(Name))
             {
-                MessageBox.Show("Name should not be empty");
+                MessageBox.Show(Application.Current.FindResource("EmptyNameErrorMessage").ToString());
                 return;
             }
             if (string.IsNullOrEmpty(Group))
             {
-                MessageBox.Show("Group should not be empty");
+                MessageBox.Show(Application.Current.FindResource("EmptyGroupErrorMessage").ToString());
                 return;
             }
 

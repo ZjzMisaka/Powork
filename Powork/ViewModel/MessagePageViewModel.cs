@@ -204,7 +204,7 @@ namespace Powork.ViewModel
 
         private void OnGetFile(object sender, EventArgs e)
         {
-            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} received successfully.");
+            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} {Application.Current.FindResource("ReceivedSuccessfully")}");
         }
 
         private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
@@ -393,7 +393,7 @@ namespace Powork.ViewModel
 
             if (string.IsNullOrEmpty(team.Name))
             {
-                System.Windows.MessageBox.Show("Name should not be empty");
+                System.Windows.MessageBox.Show(Application.Current.FindResource("EmptyNameErrorMessage").ToString());
                 return;
             }
 
@@ -492,7 +492,7 @@ namespace Powork.ViewModel
             Exception ex = (await task).Result;
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOffline").ToString() }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOfflineSendFailed").ToString() }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
