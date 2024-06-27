@@ -117,48 +117,54 @@ namespace Powork.ViewModel
             GlobalVariables.GetShareInfo -= SetShareInfo;
         }
 
-        private void Drop(DragEventArgs args)
+        private async void Drop(DragEventArgs args)
         {
             string[] pathList = (string[])args.Data.GetData(DataFormats.FileDrop, false);
+            List<string> idList = new List<string>();
             foreach (string path in pathList)
             {
-                if (FileHelper.GetType(path) == FileHelper.Type.Directory)
+                string id = GlobalVariables.PowerPool.QueueWorkItem(() =>
                 {
-                    DirectoryInfo dir = new DirectoryInfo(path);
-
-                    ShareInfo shareInfo = new ShareInfo()
+                    if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
-                        Guid = Guid.NewGuid().ToString(),
-                        Path = path,
-                        Name = Path.GetFileName(path),
-                        Extension = string.Empty,
-                        Type = "Directory",
-                        Size = string.Empty,
-                        ShareTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds),
-                        CreateTime = dir.CreationTime.ToString(Format.DateTimeFormatWithMilliseconds),
-                        LastModifiedTime = dir.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds),
-                    };
-                    ShareRepository.InsertFile(shareInfo);
-                }
-                else if (FileHelper.GetType(path) == FileHelper.Type.Image || FileHelper.GetType(path) == FileHelper.Type.File)
-                {
-                    System.IO.FileInfo fileInfo = new System.IO.FileInfo(path);
+                        DirectoryInfo dir = new DirectoryInfo(path);
 
-                    ShareInfo shareInfo = new ShareInfo()
+                        ShareInfo shareInfo = new ShareInfo()
+                        {
+                            Guid = Guid.NewGuid().ToString(),
+                            Path = path,
+                            Name = Path.GetFileName(path),
+                            Extension = string.Empty,
+                            Type = "Directory",
+                            Size = string.Empty,
+                            ShareTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds),
+                            CreateTime = dir.CreationTime.ToString(Format.DateTimeFormatWithMilliseconds),
+                            LastModifiedTime = dir.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds),
+                        };
+                        ShareRepository.InsertFile(shareInfo);
+                    }
+                    else if (FileHelper.GetType(path) == FileHelper.Type.Image || FileHelper.GetType(path) == FileHelper.Type.File)
                     {
-                        Guid = Guid.NewGuid().ToString(),
-                        Path = path,
-                        Name = Path.GetFileNameWithoutExtension(path),
-                        Extension = Path.GetExtension(path),
-                        Type = "File",
-                        Size = FileHelper.GetReadableFileSize(fileInfo.Length),
-                        ShareTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds),
-                        CreateTime = fileInfo.CreationTime.ToString(Format.DateTimeFormatWithMilliseconds),
-                        LastModifiedTime = fileInfo.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds),
-                    };
-                    ShareRepository.InsertFile(shareInfo);
-                }
+                        System.IO.FileInfo fileInfo = new System.IO.FileInfo(path);
+
+                        ShareInfo shareInfo = new ShareInfo()
+                        {
+                            Guid = Guid.NewGuid().ToString(),
+                            Path = path,
+                            Name = Path.GetFileNameWithoutExtension(path),
+                            Extension = Path.GetExtension(path),
+                            Type = "File",
+                            Size = FileHelper.GetReadableFileSize(fileInfo.Length),
+                            ShareTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds),
+                            CreateTime = fileInfo.CreationTime.ToString(Format.DateTimeFormatWithMilliseconds),
+                            LastModifiedTime = fileInfo.LastWriteTime.ToString(Format.DateTimeFormatWithMilliseconds),
+                        };
+                        ShareRepository.InsertFile(shareInfo);
+                    }
+                });
+                idList.Add(id);
             }
+            await GlobalVariables.PowerPool.WaitAsync(idList);
             List<ShareInfo> shareInfoList = ShareRepository.SelectFile();
             ShareInfoList = new ObservableCollection<ShareInfoViewModel>();
             foreach (ShareInfo shareInfo in shareInfoList)
@@ -194,11 +200,17 @@ namespace Powork.ViewModel
 
         private void Remove()
         {
-            foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
+            GlobalVariables.PowerPool.QueueWorkItem(() =>
             {
-                ShareRepository.RemoveFile(shareInfoViewModel.Guid);
-                ShareInfoList.Remove(shareInfoViewModel);
-            }
+                foreach (ShareInfoViewModel shareInfoViewModel in SelectedItems)
+                {
+                    ShareRepository.RemoveFile(shareInfoViewModel.Guid);
+                    Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ShareInfoList.Remove(shareInfoViewModel);
+                    });
+                }
+            });
         }
 
         private void RequestFile(bool tempFolder)
