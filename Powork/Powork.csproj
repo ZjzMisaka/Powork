@@ -58,6 +58,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="LICENSES\CommunityToolkit.License.md" />
+    <None Remove="LICENSES\dotnet.runtime.LICENSE.TXT" />
+    <None Remove="LICENSES\JamesNK.Newtonsoft.Json.LICENSE.md" />
+    <None Remove="LICENSES\lepoco.wpfui.LICENSE.txt" />
+    <None Remove="LICENSES\microsoft.XamlBehaviorsWpf.LICENSE.txt" />
+    <None Remove="LICENSES\ookii-dialogs.ookii-dialogs-wpf.LICENSE.txt" />
+    <None Remove="LICENSES\praeclarum.sqlite-net.LICENSE.txt" />
+    <None Remove="LICENSES\ZjzMisaka.PowerThreadPool.LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Remove="Resources\StringResource.en-US.msg.xaml" />
     <Page Remove="Resources\StringResource.en-US.ui.xaml" />
     <Page Remove="Resources\StringResource.ja-JP.msg.xaml" />
@@ -72,6 +83,30 @@
 
   <ItemGroup>
     <Content Include="Image\icon_flash.ico" />
+    <Content Include="LICENSES\CommunityToolkit.License.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\dotnet.runtime.LICENSE.TXT">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\JamesNK.Newtonsoft.Json.LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\lepoco.wpfui.LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\microsoft.XamlBehaviorsWpf.LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\ookii-dialogs.ookii-dialogs-wpf.LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\praeclarum.sqlite-net.LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\ZjzMisaka.PowerThreadPool.LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\StringResource.en-US.msg.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
