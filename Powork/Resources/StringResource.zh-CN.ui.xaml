@@ -15,6 +15,9 @@
     <sys:String x:Key="Share">分享</sys:String>
     <sys:String x:Key="Memo">笔记</sys:String>
     <sys:String x:Key="Setting">设置</sys:String>
+    <sys:String x:Key="Unknown">未知</sys:String>
+    <sys:String x:Key="MessageFromUser">({0}) 来自{1}的消息</sys:String>
+    <sys:String x:Key="MessageFromTeam">({0}) 来自团队{1}的消息</sys:String>
 
     <!-- MessgaePage -->
     <sys:String x:Key="DropHere">拖放至此</sys:String>
@@ -27,6 +30,7 @@
     <sys:String x:Key="ShareTime">分享时间</sys:String>
     <sys:String x:Key="CreateTime">创建时间</sys:String>
     <sys:String x:Key="ModifiedTime">修改时间</sys:String>
+    <sys:String x:Key="UserSharing">{0}的分享</sys:String>
 
     <!-- SelectUserWindow -->
     <sys:String x:Key="SelectUser">选择用户</sys:String>

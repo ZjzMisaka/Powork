@@ -15,6 +15,9 @@
     <sys:String x:Key="Share">Share</sys:String>
     <sys:String x:Key="Memo">Memo</sys:String>
     <sys:String x:Key="Setting">Setting</sys:String>
+    <sys:String x:Key="Unknown">Unknown</sys:String>
+    <sys:String x:Key="MessageFromUser">({0}) Message from {1}</sys:String>
+    <sys:String x:Key="MessageFromTeam">({0}) Message from team {1}</sys:String>
 
     <!-- MessgaePage -->
     <sys:String x:Key="DropHere">DROP HERE</sys:String>
@@ -27,6 +30,7 @@
     <sys:String x:Key="ShareTime">Share time</sys:String>
     <sys:String x:Key="CreateTime">Create time</sys:String>
     <sys:String x:Key="ModifiedTime">Modified time</sys:String>
+    <sys:String x:Key="UserSharing">{0}'s Sharing</sys:String>
 
     <!-- SelectUserWindow -->
     <sys:String x:Key="SelectUser">Select user</sys:String>

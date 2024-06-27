@@ -167,17 +167,17 @@ namespace Powork.ViewModel
 
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
-            SettingRepository.SetDefault("Theme", "Dark");
-            SettingRepository.SetDefault("Language", CultureInfo.CurrentUICulture.Name);
+            SettingRepository.SetDefault(Setting.Theme, Setting.Dark);
+            SettingRepository.SetDefault(Setting.Language, CultureInfo.CurrentUICulture.Name);
 
             ApplicationThemeManager.Changed += ThemeChanged;
 
-            string theme = SettingRepository.SelectSetting("Theme");
-            if (theme == "Dark")
+            string theme = SettingRepository.SelectSetting(Setting.Theme);
+            if (theme == Setting.Dark)
             {
                 SwitchDarkTheme();
             }
-            else if (theme == "Light")
+            else if (theme == Setting.Light)
             {
                 SwitchLightTheme();
             }
@@ -258,19 +258,19 @@ namespace Powork.ViewModel
                 }
             }
 
-            SettingRepository.UpdateSetting("Language", language);
+            SettingRepository.UpdateSetting(Setting.Language, language);
         }
 
         private void SwitchLightTheme()
         {
             ApplicationThemeManager.Apply(ApplicationTheme.Light, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
-            SettingRepository.UpdateSetting("Theme", "Light");
+            SettingRepository.UpdateSetting(Setting.Theme, Setting.Light);
         }
 
         private void SwitchDarkTheme()
         {
             ApplicationThemeManager.Apply(ApplicationTheme.Dark, Wpf.Ui.Controls.WindowBackdropType.Auto, true);
-            SettingRepository.UpdateSetting("Theme", "Dark");
+            SettingRepository.UpdateSetting(Setting.Theme, Setting.Dark);
         }
 
         private void ViewOnGithub()
@@ -288,7 +288,7 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
-            TrayIcon = "/Image/icon.ico";
+            TrayIcon = Location.Icon;
             ApplicationTitle = "Powork";
             OpenNoticeButtonVisibility = Visibility.Collapsed;
             DownloadPopupMenuEnable = false;
@@ -402,7 +402,7 @@ namespace Powork.ViewModel
                                 {
                                     noticeViewModel = new NoticeViewModel();
                                     noticeViewModel.Count = 1;
-                                    noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from Team {teamName}";
+                                    noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromTeam").ToString(), noticeViewModel.Count, teamName);
                                     noticeViewModel.TeamMessage = teamMessage;
                                     _noticeInfoDic[teamMessage.TeamID] = noticeViewModel;
                                     Application.Current.Dispatcher.Invoke(() =>
@@ -419,7 +419,7 @@ namespace Powork.ViewModel
                                     ++noticeViewModel.Count;
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from Team {teamName}";
+                                        noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromTeam").ToString(), teamName);
                                     });
                                 }
                             }
@@ -450,7 +450,7 @@ namespace Powork.ViewModel
                                 {
                                     noticeViewModel = new NoticeViewModel();
                                     noticeViewModel.Count = 1;
-                                    noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from {userMessage.SenderName}";
+                                    noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromUser").ToString(), userMessage.SenderName);
                                     noticeViewModel.UserMessage = userMessage;
                                     _noticeInfoDic[userMessage.SenderIP + userMessage.SenderName] = noticeViewModel;
                                     Application.Current.Dispatcher.Invoke(() =>
@@ -464,7 +464,7 @@ namespace Powork.ViewModel
                                     ++noticeViewModel.Count;
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        noticeViewModel.Notice = $"{noticeViewModel.Count} Message{(noticeViewModel.Count == 1 ? "" : "s")} from {userMessage.SenderName}";
+                                        noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromUser").ToString(), userMessage.SenderName);
                                     });
                                 }
                             }
@@ -816,18 +816,18 @@ namespace Powork.ViewModel
         {
             _isBlinking = false;
             _blinkTimer.Stop();
-            TrayIcon = "/Image/icon.ico";
+            TrayIcon = Location.Icon;
         }
 
         private void ToggleIcon()
         {
-            if (TrayIcon == "/Image/icon.ico")
+            if (TrayIcon == Location.Icon)
             {
-                TrayIcon = "/Image/icon_flash.ico";
+                TrayIcon = Location.FlashIcon;
             }
             else
             {
-                TrayIcon = "/Image/icon.ico";
+                TrayIcon = Location.Icon;
             }
         }
 

@@ -11,6 +11,7 @@ using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
 using Powork.ViewModel.Inner;
+using Windows.Networking.NetworkOperators;
 
 namespace Powork.ViewModel
 {
@@ -39,7 +40,7 @@ namespace Powork.ViewModel
         private string _userName;
         public string UserName
         {
-            get => _userName + "'s Sharing";
+            get => string.Format(Application.Current.FindResource("UserSharing").ToString(), _userName);
             set => SetProperty<string>(ref _userName, value);
         }
         public List<ShareInfoViewModel> SelectedItems => ShareInfoList.Where(x => x.IsSelected).ToList();
