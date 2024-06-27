@@ -51,13 +51,13 @@
             </ui:ListView.ItemContainerStyle>
             <ui:ListView.View>
                 <ui:GridView>
-                    <GridViewColumn Width="auto" Header="Name" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Width="auto" Header="Extension" DisplayMemberBinding="{Binding Extension}"/>
-                    <GridViewColumn Width="auto" Header="Type" DisplayMemberBinding="{Binding Type}"/>
-                    <GridViewColumn Width="auto" Header="Size" DisplayMemberBinding="{Binding Size}"/>
-                    <GridViewColumn Width="auto" Header="ShareTime" DisplayMemberBinding="{Binding ShareTime}"/>
-                    <GridViewColumn Width="auto" Header="CreateTime" DisplayMemberBinding="{Binding CreateTime}"/>
-                    <GridViewColumn Width="auto" Header="LastModifiedTime" DisplayMemberBinding="{Binding LastModifiedTime}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource FileName}" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource Extension}" DisplayMemberBinding="{Binding Extension}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource Type}" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource Size}" DisplayMemberBinding="{Binding Size}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource ShareTime}" DisplayMemberBinding="{Binding ShareTime}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource CreateTime}" DisplayMemberBinding="{Binding CreateTime}"/>
+                    <GridViewColumn Width="auto" Header="{DynamicResource ModifiedTime}" DisplayMemberBinding="{Binding LastModifiedTime}"/>
                 </ui:GridView>
             </ui:ListView.View>
         </ui:ListView>

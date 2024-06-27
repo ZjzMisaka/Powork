@@ -13,6 +13,11 @@
             <SolidColorBrush x:Key="TimeTextBrush" Color="LightGreen"/>
             <SolidColorBrush x:Key="ErrorTextBrush" Color="Pink"/>
             <ResourceDictionary.MergedDictionaries>
+                <!-- i18n -->
+                <ResourceDictionary Source="Resources\StringResource.zh-CN.ui.xaml" />
+                <ResourceDictionary Source="Resources\StringResource.ja-JP.ui.xaml" />
+                <ResourceDictionary Source="Resources\StringResource.en-US.ui.xaml" />
+                <!-- Theme -->
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>

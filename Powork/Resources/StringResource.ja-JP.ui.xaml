@@ -1,0 +1,28 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- MainWindow -->
+    <sys:String x:Key="Msg">メッセージ</sys:String>
+    <sys:String x:Key="Team">チーム</sys:String>
+    <sys:String x:Key="Share">シェア</sys:String>
+    <sys:String x:Key="Memo">メモ</sys:String>
+    <sys:String x:Key="Setting">設定</sys:String>
+
+    <!-- MessgaePage -->
+    <sys:String x:Key="DropHere">ここにドロップ</sys:String>
+
+    <!-- SharePage -->
+    <sys:String x:Key="FileName">ファイルネーム</sys:String>
+    <sys:String x:Key="Extension">拡張子</sys:String>
+    <sys:String x:Key="Type">タイプ</sys:String>
+    <sys:String x:Key="Size">サイズ</sys:String>
+    <sys:String x:Key="ShareTime">共有日時</sys:String>
+    <sys:String x:Key="CreateTime">作成日時</sys:String>
+    <sys:String x:Key="ModifiedTime">更新日時</sys:String>
+
+    <!-- SettingPage -->
+    <sys:String x:Key="Name">名前</sys:String>
+    <sys:String x:Key="Group">グループ</sys:String>
+    <sys:String x:Key="OK">確認</sys:String>
+</ResourceDictionary>

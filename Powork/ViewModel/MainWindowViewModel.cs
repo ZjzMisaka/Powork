@@ -7,6 +7,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -36,12 +37,20 @@ namespace Powork.ViewModel
         private bool _isBlinking;
         private ConcurrentDictionary<string, NoticeViewModel> _noticeInfoDic;
         private ConcurrentDictionary<string, DownloadInfoViewModel> _downloadInfoDic;
+        private List<ResourceDictionary> _languageResourceDictionaryList;
 
         private string _trayIcon;
         public string TrayIcon
         {
             get => _trayIcon;
             set => SetProperty<string>(ref _trayIcon, value);
+        }
+
+        private ObservableCollection<MenuItem> _languageMenuItems;
+        public ObservableCollection<MenuItem> LanguageMenuItemList
+        {
+            get => _languageMenuItems;
+            set => SetProperty<ObservableCollection<MenuItem>>(ref _languageMenuItems, value);
         }
 
         private string _applicationTitle;
@@ -129,6 +138,7 @@ namespace Powork.ViewModel
         public ICommand SwitchLightThemeCommand { get; set; }
         public ICommand SwitchDarkThemeCommand { get; set; }
         public ICommand ViewOnGithubCommand { get; set; }
+        public ICommand LanguageSelectedCommand { get; set; }
         public ICommand ExitCommand { get; set; }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowClosingCommand { get; set; }
@@ -151,10 +161,12 @@ namespace Powork.ViewModel
             _blinkTimer.Tick += (s, e) => ToggleIcon();
             _noticeInfoDic = new ConcurrentDictionary<string, NoticeViewModel>();
             _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
+            _languageResourceDictionaryList = new List<ResourceDictionary>();
 
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
             SettingRepository.SetDefault("Theme", "Dark");
+            SettingRepository.SetDefault("Language", CultureInfo.CurrentUICulture.Name);
 
             ApplicationThemeManager.Changed += ThemeChanged;
 
@@ -195,12 +207,14 @@ namespace Powork.ViewModel
                 MessageBox.Show($"Error Occurred: \n{e.Exception.Message}\n{e.Exception.StackTrace}\nfrom: {e.ErrorFrom}");
             };
 
+            LanguageMenuItemList = new ObservableCollection<MenuItem>();
             NoticeList = new ObservableCollection<NoticeViewModel>();
             DownloadList = new ObservableCollection<DownloadInfoViewModel>();
 
             SwitchLightThemeCommand = new RelayCommand(SwitchLightTheme);
             SwitchDarkThemeCommand = new RelayCommand(SwitchDarkTheme);
             ViewOnGithubCommand = new RelayCommand(ViewOnGithub);
+            LanguageSelectedCommand = new RelayCommand<string>(LanguageSelected);
             ExitCommand = new RelayCommand(Exit);
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowClosingCommand = new RelayCommand<CancelEventArgs>(WindowClosing);
@@ -214,11 +228,58 @@ namespace Powork.ViewModel
             OpenFolderCommand = new RelayCommand(OpenFolder);
             RemoveItemCommand = new RelayCommand(RemoveItem);
             StopDownloadCommand = new RelayCommand(StopDownload);
+
+            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+            {
+                if (dictionary.Source != null)
+                {
+                    string originalString = dictionary.Source.OriginalString;
+                    if (!originalString.Contains("StringResource"))
+                    {
+                        continue;
+                    }
+                    string cultureStr = originalString.Remove(0, originalString.IndexOf(".") + 1);
+                    cultureStr = cultureStr.Remove(cultureStr.IndexOf("."));
+                    CultureInfo cultureInfo = new CultureInfo(cultureStr, false);
+                    string nativeName = cultureInfo.NativeName;
+                    _languageResourceDictionaryList.Add(dictionary);
+
+                    LanguageMenuItemList.Add(new MenuItem {
+                        Header = nativeName,
+                        Tag = nativeName,
+                        Command = LanguageSelectedCommand,
+                        CommandParameter = cultureInfo.Name,
+                    });
+                }
+            }
+
+            LanguageSelected(SettingRepository.SelectSetting("Language"));
         }
 
         public static void Navigate(Type targetType, ObservableObject dataContext)
         {
             s_navigationService.Navigate(targetType, dataContext);
+        }
+
+        private void LanguageSelected(string language)
+        {
+            string requestedCulture = string.Format(@"Resources\StringResource.{0}", language);
+            IEnumerable<ResourceDictionary> resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.StartsWith(requestedCulture));
+            if (resourceDictionaryList == null || !resourceDictionaryList.Any())
+            {
+                requestedCulture = @"Resources\StringResource.en-US";
+                resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.StartsWith(requestedCulture));
+            }
+            if (resourceDictionaryList != null && resourceDictionaryList.Any())
+            {
+                foreach (ResourceDictionary resourceDictionary in resourceDictionaryList)
+                {
+                    Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+                    Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+                }
+            }
+
+            SettingRepository.UpdateSetting("Language", language);
         }
 
         private void SwitchLightTheme()

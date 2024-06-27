@@ -68,4 +68,16 @@
     <None Include="F:\_programming\c#\Powork\Powork\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Resources\StringResource.en-US.ui.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Resources\StringResource.ja-JP.ui.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Resources\StringResource.zh-CN.ui.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+  </ItemGroup>
+
 </Project>

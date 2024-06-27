@@ -32,12 +32,12 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Text="IP" Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="5, 5, 5, 0"></TextBlock>
         <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center" Width="200" Text="{Binding IP}" Margin="0, 5, 5, 0"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="5, 5, 5, 0"></TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource Name}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="5, 5, 5, 0"></TextBlock>
         <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Name}" Margin="0, 5, 5, 0"></TextBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Group" Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="5, 5, 5, 0"></TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource Group}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center" Margin="5, 5, 5, 0"></TextBlock>
         <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" Text="{Binding Group}" Margin="0, 5, 5, 0"></TextBox>
 
-        <Button Grid.Row="3" Grid.Column="1" Content="OK" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
+        <Button Grid.Row="3" Grid.Column="1" Content="{DynamicResource OK}" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
     </Grid>
 </Page>
