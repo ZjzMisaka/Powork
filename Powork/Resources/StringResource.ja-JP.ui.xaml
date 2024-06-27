@@ -10,7 +10,7 @@
     <sys:String x:Key="Cancel">キャンセル</sys:String>
 
     <!-- MainWindow -->
-    <sys:String x:Key="Msg">メッセージ</sys:String>
+    <sys:String x:Key="Msg">メッセ</sys:String>
     <sys:String x:Key="Team">チーム</sys:String>
     <sys:String x:Key="Share">シェア</sys:String>
     <sys:String x:Key="Memo">メモ</sys:String>
