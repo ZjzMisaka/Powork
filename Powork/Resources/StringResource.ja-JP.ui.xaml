@@ -30,7 +30,7 @@
     <sys:String x:Key="ShareTime">共有日時</sys:String>
     <sys:String x:Key="CreateTime">作成日時</sys:String>
     <sys:String x:Key="ModifiedTime">更新日時</sys:String>
-    <sys:String x:Key="UserSharing">{0}の共有フォルダ</sys:String>
+    <sys:String x:Key="UserSharing">{0}の共有</sys:String>
 
     <!-- SelectUserWindow -->
     <sys:String x:Key="SelectUser">ユーザーを選択</sys:String>

@@ -11,7 +11,6 @@ using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
 using Powork.ViewModel.Inner;
-using Windows.Networking.NetworkOperators;
 
 namespace Powork.ViewModel
 {

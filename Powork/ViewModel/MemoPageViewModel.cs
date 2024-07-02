@@ -140,12 +140,11 @@ namespace Powork.ViewModel
             PreviewVisibility = Visibility.Hidden;
             MemoMargin = new Thickness(5);
             PreviewMargin = new Thickness(5);
-
-            Preview = GetHtmlStart(0) + _htmlEnd;
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            Preview = GetHtmlStart(0) + _htmlEnd;
             Date = DateTime.Now.ToString(Format.DateTimeFormat);
 
             ApplicationThemeManager.Changed += ThemeChanged;
