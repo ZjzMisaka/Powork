@@ -384,8 +384,8 @@ namespace Powork.ViewModel
                             }}
 
                             code {{
-                                background-color: #2d2d2d;
-                                color: #f8f8f2;
+                                background-color: {ThemeHelper.PreBackgroundColorText};
+                                color: {ThemeHelper.PreForegroundColorText};
                                 padding: 0.2em 0.4em;
                                 border-radius: 4px;
                                 font-family: Consolas, ""Courier New"", monospace;
@@ -402,8 +402,8 @@ namespace Powork.ViewModel
                             }}
 
                             pre {{
-                                background-color: #2d2d2d;
-                                color: #f8f8f2;
+                                background-color: {ThemeHelper.PreBackgroundColorText};
+                                color: {ThemeHelper.PreForegroundColorText};
                                 padding: 0.2em;
                                 border-radius: 4px;
                                 font-family: Consolas, ""Courier New"", monospace;
@@ -415,8 +415,8 @@ namespace Powork.ViewModel
                                 width: 100%;
                                 border-collapse: collapse;
                                 margin: 1em 0;
-                                background-color: #2d2d2d;
-                                color: #f8f8f2;
+                                background-color: {ThemeHelper.PreBackgroundColorText};
+                                color: {ThemeHelper.PreForegroundColorText};
                                 font-family: Arial, sans-serif;
                                 font-size: 0.95em;
                             }}
@@ -428,23 +428,16 @@ namespace Powork.ViewModel
                             }}
 
                             th {{
-                                background-color: #444;
+                                background-color: {ThemeHelper.TableHeaderBackgroundColorText};
                                 font-weight: bold;
                             }}
 
                             tr:nth-child(even) {{
-                                background-color: #383838;
+                                background-color: {ThemeHelper.PreEvenBackgroundColorText};
                             }}
 
                             tr:hover {{
-                                background-color: #555;
-                            }}
-
-                            caption {{
-                                caption-side: bottom;
-                                padding: 0.5em;
-                                font-size: 1em;
-                                color: #f8f8f2;
+                                background-color: {ThemeHelper.TableHoverBackgroundColorText};
                             }}
                         </style>
 

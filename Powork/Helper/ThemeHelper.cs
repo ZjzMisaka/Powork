@@ -35,6 +35,81 @@ namespace Powork.Helper
             }
         }
 
+        public static string PreBackgroundColorText
+        {
+            get
+            {
+                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                {
+                    return "rgb(45, 45, 45)";
+                }
+                else
+                {
+                    return "rgb(252, 252, 252)";
+                }
+            }
+        }
+
+        public static string PreEvenBackgroundColorText
+        {
+            get
+            {
+                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                {
+                    return "rgb(56, 56, 56)";
+                }
+                else
+                {
+                    return "rgb(247, 247, 247)";
+                }
+            }
+        }
+
+        public static string PreForegroundColorText
+        {
+            get
+            {
+                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                {
+                    return "rgb(248, 248, 242)";
+                }
+                else
+                {
+                    return "rgb(0, 0, 0)";
+                }
+            }
+        }
+
+        public static string TableHeaderBackgroundColorText
+        {
+            get
+            {
+                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                {
+                    return "rgb(68, 68, 68)";
+                }
+                else
+                {
+                    return "rgb(230, 230, 230)";
+                }
+            }
+        }
+
+        public static string TableHoverBackgroundColorText
+        {
+            get
+            {
+                if (Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme() == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                {
+                    return "rgb(85, 85, 85)";
+                }
+                else
+                {
+                    return "rgb(200, 200, 200)";
+                }
+            }
+        }
+
         public static string ScrollbarStyleText
         {
             get
