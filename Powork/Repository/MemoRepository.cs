@@ -23,11 +23,11 @@ namespace Powork.Repository
             return string.Empty;
         }
 
-        public static string SelectPreviousMemoDate(string date)
+        public static string SelectPreviousMemoDate(string date, string search)
         {
             SQLiteConnection connection = CommonRepository.GetConnection();
 
-            string sql = $"SELECT * FROM TMemo WHERE date < '{date}' AND memo IS NOT NULL AND memo <> '' ORDER BY date DESC LIMIT 1";
+            string sql = $"SELECT * FROM TMemo WHERE date < '{date}' AND memo IS NOT NULL AND memo <> '' AND memo LIKE '%{search}%' ORDER BY date DESC LIMIT 1";
 
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
@@ -42,11 +42,11 @@ namespace Powork.Repository
             return null;
         }
 
-        public static string SelectNextMemoDate(string date)
+        public static string SelectNextMemoDate(string date, string search)
         {
             SQLiteConnection connection = CommonRepository.GetConnection();
 
-            string sql = $"SELECT * FROM TMemo WHERE date > '{date}' AND memo IS NOT NULL AND memo <> '' ORDER BY date ASC LIMIT 1";
+            string sql = $"SELECT * FROM TMemo WHERE date > '{date}' AND memo IS NOT NULL AND memo <> '' AND memo LIKE '%{search}%' ORDER BY date ASC LIMIT 1";
 
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {

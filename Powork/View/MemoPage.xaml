@@ -37,6 +37,7 @@
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -50,26 +51,27 @@
             <Button Grid.Column="1" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding NextDayCommand}">
                 <ui:SymbolIcon Symbol="ArrowRight24" />
             </Button>
-            <Button Grid.Column="2" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding PreviousMemoCommand}">
+            <DatePicker Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" SelectedDateFormat="Short" SelectedDate="{Binding Date}" IsTodayHighlighted="True" Width="130"></DatePicker>
+            <Button Grid.Column="3" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding PreviousMemoCommand}">
                 <ui:SymbolIcon Symbol="ArrowStepInLeft24" />
             </Button>
-            <Button Grid.Column="3" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding NextMemoCommand}">
+            <Button Grid.Column="4" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding NextMemoCommand}">
                 <ui:SymbolIcon Symbol="ArrowStepInRight24" />
             </Button>
-            <DatePicker Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" SelectedDateFormat="Short" SelectedDate="{Binding Date}"></DatePicker>
-            <Button Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding EditVisibleChangeCommand}">
-                <ui:SymbolIcon Symbol="DocumentEdit24" />
+            <ui:TextBox Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}"></ui:TextBox>
+            <Button Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding EditVisibleChangeCommand}">
+                <ui:SymbolIcon Symbol="Pen24" />
             </Button>
-            <Button Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding PreviewVisibleChangeCommand}">
+            <Button Grid.Column="7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding PreviewVisibleChangeCommand}">
                 <ui:SymbolIcon Symbol="PreviewLink24" />
             </Button>
-            <Button Grid.Column="7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding SwapCommand}">
+            <Button Grid.Column="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding SwapCommand}">
                 <ui:SymbolIcon Symbol="ArrowSwap24" />
             </Button>
-            <Button Grid.Column="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveDocumentCommand}">
+            <Button Grid.Column="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveDocumentCommand}">
                 <ui:SymbolIcon Symbol="DocumentSave24" />
             </Button>
-            <Button Grid.Column="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveCommand}">
+            <Button Grid.Column="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 5, 0" Command="{Binding SaveCommand}">
                 <ui:SymbolIcon Symbol="Save24" />
             </Button>
         </Grid>

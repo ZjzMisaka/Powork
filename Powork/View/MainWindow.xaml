@@ -173,7 +173,7 @@
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="{DynamicResource Memo}" TargetPageType="{x:Type view:MemoPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="Pen24" />
+                        <ui:SymbolIcon Symbol="DocumentEdit24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>

@@ -31,6 +31,12 @@ namespace Powork.ViewModel
                 }
             }
         }
+        private string _search;
+        public string Search
+        {
+            get => _search;
+            set => SetProperty<string>(ref _search, value);
+        }
         private string _memo;
         public string Memo
         {
@@ -179,7 +185,7 @@ namespace Powork.ViewModel
         {
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
-                string date = MemoRepository.SelectPreviousMemoDate(dateTime.ToString(Format.DateTimeFormat));
+                string date = MemoRepository.SelectPreviousMemoDate(dateTime.ToString(Format.DateTimeFormat), Search);
                 if (date != null)
                 {
                     Date = date;
@@ -191,7 +197,7 @@ namespace Powork.ViewModel
         {
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
-                string date = MemoRepository.SelectNextMemoDate(dateTime.ToString(Format.DateTimeFormat));
+                string date = MemoRepository.SelectNextMemoDate(dateTime.ToString(Format.DateTimeFormat), Search);
                 if (date != null)
                 {
                     Date = date;
