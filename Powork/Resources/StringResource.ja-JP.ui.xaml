@@ -32,6 +32,9 @@
     <sys:String x:Key="ModifiedTime">更新日時</sys:String>
     <sys:String x:Key="UserSharing">{0}の共有</sys:String>
 
+    <!-- MemoPage -->
+    <sys:String x:Key="Search">検索</sys:String>
+
     <!-- SelectUserWindow -->
     <sys:String x:Key="SelectUser">ユーザーを選択</sys:String>
 

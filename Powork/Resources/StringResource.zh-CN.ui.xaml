@@ -32,6 +32,9 @@
     <sys:String x:Key="ModifiedTime">修改时间</sys:String>
     <sys:String x:Key="UserSharing">{0}的分享</sys:String>
 
+    <!-- MemoPage -->
+    <sys:String x:Key="Search">检索</sys:String>
+
     <!-- SelectUserWindow -->
     <sys:String x:Key="SelectUser">选择用户</sys:String>
 

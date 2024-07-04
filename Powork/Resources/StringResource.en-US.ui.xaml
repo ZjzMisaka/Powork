@@ -32,6 +32,9 @@
     <sys:String x:Key="ModifiedTime">Modified time</sys:String>
     <sys:String x:Key="UserSharing">Sharing by {0}</sys:String>
 
+    <!-- MemoPage -->
+    <sys:String x:Key="Search">Search</sys:String>
+
     <!-- SelectUserWindow -->
     <sys:String x:Key="SelectUser">Select user</sys:String>
 

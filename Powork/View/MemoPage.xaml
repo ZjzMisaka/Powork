@@ -58,7 +58,7 @@
             <Button Grid.Column="4" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding NextMemoCommand}">
                 <ui:SymbolIcon Symbol="ArrowStepInRight24" />
             </Button>
-            <ui:TextBox Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}"></ui:TextBox>
+            <ui:TextBox PlaceholderText="{DynamicResource Search}" Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}"></ui:TextBox>
             <Button Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding EditVisibleChangeCommand}">
                 <ui:SymbolIcon Symbol="Pen24" />
             </Button>
