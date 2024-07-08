@@ -58,7 +58,14 @@
             <Button Grid.Column="4" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding NextMemoCommand}">
                 <ui:SymbolIcon Symbol="ArrowStepInRight24" />
             </Button>
-            <ui:TextBox PlaceholderText="{DynamicResource Search}" Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}"></ui:TextBox>
+            <ui:TextBox PlaceholderText="{DynamicResource Search}" Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Left" Modifiers="Control" Command="{Binding PreviousDayCommand, Mode=OneWay}" />
+                    <KeyBinding Key="Right" Modifiers="Control" Command="{Binding NextDayCommand, Mode=OneWay}" />
+                    <KeyBinding Key="Left" Modifiers="Control+Shift" Command="{Binding PreviousMemoCommand, Mode=OneWay}" />
+                    <KeyBinding Key="Right" Modifiers="Control+Shift" Command="{Binding NextMemoCommand, Mode=OneWay}" />
+                </TextBox.InputBindings>
+            </ui:TextBox>
             <Button Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding EditVisibleChangeCommand}">
                 <ui:SymbolIcon Symbol="Pen24" />
             </Button>
