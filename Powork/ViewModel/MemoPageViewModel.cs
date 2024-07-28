@@ -6,6 +6,7 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Markdig;
+using Pi18n;
 using Powork.Constant;
 using Powork.Helper;
 using Powork.Repository;
@@ -17,6 +18,8 @@ namespace Powork.ViewModel
     {
         private readonly MarkdownPipeline _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
         private readonly string _htmlEnd = @"</html>";
+
+        public ResourceManager ResourceManager => ResourceManager.Instance;
         private string _date;
         public string Date
         {

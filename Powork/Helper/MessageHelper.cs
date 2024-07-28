@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
+using Pi18n;
 using PowerThreadPool.Results;
 using Powork.Constant;
 using Powork.Model;
@@ -76,7 +77,7 @@ namespace Powork.Helper
 
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOfflineSendFailed").ToString() }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = ResourceManager.Instance["UserOfflineSendFailed"] }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,
@@ -119,7 +120,7 @@ namespace Powork.Helper
                 Exception ex = (await task).Result;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOfflineSendFailed").ToString(), member.Name) }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = ResourceManager.Instance.GetFormat("TeamMemberOfflineSendFailed", member.Name) }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,

@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Pi18n;
 using Powork.Helper;
 using Powork.Model;
 using Powork.Repository;
@@ -13,6 +14,8 @@ namespace Powork.ViewModel
     class SettingsPageViewModel : ObservableObject
     {
         private INavigationService _navigationService;
+
+        public ResourceManager ResourceManager => ResourceManager.Instance;
 
         private string _ip;
         public string IP
@@ -66,12 +69,12 @@ namespace Powork.ViewModel
         {
             if (string.IsNullOrEmpty(Name))
             {
-                MessageBox.Show(Application.Current.FindResource("EmptyNameErrorMessage").ToString());
+                MessageBox.Show(ResourceManager["EmptyNameErrorMessage"]);
                 return;
             }
             if (string.IsNullOrEmpty(Group))
             {
-                MessageBox.Show(Application.Current.FindResource("EmptyGroupErrorMessage").ToString());
+                MessageBox.Show(ResourceManager["EmptyGroupErrorMessage"]);
                 return;
             }
 

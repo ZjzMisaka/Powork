@@ -156,29 +156,29 @@
 
         <ui:NavigationView x:Name="RootNavigation" Grid.Row="1" PaneDisplayMode="LeftFluent">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{DynamicResource Msg}" TargetPageType="{x:Type view:MessagePage}">
+                <ui:NavigationViewItem Content="{Binding ResourceManager[Msg]}" TargetPageType="{x:Type view:MessagePage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Mail24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-                <ui:NavigationViewItem Content="{DynamicResource Team}" TargetPageType="{x:Type view:TeamPage}">
+                <ui:NavigationViewItem Content="{Binding ResourceManager[Team]}" TargetPageType="{x:Type view:TeamPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="PeopleTeam24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-                <ui:NavigationViewItem Content="{DynamicResource Share}" TargetPageType="{x:Type view:SharePage}">
+                <ui:NavigationViewItem Content="{Binding ResourceManager[Share]}" TargetPageType="{x:Type view:SharePage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Folder24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-                <ui:NavigationViewItem Content="{DynamicResource Memo}" TargetPageType="{x:Type view:MemoPage}">
+                <ui:NavigationViewItem Content="{Binding ResourceManager[Memo]}" TargetPageType="{x:Type view:MemoPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="DocumentEdit24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="{DynamicResource Setting}" TargetPageType="{x:Type view:SettingsPage}">
+                <ui:NavigationViewItem Content="{Binding ResourceManager[Setting]}" TargetPageType="{x:Type view:SettingsPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Settings24" />
                     </ui:NavigationViewItem.Icon>

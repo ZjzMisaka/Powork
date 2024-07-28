@@ -1,0 +1,42 @@
+﻿# User
+Name=姓名
+Group=组别
+
+# Button
+OK=确定
+Cancel=取消
+
+# MainWindow
+Msg=消息
+Team=团队
+Share=分享
+Memo=笔记
+Setting=设置
+Unknown=未知
+MessageFromUser=({0}) 来自{1}的消息
+MessageFromTeam=({0}) 来自团队{1}的消息
+
+# MessgaePage
+DropHere=拖放至此
+
+# SharePage
+FileName=文件名
+Extension=扩展名
+Type=类型
+Size=大小
+ShareTime=分享时间
+CreateTime=创建时间
+ModifiedTime=修改时间
+UserSharing={0}的分享
+
+# MemoPage
+Search=检索
+
+# SelectUserWindow
+SelectUser=选择用户
+
+# ManageTeamMemberWindow
+ManageTeamMember=管理成员
+OtherUser=其他用户
+TeamMember=团队成员
+TeamName=团队名

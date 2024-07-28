@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using Newtonsoft.Json;
+using Pi18n;
 using PowerThreadPool.Options;
 using PowerThreadPool.Results;
 using Powork.Constant;
@@ -332,7 +333,7 @@ namespace Powork.Network
                 }
                 catch
                 {
-                    MessageBox.Show(string.Format(Application.Current.FindResource("UserOffline").ToString(), name));
+                    MessageBox.Show(ResourceManager.Instance.GetFormat("UserOffline", name));
                 }
                 finally
                 {

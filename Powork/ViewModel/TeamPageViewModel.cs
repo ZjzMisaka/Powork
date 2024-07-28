@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using Pi18n;
 using PowerThreadPool.Results;
 using Powork.Constant;
 using Powork.CustomEventArgs;
@@ -26,6 +27,8 @@ namespace Powork.ViewModel
         private string _needSelectTeamID = null;
         private int _firstMessageID = -1;
         private TeamViewModel _nowTeam = null;
+
+        public ResourceManager ResourceManager => ResourceManager.Instance;
         private bool _isScrollAtBottom;
         public bool IsScrollAtBottom
         {
@@ -183,7 +186,7 @@ namespace Powork.ViewModel
 
         private void OnGetFile(object sender, EventArgs e)
         {
-            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} {Application.Current.FindResource("ReceivedSuccessfully")}");
+            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} {ResourceManager["ReceivedSuccessfully"]}");
         }
 
         private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
@@ -352,7 +355,7 @@ namespace Powork.ViewModel
                 User member = tuple.Item2;
                 if (ex != null)
                 {
-                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = string.Format(Application.Current.FindResource("TeamMemberOfflineSendFailed").ToString(), member.Name) }];
+                    List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = ResourceManager.GetFormat("TeamMemberOfflineSendFailed", member.Name) }];
                     TeamMessage errorMessage = new TeamMessage()
                     {
                         Type = MessageType.Error,

@@ -97,7 +97,7 @@
                 <Button Command="{Binding ManageTeamMemberCommand}" IsEnabled="{Binding SendEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Margin="5">
                     <ui:SymbolIcon Symbol="PeopleSettings24" />
                 </Button>
-                <TextBlock AllowDrop="True" Grid.Column="1" Text="{DynamicResource DropHere}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Block.TextAlignment="Center" VerticalAlignment="Center">
+                <TextBlock AllowDrop="True" Grid.Column="1" Text="{Binding ResourceManager[DropHere]}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Block.TextAlignment="Center" VerticalAlignment="Center">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Drop">
                             <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True" />

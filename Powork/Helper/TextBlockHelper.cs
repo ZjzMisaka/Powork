@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Documents;
 using Ookii.Dialogs.Wpf;
+using Pi18n;
 using Powork.Constant;
 using Powork.Control;
 using Powork.Model;
@@ -75,7 +76,7 @@ namespace Powork.Helper
                             {
                                 if (!System.IO.Path.Exists(body.Content))
                                 {
-                                    System.Windows.MessageBox.Show($"{Application.Current.FindResource("NoSuchFile")}: {body.Content}");
+                                    System.Windows.MessageBox.Show($"{ResourceManager.Instance["NoSuchFile"]}: {body.Content}");
                                     return;
                                 }
                                 Process p = new Process();

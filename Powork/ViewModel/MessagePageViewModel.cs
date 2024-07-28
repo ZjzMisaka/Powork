@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using Pi18n;
 using PowerThreadPool.Results;
 using Powork.Constant;
 using Powork.CustomEventArgs;
@@ -30,6 +31,8 @@ namespace Powork.ViewModel
         private int _firstMessageID = -1;
         private UserViewModel _nowUser = null;
         private INavigationService _navigationService;
+
+        public ResourceManager ResourceManager => ResourceManager.Instance;
 
         private bool _isScrollAtBottom;
         public bool IsScrollAtBottom
@@ -204,7 +207,7 @@ namespace Powork.ViewModel
 
         private void OnGetFile(object sender, EventArgs e)
         {
-            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} {Application.Current.FindResource("ReceivedSuccessfully")}");
+            System.Windows.MessageBox.Show($"{(sender as Model.FileInfo).Name} {ResourceManager["ReceivedSuccessfully"]}");
         }
 
         private void ThemeChanged(ApplicationTheme currentApplicationTheme, Color systemAccent)
@@ -378,7 +381,7 @@ namespace Powork.ViewModel
             team.MemberList = teamMemberList;
             team.LastModifiedTime = DateTime.Now.ToString(Format.DateTimeFormatWithMilliseconds);
 
-            InputWindowViewModel dataContext = new InputWindowViewModel(Application.Current.FindResource("TeamName").ToString());
+            InputWindowViewModel dataContext = new InputWindowViewModel(ResourceManager["TeamName"]);
             InputWindow window = new InputWindow
             {
                 DataContext = dataContext
@@ -393,7 +396,7 @@ namespace Powork.ViewModel
 
             if (string.IsNullOrEmpty(team.Name))
             {
-                System.Windows.MessageBox.Show(Application.Current.FindResource("EmptyNameErrorMessage").ToString());
+                System.Windows.MessageBox.Show(ResourceManager["EmptyNameErrorMessage"]);
                 return;
             }
 
@@ -492,7 +495,7 @@ namespace Powork.ViewModel
             Exception ex = (await task).Result;
             if (ex != null)
             {
-                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = Application.Current.FindResource("UserOfflineSendFailed").ToString() }];
+                List<TCPMessageBody> errorContent = [new TCPMessageBody() { Content = ResourceManager["UserOfflineSendFailed"] }];
                 UserMessage errorMessage = new UserMessage()
                 {
                     Type = MessageType.Error,

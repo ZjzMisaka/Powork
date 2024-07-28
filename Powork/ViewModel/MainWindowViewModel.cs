@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using Pi18n;
 using PowerThreadPool;
 using Powork.Constant;
 using Powork.Helper;
@@ -37,7 +38,8 @@ namespace Powork.ViewModel
         private bool _isBlinking;
         private ConcurrentDictionary<string, NoticeViewModel> _noticeInfoDic;
         private ConcurrentDictionary<string, DownloadInfoViewModel> _downloadInfoDic;
-        private List<ResourceDictionary> _languageResourceDictionaryList;
+
+        public ResourceManager ResourceManager => ResourceManager.Instance;
 
         private string _trayIcon;
         public string TrayIcon
@@ -161,9 +163,6 @@ namespace Powork.ViewModel
             _blinkTimer.Tick += (s, e) => ToggleIcon();
             _noticeInfoDic = new ConcurrentDictionary<string, NoticeViewModel>();
             _downloadInfoDic = new ConcurrentDictionary<string, DownloadInfoViewModel>();
-            _languageResourceDictionaryList = new List<ResourceDictionary>();
-
-            LoadResourceDictionaries();
 
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
@@ -186,6 +185,14 @@ namespace Powork.ViewModel
             NotificationHelper.MainWindowViewModel = this;
 
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+
+            ResourceManager.SetUp("Resources", "StringResource.{I18N}.{ANY}.i18n");
+            ResourceManager.SetDefault(ci.Name);
+            if (ResourceManager.DefaultCulture == null && ResourceManager.CultureInfoList.Any())
+            {
+                ResourceManager.SetDefault(ResourceManager.CultureInfoList[0]);
+            }
+            
             ci.DateTimeFormat.ShortDatePattern = Format.DateTimeFormat;
             Thread.CurrentThread.CurrentCulture = ci;
 
@@ -242,21 +249,7 @@ namespace Powork.ViewModel
 
         private void LanguageSelected(string language)
         {
-            string requestedCulture = string.Format(@"Resources\StringResource.{0}", language);
-            IEnumerable<ResourceDictionary> resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.Contains(requestedCulture));
-            if (resourceDictionaryList == null || !resourceDictionaryList.Any())
-            {
-                requestedCulture = @"Resources\StringResource.en-US";
-                resourceDictionaryList = _languageResourceDictionaryList.Where(d => d.Source != null && d.Source.OriginalString.Contains(requestedCulture));
-            }
-            if (resourceDictionaryList != null && resourceDictionaryList.Any())
-            {
-                foreach (ResourceDictionary resourceDictionary in resourceDictionaryList)
-                {
-                    Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
-                    Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-                }
-            }
+            ResourceManager.SetLanguage(language);
 
             SettingRepository.UpdateSetting(Setting.Language, language);
         }
@@ -402,7 +395,7 @@ namespace Powork.ViewModel
                                 {
                                     noticeViewModel = new NoticeViewModel();
                                     noticeViewModel.Count = 1;
-                                    noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromTeam").ToString(), noticeViewModel.Count, teamName);
+                                    noticeViewModel.Notice = ResourceManager.GetFormat("MessageFromTeam", noticeViewModel.Count, teamName);
                                     noticeViewModel.TeamMessage = teamMessage;
                                     _noticeInfoDic[teamMessage.TeamID] = noticeViewModel;
                                     Application.Current.Dispatcher.Invoke(() =>
@@ -419,7 +412,7 @@ namespace Powork.ViewModel
                                     ++noticeViewModel.Count;
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromTeam").ToString(), teamName);
+                                        noticeViewModel.Notice = ResourceManager.GetFormat("MessageFromTeam", teamName);
                                     });
                                 }
                             }
@@ -450,7 +443,7 @@ namespace Powork.ViewModel
                                 {
                                     noticeViewModel = new NoticeViewModel();
                                     noticeViewModel.Count = 1;
-                                    noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromUser").ToString(), userMessage.SenderName);
+                                    noticeViewModel.Notice = ResourceManager.GetFormat("MessageFromUser", userMessage.SenderName);
                                     noticeViewModel.UserMessage = userMessage;
                                     _noticeInfoDic[userMessage.SenderIP + userMessage.SenderName] = noticeViewModel;
                                     Application.Current.Dispatcher.Invoke(() =>
@@ -464,7 +457,7 @@ namespace Powork.ViewModel
                                     ++noticeViewModel.Count;
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        noticeViewModel.Notice = string.Format(Application.Current.FindResource("MessageFromUser").ToString(), userMessage.SenderName);
+                                        noticeViewModel.Notice = ResourceManager.GetFormat("MessageFromUser", userMessage.SenderName);
                                     });
                                 }
                             }
@@ -478,7 +471,7 @@ namespace Powork.ViewModel
                     List<string> sendFileWorkIDList = new List<string>();
                     if (FileHelper.GetType(path) == FileHelper.Type.None)
                     {
-                        MessageBox.Show($"{Application.Current.FindResource("NoSuchFile")}: {path}");
+                        MessageBox.Show($"{ResourceManager["NoSuchFile"]}: {path}");
                     }
                     else if (FileHelper.GetType(path) == FileHelper.Type.File)
                     {
@@ -598,7 +591,7 @@ namespace Powork.ViewModel
                     }
                     else if (fileInfo.Status == Status.NoSuchFile)
                     {
-                        MessageBox.Show($"{Application.Current.FindResource("NoSuchFile")}: {fileInfo.Name}");
+                        MessageBox.Show($"{ResourceManager["NoSuchFile"]}: {fileInfo.Name}");
 
                         for (int i = 0; i < DownloadList.Count; ++i)
                         {
@@ -766,7 +759,7 @@ namespace Powork.ViewModel
             Process p = new Process();
             if (!Path.Exists(_nowDownloadInfoViewModel.Path))
             {
-                MessageBox.Show($"{Path.GetFileName(_nowDownloadInfoViewModel.Path)} {Application.Current.FindResource("NotFound")}");
+                MessageBox.Show($"{Path.GetFileName(_nowDownloadInfoViewModel.Path)} {ResourceManager["NotFound"]}");
                 return;
             }
             p.StartInfo = new ProcessStartInfo(_nowDownloadInfoViewModel.Path)
@@ -853,60 +846,15 @@ namespace Powork.ViewModel
 
         private void InitLanguage()
         {
-            List<string> addedLanguage = new List<string>();
-            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+            foreach (CultureInfo cultureInfo in ResourceManager.CultureInfoList)
             {
-                if (dictionary.Source != null)
+                LanguageMenuItemList.Add(new MenuItem
                 {
-                    string originalString = Path.GetFileName(dictionary.Source.OriginalString);
-                    if (!originalString.Contains("StringResource"))
-                    {
-                        continue;
-                    }
-                    string cultureStr = originalString.Remove(0, originalString.IndexOf(".") + 1);
-                    cultureStr = cultureStr.Remove(cultureStr.IndexOf("."));
-                    CultureInfo cultureInfo = new CultureInfo(cultureStr, false);
-                    string nativeName = cultureInfo.NativeName;
-                    _languageResourceDictionaryList.Add(dictionary);
-
-                    if (addedLanguage.Contains(cultureInfo.Name))
-                    {
-                        continue;
-                    }
-                    addedLanguage.Add(cultureInfo.Name);
-                    LanguageMenuItemList.Add(new MenuItem
-                    {
-                        Header = nativeName,
-                        Tag = nativeName,
-                        Command = LanguageSelectedCommand,
-                        CommandParameter = cultureInfo.Name,
-                    });
-                }
-            }
-        }
-
-        private void LoadResourceDictionaries()
-        {
-            string resourcesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
-
-            if (Directory.Exists(resourcesPath))
-            {
-                foreach (string file in Directory.GetFiles(resourcesPath, "*.xaml", SearchOption.AllDirectories))
-                {
-                    AddResourceDictionary(file);
-                }
-            }
-        }
-
-        private void AddResourceDictionary(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                ResourceDictionary resourceDictionary = new ResourceDictionary
-                {
-                    Source = new Uri(filePath, UriKind.Absolute)
-                };
-                Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+                    Header = cultureInfo.NativeName,
+                    Tag = cultureInfo.NativeName,
+                    Command = LanguageSelectedCommand,
+                    CommandParameter = cultureInfo.Name,
+                });
             }
         }
     }

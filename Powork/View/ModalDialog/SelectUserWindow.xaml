@@ -70,8 +70,8 @@
             </ui:ListView>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource Cancel}" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
-                <Button Grid.Row="1" Grid.Column="1" Content="{DynamicResource OK}" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
+                <Button Grid.Row="1" Grid.Column="1" Content="{Binding ResourceManager[Cancel]}" HorizontalAlignment="Right" Command="{Binding CancelClickCommand}" Margin="5"></Button>
+                <Button Grid.Row="1" Grid.Column="1" Content="{Binding ResourceManager[OK]}" HorizontalAlignment="Right" Command="{Binding OKClickCommand}" Margin="5"></Button>
             </StackPanel>
         </Grid>
     </Grid>

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Ookii.Dialogs.Wpf;
+using Pi18n;
 using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
@@ -17,6 +18,8 @@ namespace Powork.ViewModel
     class SharePageViewModel : ObservableObject
     {
         private readonly User _user;
+
+        public ResourceManager ResourceManager => ResourceManager.Instance;
         private bool _pageEnabled;
         public bool PageEnabled
         {
@@ -39,7 +42,7 @@ namespace Powork.ViewModel
         private string _userName;
         public string UserName
         {
-            get => string.Format(Application.Current.FindResource("UserSharing").ToString(), _userName);
+            get => ResourceManager.GetFormat("UserSharing", _userName);
             set => SetProperty<string>(ref _userName, value);
         }
         public List<ShareInfoViewModel> SelectedItems => ShareInfoList.Where(x => x.IsSelected).ToList();
@@ -67,6 +70,11 @@ namespace Powork.ViewModel
             OpenCommand = new RelayCommand(Open);
             DownloadCommand = new RelayCommand(Download);
             RemoveCommand = new RelayCommand(Remove);
+
+            ResourceManager.LanguageChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(UserName));
+            };
         }
 
         private void WindowLoaded(RoutedEventArgs eventArgs)

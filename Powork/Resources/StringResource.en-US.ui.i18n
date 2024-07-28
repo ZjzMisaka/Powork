@@ -1,0 +1,42 @@
+﻿# User
+Name=Name
+Group=Group
+
+# Button
+OK=OK
+Cancel=Cancel
+
+# MainWindow
+Msg=Msg
+Team=Team
+Share=Share
+Memo=Memo
+Setting=Setting
+Unknown=Unknown
+MessageFromUser=({0}) Message from {1}
+MessageFromTeam=({0}) Message from team {1}
+
+# MessgaePage
+DropHere=DROP HERE
+
+# SharePage
+FileName=Name
+Extension=Extension
+Type=Type
+Size=Size
+ShareTime=Share time
+CreateTime=Create time
+ModifiedTime=Modified time
+UserSharing=Sharing by {0}
+
+# MemoPage
+Search=Search
+
+# SelectUserWindow
+SelectUser=Select user
+
+# ManageTeamMemberWindow
+ManageTeamMember=Manage team member
+OtherUser=Other user
+TeamMember=Team member
+TeamName=Team name

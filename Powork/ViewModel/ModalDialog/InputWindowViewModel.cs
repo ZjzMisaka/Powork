@@ -3,11 +3,13 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Pi18n;
 
 namespace Powork.ViewModel
 {
     class InputWindowViewModel : ObservableObject
     {
+        public ResourceManager ResourceManager => ResourceManager.Instance;
         private string _title;
         public string Title
         {
