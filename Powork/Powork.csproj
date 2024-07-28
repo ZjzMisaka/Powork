@@ -66,6 +66,7 @@
     <None Remove="LICENSES\microsoft.XamlBehaviorsWpf.LICENSE.txt" />
     <None Remove="LICENSES\ookii-dialogs.ookii-dialogs-wpf.LICENSE.txt" />
     <None Remove="LICENSES\praeclarum.sqlite-net.LICENSE.txt" />
+    <None Remove="LICENSES\ZjzMisaka.Pi18n.LICENSE.txt" />
     <None Remove="LICENSES\ZjzMisaka.PowerThreadPool.LICENSE.txt" />
     <None Remove="Resources\StringResource.en-US.msg.i18n" />
     <None Remove="Resources\StringResource.en-US.ui.i18n" />
@@ -100,6 +101,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LICENSES\praeclarum.sqlite-net.LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSES\ZjzMisaka.Pi18n.LICENSE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LICENSES\ZjzMisaka.PowerThreadPool.LICENSE.txt">
