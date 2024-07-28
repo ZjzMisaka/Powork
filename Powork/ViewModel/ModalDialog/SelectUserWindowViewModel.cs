@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Pi18n;
 using Powork.Model;
 using Powork.ViewModel.Inner;
 
@@ -11,6 +12,7 @@ namespace Powork.ViewModel
 {
     class SelectUserWindowViewModel : ObservableObject
     {
+        public ResourceManager ResourceManager => ResourceManager.Instance;
         public List<UserViewModel> SelectedUserList => UserList.Where(x => x.Selected).ToList();
 
         private ObservableCollection<UserViewModel> _userList;

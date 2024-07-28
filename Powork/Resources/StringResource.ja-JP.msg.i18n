@@ -1,0 +1,11 @@
+﻿# Message
+UserOfflineSendFailed=送信失敗：ユーザーがオフラインです。\nメッセージは送信が遅れます。
+TeamMemberOfflineSendFailed=送信失敗：ユーザー{0}がオフラインです。\nメッセージは送信が遅れます。
+
+# MessageBox
+NoSuchFile=ファイルが存在しません
+UserOffline=ユーザー{0}はオフラインです。
+NotFound=見つかりませんでした。
+ReceivedSuccessfully=受信成功。
+EmptyNameErrorMessage=名前は空にできません。
+EmptyGroupErrorMessage=グループ名は空にできません。

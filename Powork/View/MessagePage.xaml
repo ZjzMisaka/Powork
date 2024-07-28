@@ -94,7 +94,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock AllowDrop="True" Grid.Column="0" Text="{DynamicResource DropHere}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Block.TextAlignment="Center" VerticalAlignment="Center">
+                <TextBlock AllowDrop="True" Grid.Column="0" Text="{Binding ResourceManager[DropHere]}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Block.TextAlignment="Center" VerticalAlignment="Center">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Drop">
                             <i:InvokeCommandAction Command="{Binding DropCommand}" PassEventArgsToCommand="True" />

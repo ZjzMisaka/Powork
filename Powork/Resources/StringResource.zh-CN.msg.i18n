@@ -1,0 +1,11 @@
+﻿# Message
+UserOfflineSendFailed=发送失败：用户离线。\n消息将延迟发送。
+TeamMemberOfflineSendFailed=发送失败：用户{0}离线。\n消息将延迟发送。
+
+# MessageBox
+NoSuchFile=文件不存在
+UserOffline=用户{0}离线。
+NotFound=未找到。
+ReceivedSuccessfully=接收成功。
+EmptyNameErrorMessage=名称不应为空。
+EmptyGroupErrorMessage=组名不应为空。

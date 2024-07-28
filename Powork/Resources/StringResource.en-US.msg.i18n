@@ -1,0 +1,11 @@
+﻿# Message
+UserOfflineSendFailed=Failed to send: User is offline.\nThe message will be delayed.
+TeamMemberOfflineSendFailed=Failed to send: User {0} is offline.\nThe message will be delayed.
+
+# MessageBox
+NoSuchFile=No such file
+UserOffline=User {0} is offline.
+NotFound=not found.
+ReceivedSuccessfully=received successfully.
+EmptyNameErrorMessage=Name should not be empty.
+EmptyGroupErrorMessage=Group should not be empty.

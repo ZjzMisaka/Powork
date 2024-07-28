@@ -1,0 +1,42 @@
+﻿# User
+Name=名前
+Group=グループ
+
+# Button
+OK=確認
+Cancel=キャンセル
+
+# MainWindow
+Msg=メッセ
+Team=チーム
+Share=シェア
+Memo=メモ
+Setting=設定
+Unknown=未知
+MessageFromUser=({0}) {1}からのメッセージ
+MessageFromTeam=({0}) チーム{1}からのメッセージ
+
+# MessgaePage
+DropHere=ここにドロップ
+
+# SharePage
+FileName=ファイルネーム
+Extension=拡張子
+Type=タイプ
+Size=サイズ
+ShareTime=共有日時
+CreateTime=作成日時
+ModifiedTime=更新日時
+UserSharing={0}の共有
+
+# MemoPage
+Search=検索
+
+# SelectUserWindow
+SelectUser=ユーザーを選択
+
+# ManageTeamMemberWindow
+ManageTeamMember=チーム管理
+OtherUser=ほかのユーザー
+TeamMember=チームメンバー
+TeamName=チームネーム
