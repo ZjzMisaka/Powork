@@ -167,7 +167,6 @@ namespace Powork.ViewModel
             CommonRepository.CreateDatabase();
             CommonRepository.CreateTable();
             SettingRepository.SetDefault(Setting.Theme, Setting.Dark);
-            SettingRepository.SetDefault(Setting.Language, CultureInfo.CurrentUICulture.Name);
 
             ApplicationThemeManager.Changed += ThemeChanged;
 
@@ -184,15 +183,14 @@ namespace Powork.ViewModel
             NotificationHelper.NavigationService = navigationService;
             NotificationHelper.MainWindowViewModel = this;
 
-            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
-
             ResourceManager.SetUp("Resources", "StringResource.{I18N}.{ANY}.i18n");
-            ResourceManager.SetDefault(ci.Name);
-            if (ResourceManager.DefaultCulture == null && ResourceManager.CultureInfoList.Any())
+            if (!ResourceManager.SetDefault(CultureType.CurrentUICulture))
             {
                 ResourceManager.SetDefault(ResourceManager.CultureInfoList[0]);
             }
-            
+            SettingRepository.SetDefault(Setting.Language, ResourceManager.DefaultCulture.Name);
+
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = Format.DateTimeFormat;
             Thread.CurrentThread.CurrentCulture = ci;
 
