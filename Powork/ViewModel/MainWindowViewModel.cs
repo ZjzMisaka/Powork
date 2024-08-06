@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FastHotKeyForWPF;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using Pi18n;
@@ -279,6 +280,9 @@ namespace Powork.ViewModel
 
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
+            GlobalHotKey.Awake();
+            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.P, (s, e) => Application.Current.MainWindow.Show());
+
             TrayIcon = Location.Icon;
             ApplicationTitle = "Powork";
             OpenNoticeButtonVisibility = Visibility.Collapsed;
@@ -678,6 +682,7 @@ namespace Powork.ViewModel
 
         private void WindowClosed()
         {
+            GlobalHotKey.Destroy();
             CommonRepository.CloseConnection();
             GlobalVariables.PowerPool.Dispose();
 

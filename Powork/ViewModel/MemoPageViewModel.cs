@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FastHotKeyForWPF;
 using Markdig;
 using Pi18n;
 using Powork.Constant;
@@ -39,6 +40,12 @@ namespace Powork.ViewModel
         {
             get => _search;
             set => SetProperty<string>(ref _search, value);
+        }
+        private bool _searchFocused;
+        public bool SearchFocused
+        {
+            get => _searchFocused;
+            set => SetProperty<bool>(ref _searchFocused, value);
         }
         private string _memo;
         public string Memo
@@ -117,10 +124,6 @@ namespace Powork.ViewModel
         }
         public ICommand WindowLoadedCommand { get; set; }
         public ICommand WindowUnloadedCommand { get; set; }
-        public ICommand PreviousDayCommand { get; set; }
-        public ICommand NextDayCommand { get; set; }
-        public ICommand PreviousMemoCommand { get; set; }
-        public ICommand NextMemoCommand { get; set; }
         public ICommand EditVisibleChangeCommand { get; set; }
         public ICommand PreviewVisibleChangeCommand { get; set; }
         public ICommand SwapCommand { get; set; }
@@ -131,10 +134,6 @@ namespace Powork.ViewModel
         {
             WindowLoadedCommand = new RelayCommand<RoutedEventArgs>(WindowLoaded);
             WindowUnloadedCommand = new RelayCommand<RoutedEventArgs>(WindowUnloaded);
-            PreviousDayCommand = new RelayCommand(PreviousDay);
-            NextDayCommand = new RelayCommand(NextDay);
-            PreviousMemoCommand = new RelayCommand(PreviousMemo);
-            NextMemoCommand = new RelayCommand(NextMemo);
             EditVisibleChangeCommand = new RelayCommand(EditVisibleChange);
             PreviewVisibleChangeCommand = new RelayCommand(PreviewVisibleChange);
             SwapCommand = new RelayCommand(Swap);
@@ -157,14 +156,26 @@ namespace Powork.ViewModel
             Date = DateTime.Now.ToString(Format.DateTimeFormat);
 
             ApplicationThemeManager.Changed += ThemeChanged;
+
+            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.F, (s, e) => SearchFocused = true);
+            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.LEFT, PreviousDay);
+            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.RIGHT, NextDay);
+            GlobalHotKey.Add(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.LEFT, PreviousMemo);
+            GlobalHotKey.Add(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.RIGHT, NextMemo);
         }
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             ApplicationThemeManager.Changed -= ThemeChanged;
+
+            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL, NormalKeys.F);
+            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL, NormalKeys.LEFT);
+            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL, NormalKeys.RIGHT);
+            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.LEFT);
+            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.RIGHT);
         }
 
-        private void PreviousDay()
+        private void PreviousDay(object s, HotKeyEventArgs e)
         {
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
@@ -175,7 +186,7 @@ namespace Powork.ViewModel
             }
         }
 
-        private void NextDay()
+        private void NextDay(object s, HotKeyEventArgs e)
         {
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
@@ -184,7 +195,7 @@ namespace Powork.ViewModel
             }
         }
 
-        private void PreviousMemo()
+        private void PreviousMemo(object s, HotKeyEventArgs e)
         {
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {
@@ -196,7 +207,7 @@ namespace Powork.ViewModel
             }
         }
 
-        private void NextMemo()
+        private void NextMemo(object s, HotKeyEventArgs e)
         {
             if (DateTime.TryParse(Date, out DateTime dateTime))
             {

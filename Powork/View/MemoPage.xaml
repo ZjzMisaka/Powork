@@ -21,12 +21,6 @@
     </i:Interaction.Triggers>
 
     <Grid>
-        <Grid.InputBindings>
-            <KeyBinding Key="Left" Modifiers="Control" Command="{Binding PreviousDayCommand, Mode=OneWay}" />
-            <KeyBinding Key="Right" Modifiers="Control" Command="{Binding NextDayCommand, Mode=OneWay}" />
-            <KeyBinding Key="Left" Modifiers="Control+Shift" Command="{Binding PreviousMemoCommand, Mode=OneWay}" />
-            <KeyBinding Key="Right" Modifiers="Control+Shift" Command="{Binding NextMemoCommand, Mode=OneWay}" />
-        </Grid.InputBindings>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -58,14 +52,7 @@
             <Button Grid.Column="4" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding NextMemoCommand}">
                 <ui:SymbolIcon Symbol="ArrowStepInRight24" />
             </Button>
-            <ui:TextBox PlaceholderText="{Binding ResourceManager[Search]}" Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Left" Modifiers="Control" Command="{Binding PreviousDayCommand, Mode=OneWay}" />
-                    <KeyBinding Key="Right" Modifiers="Control" Command="{Binding NextDayCommand, Mode=OneWay}" />
-                    <KeyBinding Key="Left" Modifiers="Control+Shift" Command="{Binding PreviousMemoCommand, Mode=OneWay}" />
-                    <KeyBinding Key="Right" Modifiers="Control+Shift" Command="{Binding NextMemoCommand, Mode=OneWay}" />
-                </TextBox.InputBindings>
-            </ui:TextBox>
+            <ui:TextBox PlaceholderText="{Binding ResourceManager[Search]}" Grid.Column="5" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Text="{Binding Search}" extension:TextBoxExtension.IsFocused="{Binding SearchFocused}"/>
             <Button Grid.Column="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5, 5, 0, 0" Command="{Binding EditVisibleChangeCommand}">
                 <ui:SymbolIcon Symbol="Pen24" />
             </Button>
@@ -92,11 +79,6 @@
                 <TextBox.InputBindings>
                     <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveDocumentCommand, Mode=OneWay}" />
                     <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, Mode=OneWay}" />
-
-                    <KeyBinding Key="Left" Modifiers="Control" Command="{Binding PreviousDayCommand, Mode=OneWay}" />
-                    <KeyBinding Key="Right" Modifiers="Control" Command="{Binding NextDayCommand, Mode=OneWay}" />
-                    <KeyBinding Key="Left" Modifiers="Control+Shift" Command="{Binding PreviousMemoCommand, Mode=OneWay}" />
-                    <KeyBinding Key="Right" Modifiers="Control+Shift" Command="{Binding NextMemoCommand, Mode=OneWay}" />
                 </TextBox.InputBindings>
             </TextBox>
             <GridSplitter Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5" Background="Transparent" ShowsPreview="True"></GridSplitter>
