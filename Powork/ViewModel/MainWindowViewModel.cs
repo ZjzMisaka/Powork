@@ -281,7 +281,12 @@ namespace Powork.ViewModel
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
             GlobalHotKey.Awake();
-            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.P, (s, e) => Application.Current.MainWindow.Show());
+            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.P, (s, e) =>
+            {
+                Application.Current.MainWindow.Show();
+                Topmost = true;
+                Topmost = false;
+            });
 
             TrayIcon = Location.Icon;
             ApplicationTitle = "Powork";
