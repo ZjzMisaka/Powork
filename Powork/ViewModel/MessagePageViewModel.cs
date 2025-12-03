@@ -479,7 +479,7 @@ namespace Powork.ViewModel
             string message = JsonConvert.SerializeObject(userMessage);
 
             Task<ExecuteResult<Exception>> task = GlobalVariables.TcpServerClient.SendMessage(message, _nowUser.IP, GlobalVariables.TcpPort);
-            
+
             MessageHelper.ConvertImageInMessage(userMessage);
 
             TextBlock timeTextBlock = TextBlockHelper.GetTimeControl(userMessage);

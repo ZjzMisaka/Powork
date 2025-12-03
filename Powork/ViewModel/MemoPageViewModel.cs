@@ -157,22 +157,22 @@ namespace Powork.ViewModel
 
             ApplicationThemeManager.Changed += ThemeChanged;
 
-            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.F, (s, e) => SearchFocused = true);
-            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.LEFT, PreviousDay);
-            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.RIGHT, NextDay);
-            GlobalHotKey.Add(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.LEFT, PreviousMemo);
-            GlobalHotKey.Add(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.RIGHT, NextMemo);
+            GlobalHotKey.Register(VirtualModifiers.Ctrl, VirtualKeys.F, (s, e) => SearchFocused = true);
+            GlobalHotKey.Register(VirtualModifiers.Ctrl, VirtualKeys.Left, PreviousDay);
+            GlobalHotKey.Register(VirtualModifiers.Ctrl, VirtualKeys.Right, NextDay);
+            GlobalHotKey.Register(VirtualModifiers.Ctrl | VirtualModifiers.Shift, VirtualKeys.Left, PreviousMemo);
+            GlobalHotKey.Register(VirtualModifiers.Ctrl | VirtualModifiers.Shift, VirtualKeys.Right, NextMemo);
         }
 
         private void WindowUnloaded(RoutedEventArgs eventArgs)
         {
             ApplicationThemeManager.Changed -= ThemeChanged;
 
-            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL, NormalKeys.F);
-            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL, NormalKeys.LEFT);
-            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL, NormalKeys.RIGHT);
-            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.LEFT);
-            GlobalHotKey.DeleteByKeys(ModelKeys.CTRL | ModelKeys.SHIFT, NormalKeys.RIGHT);
+            GlobalHotKey.Unregister(VirtualModifiers.Ctrl, VirtualKeys.F);
+            GlobalHotKey.Unregister(VirtualModifiers.Ctrl, VirtualKeys.Left);
+            GlobalHotKey.Unregister(VirtualModifiers.Ctrl, VirtualKeys.Right);
+            GlobalHotKey.Unregister(VirtualModifiers.Ctrl | VirtualModifiers.Shift, VirtualKeys.Left);
+            GlobalHotKey.Unregister(VirtualModifiers.Ctrl | VirtualModifiers.Shift, VirtualKeys.Right);
         }
 
         private void PreviousDay(object s, HotKeyEventArgs e)

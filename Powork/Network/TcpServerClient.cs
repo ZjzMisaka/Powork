@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Pi18n;
 using PowerThreadPool.Options;
 using PowerThreadPool.Results;
+using PowerThreadPool.Works;
 using Powork.Constant;
 using Powork.Model;
 using Powork.Repository;
@@ -68,7 +69,7 @@ namespace Powork.Network
 
         public async Task<ExecuteResult<Exception>> SendMessage(string message, string ipAddress, int port)
         {
-            string id = GlobalVariables.PowerPool.QueueWorkItem<Exception>(() =>
+            WorkID id = GlobalVariables.PowerPool.QueueWorkItem<Exception>(() =>
             {
                 TcpClient tcpClient = null;
                 NetworkStream stream = null;

@@ -281,7 +281,7 @@ namespace Powork.ViewModel
         private void WindowLoaded(RoutedEventArgs eventArgs)
         {
             GlobalHotKey.Awake();
-            GlobalHotKey.Add(ModelKeys.CTRL, NormalKeys.P, (s, e) =>
+            GlobalHotKey.Register(VirtualModifiers.Ctrl, VirtualKeys.P, (s, e) =>
             {
                 Application.Current.MainWindow.Show();
                 Topmost = true;
@@ -687,7 +687,7 @@ namespace Powork.ViewModel
 
         private void WindowClosed()
         {
-            GlobalHotKey.Destroy();
+            GlobalHotKey.Dispose();
             CommonRepository.CloseConnection();
             GlobalVariables.PowerPool.Dispose();
 

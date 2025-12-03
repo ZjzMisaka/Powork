@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Ookii.Dialogs.Wpf;
 using Pi18n;
+using PowerThreadPool.Works;
 using Powork.Constant;
 using Powork.Helper;
 using Powork.Model;
@@ -128,10 +129,10 @@ namespace Powork.ViewModel
         private async void Drop(DragEventArgs args)
         {
             string[] pathList = (string[])args.Data.GetData(DataFormats.FileDrop, false);
-            List<string> idList = new List<string>();
+            List<WorkID> idList = new List<WorkID>();
             foreach (string path in pathList)
             {
-                string id = GlobalVariables.PowerPool.QueueWorkItem(() =>
+                WorkID id = GlobalVariables.PowerPool.QueueWorkItem(() =>
                 {
                     if (FileHelper.GetType(path) == FileHelper.Type.Directory)
                     {
