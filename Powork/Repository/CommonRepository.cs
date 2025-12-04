@@ -103,6 +103,24 @@ namespace Powork.Repository
             {
                 command.ExecuteNonQuery();
             }
+
+            string sqlTProject = @"CREATE TABLE IF NOT EXISTS TProject (id VARCHAR(36) PRIMARY KEY, name VARCHAR(100), managers VARCHAR(500))";
+            using (SQLiteCommand command = new SQLiteCommand(sqlTProject, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            string sqlTTask = @"CREATE TABLE IF NOT EXISTS TTask (id VARCHAR(36) PRIMARY KEY, projectId VARCHAR(36), name VARCHAR(100), year INTEGER, month INTEGER, startDay INTEGER, days INTEGER, note VARCHAR(1000))";
+            using (SQLiteCommand command = new SQLiteCommand(sqlTTask, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            string sqlTProgress = @"CREATE TABLE IF NOT EXISTS TProgress (taskId VARCHAR(36) PRIMARY KEY, projectId VARCHAR(36), percentage INTEGER)";
+            using (SQLiteCommand command = new SQLiteCommand(sqlTProgress, connection))
+            {
+                command.ExecuteNonQuery();
+            }
         }
     }
 }
