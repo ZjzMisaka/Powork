@@ -121,6 +121,12 @@ namespace Powork.Repository
             {
                 command.ExecuteNonQuery();
             }
+
+            string sqlTHoliday = @"CREATE TABLE IF NOT EXISTS THoliday (year INTEGER, month INTEGER, day INTEGER, isHoliday INTEGER, PRIMARY KEY (year, month, day))";
+            using (SQLiteCommand command = new SQLiteCommand(sqlTHoliday, connection))
+            {
+                command.ExecuteNonQuery();
+            }
         }
     }
 }
