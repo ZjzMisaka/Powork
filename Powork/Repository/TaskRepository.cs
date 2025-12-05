@@ -1,5 +1,6 @@
 using Powork.Model;
 using System.Data.SQLite;
+using Task = Powork.Model.Task;
 
 namespace Powork.Repository
 {

@@ -110,7 +110,7 @@ namespace Powork.Repository
                 command.ExecuteNonQuery();
             }
 
-            string sqlTTask = @"CREATE TABLE IF NOT EXISTS TTask (id VARCHAR(36) PRIMARY KEY, projectId VARCHAR(36), name VARCHAR(100), year INTEGER, month INTEGER, startDay INTEGER, days INTEGER, note VARCHAR(1000))";
+            string sqlTTask = @"CREATE TABLE IF NOT EXISTS TTask (id VARCHAR(36), projectId VARCHAR(36), name VARCHAR(100), year INTEGER, month INTEGER, startDay INTEGER, days INTEGER, note VARCHAR(1000))";
             using (SQLiteCommand command = new SQLiteCommand(sqlTTask, connection))
             {
                 command.ExecuteNonQuery();
