@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FastHotKeyForWPF;
-using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.Toolkit. Uwp.Notifications;
 using Newtonsoft.Json;
 using Pi18n;
 using PowerThreadPool;
@@ -27,10 +27,11 @@ using Powork.Service;
 using Powork.View;
 using Powork.ViewModel.Inner;
 using Wpf.Ui.Appearance;
+using Task = Powork.Model.Task;
 
 namespace Powork.ViewModel
 {
-    public class MainWindowViewModel : ObservableObject
+    public partial class MainWindowViewModel : ObservableObject
     {
         private UdpBroadcaster _udpBroadcaster;
         private static INavigationService s_navigationService;
@@ -649,6 +650,60 @@ namespace Powork.ViewModel
                     team.MemberList = members;
                     TeamRepository.RemoveTeam(team.ID);
                     TeamRepository.InsertOrUpdateTeam(team);
+                }
+                else if (tcpMessage.Type == MessageType.ProjectListRequest)
+                {
+                    var projects = ProjectRepository.SelectProjects();
+                    var response = new TCPMessageBase
+                    {
+                        Type = MessageType.ProjectListResponse,
+                        SenderIP = GlobalVariables.SelfInfo.IP,
+                        SenderName = GlobalVariables.SelfInfo.Name,
+                        MessageBody = new List<TCPMessageBody> { new TCPMessageBody { Content = JsonConvert.SerializeObject(projects) } }
+                    };
+                    GlobalVariables.TcpServerClient.SendMessage(JsonConvert.SerializeObject(response), tcpMessage.SenderIP, GlobalVariables.TcpPort);
+                }
+                else if (tcpMessage.Type == MessageType.ProjectListResponse)
+                {
+                    var projects = JsonConvert.DeserializeObject<List<Project>>(tcpMessage.MessageBody[0].Content);
+                    GlobalVariables.InvokeProjectListReceived(projects);
+                }
+                else if (tcpMessage.Type == MessageType.ScheduleRequest)
+                {
+                    var request = JsonConvert.DeserializeAnonymousType(tcpMessage.MessageBody[0].Content, new { ProjectId = "", Year = 0, Month = 0 });
+                    var tasks = TaskRepository.SelectTasksByMonth(request.ProjectId, request.Year, request.Month);
+                    var progresses = new List<Progress>();
+                    foreach(var task in tasks)
+                    {
+                        var progress = ProgressRepository.SelectProgress(task.Id, request.ProjectId);
+                        if(progress != null)
+                        {
+                            progresses.Add(progress);
+                        }
+                    }
+
+                    var responsePayload = new { Tasks = tasks, Progresses = progresses };
+                    var response = new TCPMessageBase
+                    {
+                        Type = MessageType.ScheduleResponse,
+                        SenderIP = GlobalVariables.SelfInfo.IP,
+                        SenderName = GlobalVariables.SelfInfo.Name,
+                        MessageBody = new List<TCPMessageBody> { new TCPMessageBody { Content = JsonConvert.SerializeObject(responsePayload) } }
+                    };
+                    GlobalVariables.TcpServerClient.SendMessage(JsonConvert.SerializeObject(response), tcpMessage.SenderIP, GlobalVariables.TcpPort);
+                }
+                else if (tcpMessage.Type == MessageType.ScheduleResponse)
+                {
+                    var payload = JsonConvert.DeserializeAnonymousType(tcpMessage.MessageBody[0].Content, new { Tasks = new List<Task>(), Progresses = new List<Progress>() });
+                    foreach (var task in payload.Tasks)
+                    {
+                        TaskRepository.InsertOrUpdateTask(task);
+                    }
+                    foreach (var progress in payload.Progresses)
+                    {
+                        ProgressRepository.InsertOrUpdateProgress(progress);
+                    }
+                    GlobalVariables.InvokeScheduleReceived();
                 }
                 else if (tcpMessage.Type == MessageType.ShareInfoRequest)
                 {

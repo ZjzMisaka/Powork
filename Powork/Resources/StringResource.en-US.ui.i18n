@@ -11,6 +11,7 @@ Msg=Msg
 Team=Team
 Share=Share
 Memo=Memo
+Schedule=Schedule
 Setting=Setting
 Unknown=Unknown
 MessageFromUser=({0}) Message from {1}

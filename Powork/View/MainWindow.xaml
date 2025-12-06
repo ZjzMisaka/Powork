@@ -176,6 +176,11 @@
                         <ui:SymbolIcon Symbol="DocumentEdit24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{Binding ResourceManager[Schedule]}" TargetPageType="{x:Type view:SchedulePage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="CalendarLtr24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Content="{Binding ResourceManager[Setting]}" TargetPageType="{x:Type view:SettingsPage}">

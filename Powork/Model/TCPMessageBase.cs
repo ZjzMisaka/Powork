@@ -13,6 +13,10 @@ namespace Powork.Model
         TeamInfo = 6,
         ShareInfoRequest = 7,
         ShareInfo = 8,
+        ProjectListRequest = 9,
+        ProjectListResponse = 10,
+        ScheduleRequest = 11,
+        ScheduleResponse = 12,
     }
 
     public class TCPMessageBase

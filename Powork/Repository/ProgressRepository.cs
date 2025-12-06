@@ -5,6 +5,29 @@ namespace Powork.Repository
 {
     public static class ProgressRepository
     {
+        public static Progress SelectProgress(string taskId, string projectId)
+        {
+            if (string.IsNullOrEmpty(taskId) || string.IsNullOrEmpty(projectId)) return null;
+
+            SQLiteConnection connection = CommonRepository.GetConnection();
+            string sql = $"SELECT * FROM TProgress WHERE taskId = '{taskId}' AND projectId = '{projectId}'";
+
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+            using (SQLiteDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return new Progress
+                    {
+                        TaskId = reader["taskId"].ToString(),
+                        ProjectId = reader["projectId"].ToString(),
+                        Percentage = System.Convert.ToInt32(reader["percentage"])
+                    };
+                }
+            }
+            return null;
+        }
+
         public static void InsertOrUpdateProgress(Progress progress)
         {
             SQLiteConnection connection = CommonRepository.GetConnection();

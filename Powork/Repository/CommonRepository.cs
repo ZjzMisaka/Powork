@@ -13,6 +13,7 @@ namespace Powork.Repository
             {
                 s_connection = new SQLiteConnection($"Data Source={GlobalVariables.DbName};Version=3;DefaultTimeout=1;");
                 s_connection.Open();
+                s_connection.Disposed += (s, e) => s_connection = null;
             }
             return s_connection;
         }
@@ -110,13 +111,13 @@ namespace Powork.Repository
                 command.ExecuteNonQuery();
             }
 
-            string sqlTTask = @"CREATE TABLE IF NOT EXISTS TTask (id VARCHAR(36), projectId VARCHAR(36), name VARCHAR(100), year INTEGER, month INTEGER, startDay INTEGER, days INTEGER, note VARCHAR(1000))";
+            string sqlTTask = @"CREATE TABLE IF NOT EXISTS TTask (id VARCHAR(36), projectId VARCHAR(36), name VARCHAR(100), year INTEGER, month INTEGER, startDay INTEGER, days INTEGER, note VARCHAR(1000), PRIMARY KEY (id, projectId, year, month))";
             using (SQLiteCommand command = new SQLiteCommand(sqlTTask, connection))
             {
                 command.ExecuteNonQuery();
             }
 
-            string sqlTProgress = @"CREATE TABLE IF NOT EXISTS TProgress (taskId VARCHAR(36) PRIMARY KEY, projectId VARCHAR(36), percentage INTEGER)";
+            string sqlTProgress = @"CREATE TABLE IF NOT EXISTS TProgress (taskId VARCHAR(36), projectId VARCHAR(36), percentage INTEGER, PRIMARY KEY (taskId, projectId))";
             using (SQLiteCommand command = new SQLiteCommand(sqlTProgress, connection))
             {
                 command.ExecuteNonQuery();

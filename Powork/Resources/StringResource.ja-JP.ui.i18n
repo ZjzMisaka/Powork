@@ -11,6 +11,7 @@ Msg=メッセ
 Team=チーム
 Share=シェア
 Memo=メモ
+Schedule=スケジュール
 Setting=設定
 Unknown=未知
 MessageFromUser=({0}) {1}からのメッセージ

@@ -1,0 +1,92 @@
+<Page x:Class="Powork.View.SchedulePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Powork.View"
+      xmlns:vm="clr-namespace:Powork.ViewModel"
+      xmlns:model="clr-namespace:Powork.Model"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d" 
+      d:DataContext="{d:DesignInstance Type=vm:SchedulePageViewModel, IsDesignTimeCreatable=False}"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="SchedulePage">
+    <Page.Resources>
+        <Style TargetType="{x:Type DataGridColumnHeader}" x:Key="DateHeaderStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:SchedulePage}}}">
+                        <MenuItem Header="Set as Holiday" Command="{Binding SetAsHolidayCommand}" CommandParameter="{Binding PlacementTarget.Header, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                        <MenuItem Header="Set as Workday" Command="{Binding SetAsWorkdayCommand}" CommandParameter="{Binding PlacementTarget.Header, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10">
+            <StackPanel Orientation="Horizontal">
+                <ComboBox ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" DisplayMemberPath="Name" Width="120" Margin="0,0,10,0"/>
+                <ComboBox ItemsSource="{Binding Projects}" SelectedItem="{Binding SelectedProject}" DisplayMemberPath="Name" Width="150" Margin="0,0,10,0"/>
+                <Button Command="{Binding AddProjectCommand}" Margin="0,0,5,0">
+                    <ui:SymbolIcon Symbol="Add24" />
+                </Button>
+                <Button Command="{Binding ManageProjectCommand}" Margin="0,0,10,0">
+                    <ui:SymbolIcon Symbol="Settings24" />
+                </Button>
+
+                <Button Command="{Binding PreviousMonthCommand}" Margin="0,0,5,0">
+                    <ui:SymbolIcon Symbol="ChevronLeft24" />
+                </Button>
+                <DatePicker SelectedDate="{Binding SelectedMonth, StringFormat='yyyy/MM'}" Width="130"/>
+                <Button Command="{Binding NextMonthCommand}" Margin="5,0,10,0">
+                    <ui:SymbolIcon Symbol="ChevronRight24" />
+                </Button>
+
+                <Button Command="{Binding RefreshCommand}" Margin="0,0,10,0">
+                    <ui:SymbolIcon Symbol="ArrowClockwise24" />
+                </Button>
+
+                <Button Command="{Binding AddTaskCommand}">
+                    <ui:SymbolIcon Symbol="AddSquare24" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <DataGrid Grid.Row="1" x:Name="ScheduleGrid" ItemsSource="{Binding ScheduleTasks}" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Edit Task"
+                                          Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type local:SchedulePage}}}"
+                                          CommandParameter="{Binding}"/>
+                                <MenuItem Header="Delete Task"
+                                          Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType={x:Type local:SchedulePage}}}"
+                                          CommandParameter="{Binding}"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Task" Binding="{Binding Name}" Width="200" IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="%">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Percentage, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

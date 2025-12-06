@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -7,10 +7,12 @@ using Powork.CustomEventArgs;
 using Powork.Model;
 using Powork.Network;
 using Powork.Repository;
+using System;
+using System.Collections.Generic;
 
 namespace Powork
 {
-    public static class GlobalVariables
+    public static partial class GlobalVariables
     {
         public static PowerPool PowerPool { get; set; }
         private static IPAddress s_localIP = GetLocalIPAddress();
@@ -39,6 +41,19 @@ namespace Powork
         public static event EventHandler<MessageEventArgs> GetUserMessage;
         public static event EventHandler<MessageEventArgs> GetTeamMessage;
         public static event EventHandler UserOnline;
+
+        public static event EventHandler<List<Project>> ProjectListReceived;
+        public static event EventHandler ScheduleReceived;
+
+        public static void InvokeScheduleReceived()
+        {
+            ScheduleReceived?.Invoke(null, EventArgs.Empty);
+        }
+
+        public static void InvokeProjectListReceived(List<Project> projects)
+        {
+            ProjectListReceived?.Invoke(null, projects);
+        }
 
         public static void InvokeGetShareInfoEvent(List<ShareInfo> shareInfos)
         {

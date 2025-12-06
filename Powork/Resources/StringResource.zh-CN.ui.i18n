@@ -11,6 +11,7 @@ Msg=消息
 Team=团队
 Share=分享
 Memo=笔记
+Schedule=进度
 Setting=设置
 Unknown=未知
 MessageFromUser=({0}) 来自{1}的消息
