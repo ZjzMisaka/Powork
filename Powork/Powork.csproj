@@ -23,6 +23,7 @@
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="Pi18n" Version="1.5.2" />
     <PackageReference Include="PowerThreadPool" Version="5.5.1" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
     <PackageReference Include="System.Data.SQLite" Version="2.0.2" />
     <PackageReference Include="WPF-UI" Version="4.1.0" />
     <PackageReference Include="WPF-UI.Tray" Version="4.1.0" />
